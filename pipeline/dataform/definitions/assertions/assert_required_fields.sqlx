@@ -1,0 +1,9 @@
+config {
+  type: "assertion",
+  schema: "ol_ops",
+  description: "Title, authors, cover and price are present on every book."
+}
+
+SELECT id FROM ${ref("catalog_books")}
+WHERE title IS NULL OR ARRAY_LENGTH(authors) = 0 OR cover_id IS NULL OR price_cents IS NULL OR price_cents <= 0
+   OR EXISTS (SELECT 1 FROM UNNEST(authors) AS a WHERE a.id IS NULL OR a.name IS NULL)

@@ -1,0 +1,11 @@
+config {
+  type: "assertion",
+  schema: "ol_ops",
+  description: "Brazilian-author and Portuguese-language books together stay above the floor."
+}
+
+SELECT share FROM (
+  SELECT SAFE_DIVIDE(COUNTIF('brazilian_author' IN UNNEST(segments) OR 'portuguese_language' IN UNNEST(segments)), COUNT(*)) AS share
+  FROM ${ref("catalog_books")}
+)
+WHERE share IS NULL OR share < ${cfg.num("limits_min_portuguese_share")}

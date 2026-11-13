@@ -1,0 +1,12 @@
+config {
+  type: "assertion",
+  schema: "ol_ops",
+  description: "Less than limits_max_reject_rate of raw works fail to parse."
+}
+
+SELECT rate FROM (
+  SELECT SAFE_DIVIDE(
+    (SELECT COUNT(*) FROM ${ref("rejects")} WHERE source = 'works'),
+    (SELECT COUNT(*) FROM ${ref("works")})) AS rate
+)
+WHERE rate > ${cfg.num("limits_max_reject_rate")}

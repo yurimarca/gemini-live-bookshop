@@ -1,0 +1,8 @@
+config {
+  type: "assertion",
+  schema: "ol_ops",
+  description: "Publication years are plausible."
+}
+
+SELECT id, first_publish_year FROM ${ref("catalog_books")}
+WHERE first_publish_year NOT BETWEEN ${cfg.num("limits_min_year")} AND ${cfg.num("limits_max_year")}

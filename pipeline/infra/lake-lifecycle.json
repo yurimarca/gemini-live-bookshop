@@ -1,0 +1,7 @@
+{
+  "rule": [
+    { "action": { "type": "Delete" }, "condition": { "age": 7, "matchesPrefix": ["bronze/"] } },
+    { "action": { "type": "Delete" }, "condition": { "age": 30, "matchesPrefix": ["raw/"] } },
+    { "action": { "type": "Delete" }, "condition": { "age": 30, "matchesPrefix": ["gold/", "seeds/"] } }
+  ]
+}

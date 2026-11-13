@@ -1,0 +1,12 @@
+config {
+  type: "table",
+  schema: "ol_staging",
+  description: "Star ratings with merged works resolved."
+}
+
+SELECT
+  COALESCE(r.to_key, t.work_key) AS work_key,
+  t.rating
+FROM ${ref("ratings")} AS t
+LEFT JOIN ${ref("stg_redirects")} AS r ON r.from_key = t.work_key AND STARTS_WITH(r.to_key, '/works/')
+WHERE t.work_key IS NOT NULL AND t.rating BETWEEN 1 AND 5

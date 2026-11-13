@@ -1,0 +1,18 @@
+config {
+  type: "table",
+  schema: "ol_ops",
+  description: "Dead letters: raw rows whose JSON column does not parse."
+}
+
+SELECT 'works' AS source, key, SUBSTR(json, 1, 500) AS sample, '${cfg.datasetVersion}' AS dataset_version
+FROM ${ref("works")}
+WHERE SAFE.PARSE_JSON(json, wide_number_mode => 'round') IS NULL
+UNION ALL
+SELECT 'authors', key, SUBSTR(json, 1, 500), '${cfg.datasetVersion}'
+FROM ${ref("authors")}
+WHERE SAFE.PARSE_JSON(json, wide_number_mode => 'round') IS NULL
+${when(cfg.useEditions, `
+UNION ALL
+SELECT 'editions', key, SUBSTR(json, 1, 500), '${cfg.datasetVersion}'
+FROM ${ref("editions")}
+WHERE SAFE.PARSE_JSON(json, wide_number_mode => 'round') IS NULL`)}

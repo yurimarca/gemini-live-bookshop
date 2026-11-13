@@ -1,0 +1,7 @@
+config {
+  type: "assertion",
+  schema: "ol_ops",
+  description: "Book IDs are unique."
+}
+
+SELECT id, COUNT(*) AS n FROM ${ref("catalog_books")} GROUP BY id HAVING n > 1

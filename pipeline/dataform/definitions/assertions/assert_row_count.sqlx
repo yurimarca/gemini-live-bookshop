@@ -1,0 +1,8 @@
+config {
+  type: "assertion",
+  schema: "ol_ops",
+  description: "The catalog holds between limits_min_books and limits_max_books rows."
+}
+
+SELECT n FROM (SELECT COUNT(*) AS n FROM ${ref("catalog_books")})
+WHERE n NOT BETWEEN ${cfg.num("limits_min_books")} AND ${cfg.num("limits_max_books")}

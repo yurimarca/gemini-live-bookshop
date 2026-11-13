@@ -1,0 +1,30 @@
+# The project ID is never committed. Pass it on the command line:
+#   npx @dataform/cli run . --default-database=$PROJECT_ID --vars="$(olpipe dataform-vars ...)"
+defaultProject: set-with-default-database-flag
+defaultLocation: us-central1
+defaultDataset: ol_staging
+defaultAssertionDataset: ol_ops
+dataformCoreVersion: 3.0.26
+# Defaults mirror ../seeds/selection.yaml (tests/test_selection.py keeps the two in step).
+vars:
+  dump_date: "2026-10-31"
+  revision: r1
+  dataset_version: ol-2026-10-31-r1
+  use_editions: "false"
+  popularity_weight_want: "1"
+  popularity_weight_reading: "2"
+  popularity_weight_read: "3"
+  rating_prior_mean: "3.8"
+  rating_prior_count: "20"
+  segments_famous_size: "1200"
+  segments_brazilian_author_size: "400"
+  segments_portuguese_language_size: "300"
+  limits_max_per_author: "8"
+  limits_min_books: "1000"
+  limits_max_books: "2000"
+  limits_min_portuguese_share: "0.1"
+  limits_min_famous_description_coverage: "0.95"
+  limits_max_reject_rate: "0.001"
+  limits_min_year: "-800"
+  limits_max_year: "2026"
+  excluded_subjects: erotic|erotica|pornograph|adult content

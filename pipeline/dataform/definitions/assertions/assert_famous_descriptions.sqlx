@@ -1,0 +1,11 @@
+config {
+  type: "assertion",
+  schema: "ol_ops",
+  description: "Description coverage in the famous segment."
+}
+
+SELECT coverage FROM (
+  SELECT SAFE_DIVIDE(COUNTIF(description IS NOT NULL), COUNT(*)) AS coverage
+  FROM ${ref("catalog_books")} WHERE 'famous' IN UNNEST(segments)
+)
+WHERE coverage < ${cfg.num("limits_min_famous_description_coverage")}

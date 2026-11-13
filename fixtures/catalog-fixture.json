@@ -1,0 +1,2271 @@
+{
+ "books": [
+  {
+   "author_names": [
+    "Clarice Lispector"
+   ],
+   "authors": [
+    {
+     "id": "OL93118A",
+     "name": "Clarice Lispector"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL1002120W",
+   "category": "Brazilian Literature",
+   "cover_id": 650866,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "Narrated by the cosmopolitan Rodrigo S.M., this brief, strange, and haunting tale is the story of Macabéa, one of life's unfortunates. Living in the slums of Rio and eking out a poor living as a typist, Macabéa loves movies, Coca-Colas, and her rat of a boyfriend; she would like to be like Marilyn Monroe, but she is ugly, underfed, sickly and unloved. Rodrigo recoils from her wretchedness, and yet he cannot avoid the realization that for all her outward misery, Macabéa is inwardly free/She doesn't seem to know how unhappy she should be. Lispector employs her pathetic heroine against her urbane, empty narratoredge of despair to edge of despairand, working them like a pair of scissors, she cuts away the reader's preconceived notions about poverty, identity, love and the art of fiction. In her last book she takes readers close to the true mystery of life and leave us deep in Lispector territory indeed.",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9788526502093",
+    "language": "por",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1977,
+   "id": "OL1002120W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 31,
+    "currently_reading": 15,
+    "rank": 22,
+    "score": 2.6042,
+    "want_to_read": 278
+   },
+   "price_cents": 3390,
+   "price_is_fictional": true,
+   "primary_language": "por",
+   "rating": {
+    "average": 3.94,
+    "count": 16
+   },
+   "segments": [
+    "brazilian_author",
+    "portuguese_language"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "Fiction, psychological",
+    "Rio de janeiro (brazil), fiction",
+    "Fiction",
+    "Brazil",
+    "Macabea",
+    "Rio de Janeiro",
+    "Fiction, general",
+    "Romance literature",
+    "Romance brasileiro",
+    "Fiction, women",
+    "Fiction, hispanic & latino",
+    "Portuguese fiction"
+   ],
+   "subtitle": null,
+   "title": "A Hora da Estrela",
+   "title_pt": "A Hora da Estrela",
+   "work_key": "/works/OL1002120W"
+  },
+  {
+   "author_names": [
+    "Machado de Assis"
+   ],
+   "authors": [
+    {
+     "id": "OL93286A",
+     "name": "Machado de Assis"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL1003017W",
+   "category": "Brazilian Literature",
+   "cover_id": 123152,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "**Memórias póstumas de Brás Cubas** é um romance escrito por Machado de Assis, desenvolvido em princípio como folhetim, de março a dezembro de 1880, na Revista Brasileira, para, no ano seguinte, ser publicado como livro, pela então Tipografia Nacional como Memorias Posthumas de Braz Cubas.\r\n\r\nO livro tem como marcas um tom cáustico e novo estilo na obra de Machado de Assis, bem como audácia e inovação temática no cenário literário nacional, que o fez receber, à época, resenhas estranhadas. Confessando adotar a \"forma livre\" de Laurence Sterne em seu Tristram Shandy (1759–67), ou de Xavier de Maistre, em Memórias Póstumas rompe com a narração linear e objetivista de autores proeminentes da época, como Flaubert e Zola, para retratar o Rio de Janeiro e sua época em geral com pessimismo, ironia e indiferença — um dos fatores que fizeram com que fosse amplamente considerada a obra que iniciou o Realismo no Brasil, ainda que com elementos livres e próprios a Machado de Assis.\r\n\r\n— [Wikipedia](https://pt.wikipedia.org/wiki/Mem%C3%B3rias_P%C3%B3stumas_de_Br%C3%A1s_Cubas) (CC BY-SA 4.0)",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9798561224355",
+    "language": "por",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1881,
+   "id": "OL1003017W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 30,
+    "currently_reading": 13,
+    "rank": 24,
+    "score": 2.4814,
+    "want_to_read": 186
+   },
+   "price_cents": 1190,
+   "price_is_fictional": true,
+   "primary_language": "por",
+   "rating": {
+    "average": 3.69,
+    "count": 16
+   },
+   "segments": [
+    "brazilian_author",
+    "portuguese_language"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "Romance brasileiro",
+    "Social life and customs",
+    "Dead",
+    "Fiction",
+    "Romance literature",
+    "Fiction, general",
+    "Autobiography",
+    "Ghost stories",
+    "Aristocracy (Social class)",
+    "FICTION / Classics",
+    "Classics",
+    "Architectural Decoration and ornament"
+   ],
+   "subtitle": null,
+   "title": "Memórias póstumas de Brás Cubas",
+   "title_pt": "Memórias Póstumas de Brás Cubas",
+   "work_key": "/works/OL1003017W"
+  },
+  {
+   "author_names": [
+    "Machado de Assis"
+   ],
+   "authors": [
+    {
+     "id": "OL93286A",
+     "name": "Machado de Assis"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL1003040W",
+   "category": "Brazilian Literature",
+   "cover_id": 647501,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "**Dom Casmurro**, publicado pela primeira vez em 1899, é um dos romances realistas mais importantes de Machado de Assis, considerado por alguns sua obra-prima. O livro narra a história de Bento Gonçalves desde sua juventude, abordando temas como religião, adultério e ambiguidade moral.",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9781986265218",
+    "language": "por",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1899,
+   "id": "OL1003040W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 34,
+    "currently_reading": 13,
+    "rank": 23,
+    "score": 2.5527,
+    "want_to_read": 228
+   },
+   "price_cents": 3890,
+   "price_is_fictional": true,
+   "primary_language": "por",
+   "rating": {
+    "average": 4.41,
+    "count": 22
+   },
+   "segments": [
+    "brazilian_author",
+    "portuguese_language"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "Religious",
+    "Fiction",
+    "Reminiscing in old age",
+    "Adultery",
+    "Authorship",
+    "Catholics",
+    "Catholic Church",
+    "Latin American literature",
+    "History and criticism",
+    "General",
+    "Brazilian literature",
+    "Historical fiction"
+   ],
+   "subtitle": null,
+   "title": "Dom Casmurro",
+   "title_pt": "Dom Casmurro",
+   "work_key": "/works/OL1003040W"
+  },
+  {
+   "author_names": [
+    "Antoine de Saint-Exupéry"
+   ],
+   "authors": [
+    {
+     "id": "OL31901A",
+     "name": "Antoine de Saint-Exupéry"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL10263W",
+   "category": "Children",
+   "cover_id": 10708272,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "*Le Petit Prince* est une œuvre de langue française, la plus connue d'Antoine de Saint-Exupéry. Publié en 1943 à New York simultanément à sa traduction anglaise, c'est une œuvre poétique et philosophique sous l'apparence d'un conte pour enfants.\r\n\r\nTraduit en quatre cent cinquante-sept langues et dialectes, *Le Petit Prince* est le deuxième ouvrage le plus traduit au monde après la Bible.\r\n\r\nLe langage, simple et dépouillé, parce qu'il est destiné à être compris par des enfants, est en réalité pour le narrateur le véhicule privilégié d'une conception symbolique de la vie. Chaque chapitre relate une rencontre du petit prince qui laisse celui-ci perplexe, par rapport aux comportements absurdes des « grandes personnes ». Ces différentes rencontres peuvent être lues comme une allégorie.\r\n\r\nLes aquarelles font partie du texte et participent à cette pureté du langage : dépouillement et profondeur sont les qualités maîtresses de l'œuvre.\r\n\r\nOn peut y lire une invitation de l'auteur à retrouver l'enfant en soi, car « toutes les grandes personnes ont d'abord été des enfants. (Mais peu d'entre elles s'en souviennent.) ». L'ouvrage est dédié à Léon Werth, mais « quand il était petit garçon ».\r\n\r\n(Wikipedia)",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9782070593392",
+    "language": "eng",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1943,
+   "id": "OL10263W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 498,
+    "currently_reading": 351,
+    "rank": 6,
+    "score": 3.7977,
+    "want_to_read": 4079
+   },
+   "price_cents": 2490,
+   "price_is_fictional": true,
+   "primary_language": "eng",
+   "rating": {
+    "average": 4.36,
+    "count": 269
+   },
+   "segments": [
+    "famous"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "adventure",
+    "fantasy",
+    "friendship",
+    "love",
+    "childhood",
+    "loss",
+    "loneliness",
+    "Children's fiction",
+    "Friendship, fiction",
+    "Fantasy fiction",
+    "Princes, fiction",
+    "Fairy tales"
+   ],
+   "subtitle": null,
+   "title": "Le petit prince",
+   "title_pt": "O Pequeno Príncipe",
+   "work_key": "/works/OL10263W"
+  },
+  {
+   "author_names": [
+    "Herman Melville"
+   ],
+   "authors": [
+    {
+     "id": "OL29497A",
+     "name": "Herman Melville"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL102749W",
+   "category": "Adventure",
+   "cover_id": 10544254,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "\"Command the murderous chalices! Drink ye harpooners! Drink and swear, ye men that man the deathful whaleboat's bow -- Death to Moby Dick!\" So Captain Ahab binds his crew to fulfil his obsession -- the destruction of the great white whale. Under his lordly but maniacal command the Pequod's commercial mission is perverted to one of vengeance. To Ahab, the monster that destroyed his body is not a creature, but the symbol of \"some unknown but still reasoning thing.\" Uncowed by natural disasters, ill omens, even death, Ahab urges his ship towards \"the undeliverable, nameless perils of the whale.\"",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9798727891414",
+    "language": "eng",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1851,
+   "id": "OL102749W",
+   "languages": [
+    "eng",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 292,
+    "currently_reading": 134,
+    "rank": 15,
+    "score": 3.4645,
+    "want_to_read": 1769
+   },
+   "price_cents": 790,
+   "price_is_fictional": true,
+   "primary_language": "eng",
+   "rating": {
+    "average": 3.95,
+    "count": 199
+   },
+   "segments": [
+    "famous"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "American Sea stories",
+    "Mentally ill",
+    "Whaling",
+    "Science Fiction & Fantasy",
+    "Whales",
+    "great_books_of_the_western_world",
+    "Translations into French",
+    "Literature",
+    "Captain Ahab (Fictitious character)",
+    "American Adventure stories",
+    "Sailors",
+    "Sea stories"
+   ],
+   "subtitle": null,
+   "title": "Moby Dick",
+   "title_pt": null,
+   "work_key": "/works/OL102749W"
+  },
+  {
+   "author_names": [
+    "Ray Bradbury"
+   ],
+   "authors": [
+    {
+     "id": "OL24137A",
+     "name": "Ray Bradbury"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL103123W",
+   "category": "Science Fiction",
+   "cover_id": 12993656,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "Fahrenheit 451 is a 1953 dystopian novel by American writer Ray Bradbury. Often regarded as one of his best works, the novel presents a future American society where books are outlawed and \"firemen\" burn any that are found. The book's tagline explains the title as \"'the temperature at which book paper catches fire, and burns\": the autoignition temperature of paper. The lead character, Guy Montag, is a fireman who becomes disillusioned with his role of censoring literature and destroying knowledge, eventually quitting his job and committing himself to the preservation of literary and cultural writings.\r\n\r\nThe novel has been the subject of interpretations focusing on the historical role of book burning in suppressing dissenting ideas for change. In a 1956 radio interview, Bradbury said that he wrote Fahrenheit 451 because of his concerns at the time (during the McCarthy era) about the threat of book burning in the United States. In later years, he described the book as a commentary on how mass media reduces interest in reading literature.\r\n\r\nIn 1954, Fahrenheit 451 won the American Academy of Arts and Letters Award in Literature and the Commonwealth Club of California Gold Medal. It later won the Prometheus \"Hall of Fame\" Award in 1984 and a \"Retro\" Hugo Award, one of a limited number of Best Novel Retro Hugos ever given, in 2004. Bradbury was honored with a Spoken Word Grammy nomination for his 1976 audiobook version.\r\n\r\n---",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9780812973570",
+    "language": "eng",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1953,
+   "id": "OL103123W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 734,
+    "currently_reading": 181,
+    "rank": 7,
+    "score": 3.7892,
+    "want_to_read": 3589
+   },
+   "price_cents": 1690,
+   "price_is_fictional": true,
+   "primary_language": "eng",
+   "rating": {
+    "average": 3.98,
+    "count": 458
+   },
+   "segments": [
+    "famous"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "Mechanical Hound",
+    "girl next door",
+    "Long Now Manual for Civilization",
+    "Terrorismo estatal",
+    "Censura",
+    "Novela",
+    "Totalitarismo",
+    "science fiction",
+    "political fiction",
+    "satire",
+    "Zukunft",
+    "State-sponsored terrorism"
+   ],
+   "subtitle": null,
+   "title": "Fahrenheit 451",
+   "title_pt": null,
+   "work_key": "/works/OL103123W"
+  },
+  {
+   "author_names": [
+    "Charlotte Brontë"
+   ],
+   "authors": [
+    {
+     "id": "OL113362A",
+     "name": "Charlotte Brontë"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL1095427W",
+   "category": "Romance",
+   "cover_id": 8235363,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "The novel is set somewhere in the north of England. Jane's childhood at Gateshead Hall, where she is emotionally and physically abused by her aunt and cousins; her education at Lowood School, where she acquires friends and role models but also suffers privations and oppression; her time as the governess of Thornfield Hall, where she falls in love with her Byronic employer, Edward Rochester; her time with the Rivers family, during which her earnest but cold clergyman cousin, St John Rivers, proposes to her. Will she or will she not marry him?",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9781718196155",
+    "language": "eng",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1847,
+   "id": "OL1095427W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 303,
+    "currently_reading": 120,
+    "rank": 17,
+    "score": 3.4252,
+    "want_to_read": 1512
+   },
+   "price_cents": 3390,
+   "price_is_fictional": true,
+   "primary_language": "eng",
+   "rating": {
+    "average": 4.04,
+    "count": 191
+   },
+   "segments": [
+    "famous"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "Fiction",
+    "Romance",
+    "Historical\"",
+    "Man-woman relationships, fiction",
+    "Charity schools, fiction",
+    "Married people, fiction",
+    "Married men",
+    "fiction\"",
+    "Country homes, fiction",
+    "Fathers and daughters, fiction",
+    "Open Library Staff Picks",
+    "Orphans, fiction"
+   ],
+   "subtitle": null,
+   "title": "Jane Eyre",
+   "title_pt": null,
+   "work_key": "/works/OL1095427W"
+  },
+  {
+   "author_names": [
+    "George Orwell"
+   ],
+   "authors": [
+    {
+     "id": "OL15318546A",
+     "name": "George Orwell"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL1168083W",
+   "category": "Science Fiction",
+   "cover_id": 9267242,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "Nineteen Eighty-Four: A Novel, often referred to as 1984, is a dystopian social science fiction novel by the English novelist George Orwell (the pen name of Eric Arthur Blair). It was published on 8 June 1949 by Secker & Warburg as Orwell's ninth and final book completed in his lifetime. Thematically, Nineteen Eighty-Four centres on the consequences of totalitarianism, mass surveillance, and repressive regimentation of persons and behaviours within society. Orwell, himself a democratic socialist, modelled the authoritarian government in the novel after Stalinist Russia. More broadly, the novel examines the role of truth and facts within politics and the ways in which they are manipulated.",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9786257163354",
+    "language": "eng",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1949,
+   "id": "OL1168083W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 949,
+    "currently_reading": 545,
+    "rank": 2,
+    "score": 4.0613,
+    "want_to_read": 7577
+   },
+   "price_cents": 3090,
+   "price_is_fictional": true,
+   "primary_language": "eng",
+   "rating": {
+    "average": 4.29,
+    "count": 453
+   },
+   "segments": [
+    "famous"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "futurology",
+    "censorship",
+    "surveillance",
+    "rebels",
+    "sting operations",
+    "historical negationism",
+    "memory holes",
+    "thoughtcrime",
+    "Outer Party",
+    "resistance movements",
+    "Newspeak",
+    "perpetual war"
+   ],
+   "subtitle": null,
+   "title": "Nineteen Eighty-Four",
+   "title_pt": "1984",
+   "work_key": "/works/OL1168083W"
+  },
+  {
+   "author_names": [
+    "Jorge Amado"
+   ],
+   "authors": [
+    {
+     "id": "OL126038A",
+     "name": "Jorge Amado"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL1248157W",
+   "category": "Brazilian Literature",
+   "cover_id": 4178919,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "They call themselves 'Captains of the Sands,' a gang of orphans and runaways who live by their wits and daring in the torrid slums and sleazy back alleys of Bahia. Led by fifteen-year-old 'Bullet,' the band-including a crafty liar named 'Legless,' the intellectual 'Professor,' and the sexually precocious 'Cat'-pulls off heists and escapades against the right and privileged of Brazil. But when a public outcry demands the capture of the 'little criminals,' the fate of these children becomes a poignant, intensely moving drama of love and freedom in a shackled land.",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9780143106357",
+    "language": "por",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1937,
+   "id": "OL1248157W",
+   "languages": [
+    "eng",
+    "por",
+    "spa"
+   ],
+   "popularity": {
+    "already_read": 11,
+    "currently_reading": 0,
+    "rank": 27,
+    "score": 2.0086,
+    "want_to_read": 68
+   },
+   "price_cents": 1590,
+   "price_is_fictional": true,
+   "primary_language": "por",
+   "rating": {
+    "average": 5.0,
+    "count": 5
+   },
+   "segments": [
+    "brazilian_author",
+    "portuguese_language"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "Brazilian fiction",
+    "Social conditions",
+    "Runaway children",
+    "Orphans",
+    "Fiction",
+    "Fiction, general",
+    "Brazil, fiction",
+    "Modern Literature",
+    "Translations",
+    "Portuguese fiction",
+    "Translations into English"
+   ],
+   "subtitle": null,
+   "title": "Capitães da Areia",
+   "title_pt": "Capitães da Areia",
+   "work_key": "/works/OL1248157W"
+  },
+  {
+   "author_names": [
+    "Jorge Amado"
+   ],
+   "authors": [
+    {
+     "id": "OL126038A",
+     "name": "Jorge Amado"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL1248178W",
+   "category": "Brazilian Literature",
+   "cover_id": 6980354,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": null,
+   "description_source": null,
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9788476695814",
+    "language": "por",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1962,
+   "id": "OL1248178W",
+   "languages": [
+    "eng",
+    "por",
+    "spa"
+   ],
+   "popularity": {
+    "already_read": 5,
+    "currently_reading": 2,
+    "rank": 29,
+    "score": 1.7634,
+    "want_to_read": 38
+   },
+   "price_cents": 2190,
+   "price_is_fictional": true,
+   "primary_language": "por",
+   "rating": {
+    "average": 4.67,
+    "count": 3
+   },
+   "segments": [
+    "brazilian_author",
+    "portuguese_language"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "Brazilian Love stories",
+    "Cuentos de amor brasileños",
+    "Ficción",
+    "Fiction",
+    "Social life and customs",
+    "Translations into Russian",
+    "Women",
+    "Women cooks",
+    "Cooks",
+    "Love stories",
+    "Brazilian Romance fiction",
+    "Brazil, fiction"
+   ],
+   "subtitle": null,
+   "title": "Gabriela, Cravo e Canela",
+   "title_pt": "Gabriela, Cravo e Canela",
+   "work_key": "/works/OL1248178W"
+  },
+  {
+   "author_names": [
+    "Lewis Carroll"
+   ],
+   "authors": [
+    {
+     "id": "OL22098A",
+     "name": "Lewis Carroll"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL138052W",
+   "category": "Children",
+   "cover_id": 10527843,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "Alice's Adventures in Wonderland (commonly Alice in Wonderland) is an 1865 English children's novel by Lewis Carroll. A young girl named Alice falls through a rabbit hole into a fantasy world of anthropomorphic creatures. It is seen as an example of the literary nonsense genre.\r\n\r\nOne of the best-known works of Victorian literature, its narrative, structure, characters and imagery have had huge influence on popular culture and literature, especially in the fantasy genre.",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9781843651420",
+    "language": "eng",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1865,
+   "id": "OL138052W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 360,
+    "currently_reading": 143,
+    "rank": 14,
+    "score": 3.5167,
+    "want_to_read": 1919
+   },
+   "price_cents": 3790,
+   "price_is_fictional": true,
+   "primary_language": "eng",
+   "rating": {
+    "average": 4.05,
+    "count": 235
+   },
+   "segments": [
+    "famous"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "Fiction, fantasy, general",
+    "JUVENILE FICTION",
+    "classics",
+    "Fantasy & Magic",
+    "Imagination & Play",
+    "adventure and adventurers",
+    "adventure and adventurers, fiction",
+    "adventure stories",
+    "adventure travel",
+    "animals",
+    "anthropomorphism",
+    "artists' illustrated books"
+   ],
+   "subtitle": null,
+   "title": "Alice's Adventures in Wonderland",
+   "title_pt": "Alice no País das Maravilhas",
+   "work_key": "/works/OL138052W"
+  },
+  {
+   "author_names": [
+    "Fyodor Dostoevsky"
+   ],
+   "authors": [
+    {
+     "id": "OL22242A",
+     "name": "Fyodor Dostoevsky"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL166894W",
+   "category": "Classics",
+   "cover_id": 9411873,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "From [wikipedia](https://en.wikipedia.org/wiki/Crime_and_Punishment):\r\n\r\nCrime and Punishment (Russian: Преступлéние и наказáние, tr. Prestupleniye i nakazaniye; IPA: \\[prʲɪstʊˈplʲenʲə ɪ nəkɐˈzanʲə\\]) is a novel by the Russian author Fyodor Dostoyevsky. It was first published in the literary journal The Russian Messenger in twelve monthly installments during 1866.[1](https://en.wikipedia.org/wiki/Crime_and_Punishment) It was later published in a single volume. It is the second of Dostoyevsky's full-length novels following his return from ten years of exile in Siberia. Crime and Punishment is considered the first great novel of his \"mature\" period of writing.\\[2\\]\r\n\r\nCrime and Punishment focuses on the mental anguish and moral dilemmas of Rodion Raskolnikov, an impoverished ex-student in St. Petersburg who formulates and executes a plan to kill an unscrupulous pawnbroker for her cash. Raskolnikov argues that with the pawnbroker's money he can perform good deeds to counterbalance the crime, while ridding the world of a worthless vermin. He also commits this murder to test his own hypothesis that some people are naturally capable of such things, and even have the right to do them. Several times throughout the novel, Raskolnikov justifies his actions by comparing himself with Napoleon Bonaparte, believing that murder is permissible in pursuit of a higher purpose.\r\n\r\n---\r\n\r\nSee also:\r\n\r\n- [Преступлéние и наказáние: 1/2](https://openlibrary.org/works/OL7998899W/Prestuplenie_i_nakazanie._1_2)",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9798827153894",
+    "language": "eng",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1866,
+   "id": "OL166894W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 286,
+    "currently_reading": 257,
+    "rank": 10,
+    "score": 3.6531,
+    "want_to_read": 3126
+   },
+   "price_cents": 3590,
+   "price_is_fictional": true,
+   "primary_language": "eng",
+   "rating": {
+    "average": 4.3,
+    "count": 163
+   },
+   "segments": [
+    "famous"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "English Translations",
+    "Russian literature",
+    "Novela psicológica",
+    "Fiction",
+    "Translations into Yiddish",
+    "Psychological fiction",
+    "German language",
+    "Murder",
+    "Fiction in Spanish",
+    "Mystery fiction",
+    "Classic Literature",
+    "Detective and mystery stories"
+   ],
+   "subtitle": null,
+   "title": "Crime and Punishment",
+   "title_pt": "Crime e Castigo",
+   "work_key": "/works/OL166894W"
+  },
+  {
+   "author_names": [
+    "Guimarães Rosa"
+   ],
+   "authors": [
+    {
+     "id": "OL204214A",
+     "name": "Guimarães Rosa"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL1756937W",
+   "category": "Brazilian Literature",
+   "cover_id": 13909068,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": null,
+   "description_source": null,
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9788520912096",
+    "language": "por",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1956,
+   "id": "OL1756937W",
+   "languages": [
+    "por",
+    "spa"
+   ],
+   "popularity": {
+    "already_read": 4,
+    "currently_reading": 2,
+    "rank": 30,
+    "score": 1.716,
+    "want_to_read": 35
+   },
+   "price_cents": 2790,
+   "price_is_fictional": true,
+   "primary_language": "por",
+   "rating": {
+    "average": 5.0,
+    "count": 3
+   },
+   "segments": [
+    "brazilian_author",
+    "portuguese_language"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "Exhibitions",
+    "Romance"
+   ],
+   "subtitle": null,
+   "title": "Grande sertão",
+   "title_pt": "Grande Sertão: Veredas",
+   "work_key": "/works/OL1756937W"
+  },
+  {
+   "author_names": [
+    "Emily Brontë"
+   ],
+   "authors": [
+    {
+     "id": "OL24529A",
+     "name": "Emily Brontë"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL21177W",
+   "category": "Romance",
+   "cover_id": 12818862,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "Wuthering Heights is an 1847 novel by Emily Brontë, initially published under the pseudonym Ellis Bell. It concerns two families of the landed gentry living on the West Yorkshire moors, the Earnshaws and the Lintons, and their turbulent relationships with Earnshaw's adopted son, Heathcliff. The novel was influenced by Romanticism and Gothic fiction.",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9798795108766",
+    "language": "eng",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1846,
+   "id": "OL21177W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 415,
+    "currently_reading": 233,
+    "rank": 8,
+    "score": 3.6929,
+    "want_to_read": 3219
+   },
+   "price_cents": 990,
+   "price_is_fictional": true,
+   "primary_language": "eng",
+   "rating": {
+    "average": 4.11,
+    "count": 311
+   },
+   "segments": [
+    "famous"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "Children's fiction",
+    "Classic fiction",
+    "Classic Literature",
+    "Country homes",
+    "Country life",
+    "Cousins",
+    "Death",
+    "Drama",
+    "English language",
+    "English language readers",
+    "English literature",
+    "Examinations"
+   ],
+   "subtitle": null,
+   "title": "Wuthering Heights",
+   "title_pt": "O Morro dos Ventos Uivantes",
+   "work_key": "/works/OL21177W"
+  },
+  {
+   "author_names": [
+    "José Saramago"
+   ],
+   "authors": [
+    {
+     "id": "OL3112635A",
+     "name": "José Saramago"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL27420W",
+   "category": "Portuguese Literature",
+   "cover_id": 10482411,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "Uma cegueira branca se espalha de forma fulminante. Internados em quarentena ou perdidos pela cidade, os cegos devem enfrentar o que há de mais primitivo na espécie humana: a vontade de sobreviver à qualquer custo.\r\n\r\nJosé Saramago, vencedor do Prêmio Nobel de Literatura de 1998, tece uma aterrorizante parábola sobre o ser humano, que revela o que há de pior em nós mesmos.",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9780786218349",
+    "language": "por",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1995,
+   "id": "OL27420W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 56,
+    "currently_reading": 29,
+    "rank": 20,
+    "score": 2.7356,
+    "want_to_read": 317
+   },
+   "price_cents": 3590,
+   "price_is_fictional": true,
+   "primary_language": "por",
+   "rating": {
+    "average": 4.21,
+    "count": 43
+   },
+   "segments": [
+    "portuguese_language"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "Blind",
+    "Blindness",
+    "Fiction",
+    "Modern Literature",
+    "Allegories",
+    "Psychological fiction",
+    "Psychology",
+    "Epidemics",
+    "Survival",
+    "Blind in literature",
+    "Violence",
+    "Large type books"
+   ],
+   "subtitle": null,
+   "title": "Ensaio Sobre a Cegueira",
+   "title_pt": "Ensaio sobre a Cegueira",
+   "work_key": "/works/OL27420W"
+  },
+  {
+   "author_names": [
+    "Gabriel García Márquez"
+   ],
+   "authors": [
+    {
+     "id": "OL27363A",
+     "name": "Gabriel García Márquez"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL274505W",
+   "category": "Fiction",
+   "cover_id": 12627383,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "*Cien años de soledad* es una novela del escritor colombiano Gabriel García Márquez, ganador del Premio Nobel de Literatura en 1982. Es considerada una obra maestra de la literatura hispanoamericana y universal, cumbre del denominado \"realismo mágico\". Es asimismo una de las obras más traducidas y leídas en español. Narra la historia de la familia Buendía a lo largo de siete generaciones en el pueblo ficticio de Macondo.",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9788422656777",
+    "language": "eng",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1967,
+   "id": "OL274505W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 171,
+    "currently_reading": 156,
+    "rank": 16,
+    "score": 3.435,
+    "want_to_read": 1897
+   },
+   "price_cents": 1290,
+   "price_is_fictional": true,
+   "primary_language": "eng",
+   "rating": {
+    "average": 4.08,
+    "count": 91
+   },
+   "segments": [
+    "famous"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "Spanish language books",
+    "Fiction",
+    "Social conditions",
+    "Macondo (Imaginary place)",
+    "novel",
+    "magic realism",
+    "Latinamerican literature",
+    "Condiciones sociales",
+    "Novela",
+    "Literatura épica",
+    "Epic literature",
+    "Macondo (Lugar imaginario)"
+   ],
+   "subtitle": null,
+   "title": "Cien años de soledad",
+   "title_pt": "Cem Anos de Solidão",
+   "work_key": "/works/OL274505W"
+  },
+  {
+   "author_names": [
+    "J. R. R. Tolkien"
+   ],
+   "authors": [
+    {
+     "id": "OL26320A",
+     "name": "J. R. R. Tolkien"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL27482W",
+   "category": "Fantasy",
+   "cover_id": 14627509,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "The Hobbit is a tale of high adventure, undertaken by a company of dwarves in search of dragon-guarded gold. A reluctant partner in this perilous quest is Bilbo Baggins, a comfort-loving unambitious hobbit, who surprises even himself by his resourcefulness and skill as a burglar.\r\n\r\nEncounters with trolls, goblins, dwarves, elves, and giant spiders, conversations with the dragon, Smaug, and a rather unwilling presence at the Battle of Five Armies are just some of the adventures that befall Bilbo.\r\n\r\nBilbo Baggins has taken his place among the ranks of the immortals of children’s fiction. Written by Professor Tolkien for his children, The Hobbit met with instant critical acclaim when published.",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9780613870665",
+    "language": "eng",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1937,
+   "id": "OL27482W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 859,
+    "currently_reading": 383,
+    "rank": 5,
+    "score": 3.8727,
+    "want_to_read": 4116
+   },
+   "price_cents": 1590,
+   "price_is_fictional": true,
+   "primary_language": "eng",
+   "rating": {
+    "average": 4.29,
+    "count": 509
+   },
+   "segments": [
+    "famous"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "Fantasy",
+    "Arkenstone",
+    "Battle of Five Armies",
+    "invisibility",
+    "thrushes",
+    "eagles",
+    "hobbits",
+    "wizards",
+    "dragons",
+    "dwarves",
+    "elves",
+    "men"
+   ],
+   "subtitle": null,
+   "title": "The Hobbit",
+   "title_pt": "O Hobbit",
+   "work_key": "/works/OL27482W"
+  },
+  {
+   "author_names": [
+    "Graciliano Ramos"
+   ],
+   "authors": [
+    {
+     "id": "OL441423A",
+     "name": "Graciliano Ramos"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL2900596W",
+   "category": "Brazilian Literature",
+   "cover_id": 12369687,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "O que impulsiona os personagens é a seca, áspera e cruel, e paradoxalmente a ligação telúrica, afetiva, que expõe naqueles seres em retirada, à procura de meios de sobrevivência e um futuro. Apesar desse sentimento de transbordante solidariedade e compaixão com que a narrativa acompanha a miúda saga do vaqueiro Fabiano e sua gente, o autor contou: \"Procurei auscultar a alma do ser rude e quase primitivo que mora na zona mais recuada do sertão... os meus personagens são quase selvagens... pesquisa que os escritores regionalistas não fazem e nem mesmo podem fazer ...porque comumente não são familiares com o ambiente que descrevem...Fiz o livrinho sem paisagens, sem diálogos. E sem amor. A minha gente, quase muda, vive numa casa velha de fazenda. As pessoas adultas, preocupadas com o estômago, não tem tempo de abraçar-se. Até a cachorra [Baleia] é uma criatura decente, porque na vizinhança não existem galãs caninos\". VIDAS SECAS é o livro em que Graciliano, visto como antipoético e anti-sonhador por excelência, consegue atingir, com o rigor do texto que tanto prezava, um estado maior de poesia.",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9788501085290",
+    "language": "por",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1964,
+   "id": "OL2900596W",
+   "languages": [
+    "por",
+    "spa"
+   ],
+   "popularity": {
+    "already_read": 9,
+    "currently_reading": 7,
+    "rank": 25,
+    "score": 2.1461,
+    "want_to_read": 98
+   },
+   "price_cents": 3690,
+   "price_is_fictional": true,
+   "primary_language": "por",
+   "rating": {
+    "average": 4.0,
+    "count": 6
+   },
+   "segments": [
+    "brazilian_author",
+    "portuguese_language"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "Illustrations",
+    "Seca in literature",
+    "Myth in literature",
+    "In literature",
+    "Literature",
+    "Vidas secas (Ramos, Graciliano)"
+   ],
+   "subtitle": null,
+   "title": "Vidas secas",
+   "title_pt": "Vidas Secas",
+   "work_key": "/works/OL2900596W"
+  },
+  {
+   "author_names": [
+    "Harper Lee"
+   ],
+   "authors": [
+    {
+     "id": "OL498120A",
+     "name": "Harper Lee"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL3140822W",
+   "category": "Classics",
+   "cover_id": 14351077,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "One of the best-loved stories of all time, To Kill a Mockingbird has been translated into more than 40 languages, sold more than 30 million copies worldwide, served as the basis for an enormously popular motion picture, and voted one of the best novels of the 20th century by librarians across the United States. A gripping, heart-wrenching, and wholly remarkable tale of coming-of-age in a South poisoned by virulent prejudice, it views a world of great beauty and savage inequities through the eyes of a young girl, as her father -- a crusading local lawyer -- risks everything to defend a black man unjustly accused of a terrible crime.\r\n\r\nLawyer Atticus Finch defends Tom Robinson -- a black man charged with the rape of a white girl. Writing through the young eyes of Finch's children Scout and Jem, Harper Lee explores with rich humor and unswerving honesty the irrationality of adult attitudes toward race and class in small-town Alabama during the mid-1930s Depression years. The conscience of a town steeped in prejudice, violence, and hypocrisy is pricked by the stamina and quiet heroism of one man's struggle for justice. But the weight of history will only tolerate so much.\r\n\r\n---",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9780140019292",
+    "language": "eng",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1960,
+   "id": "OL3140822W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 484,
+    "currently_reading": 428,
+    "rank": 4,
+    "score": 3.8986,
+    "want_to_read": 5609
+   },
+   "price_cents": 1590,
+   "price_is_fictional": true,
+   "primary_language": "eng",
+   "rating": {
+    "average": 4.14,
+    "count": 283
+   },
+   "segments": [
+    "famous"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "fiction",
+    "fiction classics",
+    "contemporary fiction",
+    "racial segregation",
+    "mob mentality",
+    "Southern Gothic",
+    "southern life",
+    "racial injustice",
+    "class",
+    "courage",
+    "compassion",
+    "gender roles"
+   ],
+   "subtitle": null,
+   "title": "To Kill a Mockingbird",
+   "title_pt": null,
+   "work_key": "/works/OL3140822W"
+  },
+  {
+   "author_names": [
+    "Mary Shelley"
+   ],
+   "authors": [
+    {
+     "id": "OL25342A",
+     "name": "Mary Shelley"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL450063W",
+   "category": "Horror",
+   "cover_id": 12356249,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "*Frankenstein; or, The Modern Prometheus* is an 1818 novel written by English author Mary Shelley. Frankenstein tells the story of Victor Frankenstein, a young scientist who creates a sapient creature in an unorthodox scientific experiment. Shelley started writing the story when she was 18, and the first edition was published anonymously in London on 1 January 1818, when she was 20. Her name first appeared in the second edition, which was published in Paris in 1821.",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9782277235675",
+    "language": "eng",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1818,
+   "id": "OL450063W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 453,
+    "currently_reading": 179,
+    "rank": 12,
+    "score": 3.5861,
+    "want_to_read": 2138
+   },
+   "price_cents": 3190,
+   "price_is_fictional": true,
+   "primary_language": "eng",
+   "rating": {
+    "average": 3.97,
+    "count": 229
+   },
+   "segments": [
+    "famous"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "Frankenstein (Fictitious character)",
+    "Fiction",
+    "Scientists",
+    "Monsters",
+    "Fiction, horror",
+    "Physicians, fiction",
+    "Scientists, fiction",
+    "Geneva (Switzerland), fiction",
+    "Horror stories",
+    "Fiction, science fiction, general",
+    "Fiction, general",
+    "Horror tales"
+   ],
+   "subtitle": null,
+   "title": "Frankenstein; or, The Modern Prometheus",
+   "title_pt": null,
+   "work_key": "/works/OL450063W"
+  },
+  {
+   "author_names": [
+    "F. Scott Fitzgerald"
+   ],
+   "authors": [
+    {
+     "id": "OL27349A",
+     "name": "F. Scott Fitzgerald"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL468431W",
+   "category": "Classics",
+   "cover_id": 10590366,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "Here is a novel, glamorous, ironical, compassionate – a marvelous fusion into unity of the curious incongruities of the life of the period – which reveals a hero like no other – one who could live at no other time and in no other place. But he will live as a character, we surmise, as long as the memory of any reader lasts.\r\n\r\n\"There was something gorgeous about him, some heightened sensitivity to the promises of life.... It was an extraordinary gift for hope, a romantic readiness such as I have never found in any other person and which it is not likely I shall ever find again.\"\r\n\r\nIt is the story of this Jay Gatsby who came so mysteriously to West Egg, of his sumptuous entertainments, and of his love for Daisy Buchanan – a story that ranges from pure lyrical beauty to sheer brutal realism, and is infused with a sense of the strangeness of human circumstance in a heedless universe.\r\n\r\nIt is a magical, living book, blended of irony, romance, and mysticism.\r\n\r\n\\--first edition jacket\r\n\r\n---",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9780143136347",
+    "language": "eng",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1920,
+   "id": "OL468431W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 543,
+    "currently_reading": 208,
+    "rank": 9,
+    "score": 3.6779,
+    "want_to_read": 2717
+   },
+   "price_cents": 2290,
+   "price_is_fictional": true,
+   "primary_language": "eng",
+   "rating": {
+    "average": 3.99,
+    "count": 259
+   },
+   "segments": [
+    "famous"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "Married people, fiction",
+    "Fiction, psychological",
+    "Long island (n.y.), fiction",
+    "Fiction",
+    "Rich people",
+    "Mistresses",
+    "Married women",
+    "Traffic accidents",
+    "First loves",
+    "Revenge",
+    "American Manuscripts",
+    "Facsimiles"
+   ],
+   "subtitle": null,
+   "title": "The Great Gatsby",
+   "title_pt": "O Grande Gatsby",
+   "work_key": "/works/OL468431W"
+  },
+  {
+   "author_names": [
+    "Miguel de Cervantes"
+   ],
+   "authors": [
+    {
+     "id": "OL66452A",
+     "name": "Miguel de Cervantes"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL503666W",
+   "category": "Classics",
+   "cover_id": 14428305,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "*Don Quijote de la Mancha* es una novela escrita por el español Miguel de Cervantes Saavedra. Publicada su primera parte con el título de *El ingenioso hidalgo don Quijote de la Mancha* a comienzos de 1605, es la obra más destacada de la literatura española y una de las principales de la literatura universal. En 1615 apareció su continuación con el título de *Segunda parte del ingenioso caballero don Quijote de la Mancha.* Es la primera obra genuinamente desmitificadora de la tradición caballeresca y cortés por su tratamiento burlesco. Representa la primera novela moderna y la primera novela polifónica; como tal, ejerció un enorme influjo en toda la narrativa europea. La novela ha sido calificada por numerosos autores de renombre como la «mejor novela de todos los tiempos» y la «obra más importante y fundamental de la literatura universal». Don Quijote es también uno de los libros más traducidos del mundo y una de las novelas más vendidas de todos los tiempos.",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9781347781685",
+    "language": "eng",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1600,
+   "id": "OL503666W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 87,
+    "currently_reading": 63,
+    "rank": 19,
+    "score": 3.1041,
+    "want_to_read": 883
+   },
+   "price_cents": 1590,
+   "price_is_fictional": true,
+   "primary_language": "eng",
+   "rating": {
+    "average": 3.9,
+    "count": 58
+   },
+   "segments": [
+    "famous"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "Quotations",
+    "Knights and knighthood",
+    "Social life and customs",
+    "Fiction",
+    "Classic Literature",
+    "Don Quixote (Fictitious character)",
+    "Dictionaries",
+    "Literatura picaresca",
+    "España",
+    "Readers",
+    "Caballeros y caballería",
+    "great_books_of_the_western_world"
+   ],
+   "subtitle": null,
+   "title": "Don Quixote",
+   "title_pt": "Dom Quixote",
+   "work_key": "/works/OL503666W"
+  },
+  {
+   "author_names": [
+    "Homer"
+   ],
+   "authors": [
+    {
+     "id": "OL18404A",
+     "name": "Homer"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL61982W",
+   "category": "Poetry",
+   "cover_id": 9045853,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "The Odyssey (/ˈɒdəsi/; Greek: Ὀδύσσεια, Odýsseia) is one of two major ancient Greek epic poems attributed to Homer. It is, in part, a sequel to the Iliad, the other work ascribed to Homer. The poem is fundamental to the modern Western canon, and is the second oldest extant work of Western literature, the Iliad being the oldest. Scholars believe it was composed near the end of the 8th century BC, somewhere in Ionia, the Greek coastal region of Anatolia. - [Wikipedia][1]\r\n\r\n  [1]: https://en.wikipedia.org/wiki/Odyssey",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9789681500580",
+    "language": "eng",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1488,
+   "id": "OL61982W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 252,
+    "currently_reading": 62,
+    "rank": 18,
+    "score": 3.3019,
+    "want_to_read": 1123
+   },
+   "price_cents": 3090,
+   "price_is_fictional": true,
+   "primary_language": "eng",
+   "rating": {
+    "average": 4.05,
+    "count": 168
+   },
+   "segments": [
+    "famous"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "great_books_of_the_western_world",
+    "Poetry",
+    "Fiction",
+    "Classical literature",
+    "Open Library Staff Picks",
+    "Juvenile literature",
+    "Horses",
+    "Mythology, Greek, in literature",
+    "Diseases",
+    "Greek Mythology",
+    "great_books",
+    "Literatura grega clássica"
+   ],
+   "subtitle": null,
+   "title": "The Odyssey",
+   "title_pt": "Odisseia",
+   "work_key": "/works/OL61982W"
+  },
+  {
+   "author_names": [
+    "Jane Austen"
+   ],
+   "authors": [
+    {
+     "id": "OL21594A",
+     "name": "Jane Austen"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL66554W",
+   "category": "Romance",
+   "cover_id": 14348537,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "Pride and Prejudice is an 1813 novel of manners written by Jane Austen. The novel follows the character development of Elizabeth Bennet, the dynamic protagonist of the book who learns about the repercussions of hasty judgments and comes to appreciate the difference between superficial goodness and actual goodness.\r\n\r\nMr. Bennet, owner of the Longbourn estate in Hertfordshire, has five daughters, but his property is entailed and can only be passed to a male heir. His wife also lacks an inheritance, so his family faces becoming very poor upon his death. Thus, it is imperative that at least one of the girls marry well to support the others, which is a motivation that drives the plot.",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9781090339799",
+    "language": "eng",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1813,
+   "id": "OL66554W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 612,
+    "currently_reading": 673,
+    "rank": 3,
+    "score": 3.9998,
+    "want_to_read": 6813
+   },
+   "price_cents": 3390,
+   "price_is_fictional": true,
+   "primary_language": "eng",
+   "rating": {
+    "average": 4.2,
+    "count": 416
+   },
+   "segments": [
+    "famous"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "Fiction, Romance, Historical, Regency",
+    "Brothers and sisters",
+    "Courtship",
+    "Drama",
+    "English fiction",
+    "English literature",
+    "Families",
+    "Family",
+    "Family life",
+    "Family relations",
+    "Fiction Classics",
+    "History"
+   ],
+   "subtitle": null,
+   "title": "Pride and Prejudice",
+   "title_pt": "Orgulho e Preconceito",
+   "work_key": "/works/OL66554W"
+  },
+  {
+   "author_names": [
+    "Paulo Coelho"
+   ],
+   "authors": [
+    {
+     "id": "OL66700A",
+     "name": "Paulo Coelho"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL796465W",
+   "category": "Brazilian Literature",
+   "cover_id": 7414780,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "The Alchemist details the journey of a young Andalusian shepherd boy named Santiago. Santiago, believing a recurring dream to be prophetic, decides to travel to the pyramids of Egypt to find treasure. On the way, he encounters love, danger, opportunity and disaster. One of the significant characters that he meets is an old king named Melchizedek who tells him that \"When you want something, all the universe conspires in helping you to achieve it.\" This is the core philosophy and motif of the book.",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9789507428951",
+    "language": "por",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1988,
+   "id": "OL796465W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 726,
+    "currently_reading": 785,
+    "rank": 1,
+    "score": 4.0972,
+    "want_to_read": 8758
+   },
+   "price_cents": 3090,
+   "price_is_fictional": true,
+   "primary_language": "por",
+   "rating": {
+    "average": 3.82,
+    "count": 492
+   },
+   "segments": [
+    "famous",
+    "brazilian_author",
+    "portuguese_language"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "Translations into Indonesian",
+    "Voyages and travels",
+    "Fiction",
+    "Portuguese Fiction",
+    "Self-realization",
+    "Alchemists",
+    "Young men",
+    "Shepherds",
+    "New York Times bestseller",
+    "Fiction, visionary & metaphysical",
+    "Spain, fiction",
+    "FICTION / Literary"
+   ],
+   "subtitle": null,
+   "title": "O Alquimista",
+   "title_pt": "O Alquimista",
+   "work_key": "/works/OL796465W"
+  },
+  {
+   "author_names": [
+    "Oscar Wilde"
+   ],
+   "authors": [
+    {
+     "id": "OL20646A",
+     "name": "Oscar Wilde"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL8193416W",
+   "category": "Classics",
+   "cover_id": 14314858,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "**The Picture of Dorian Gray** is a philosophical novel by Irish writer Oscar Wilde. A shorter novella-length version was published in the July 1890 issue of the American periodical *Lippincott’s Monthly Magazine*. The novel-length version was published in April 1891.\r\n\r\n(Source: [Wikipedia](https://en.wikipedia.org/wiki/The_Picture_of_Dorian_Gray))",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9781602838734",
+    "language": "eng",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1890,
+   "id": "OL8193416W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 356,
+    "currently_reading": 183,
+    "rank": 13,
+    "score": 3.5315,
+    "want_to_read": 1965
+   },
+   "price_cents": 3790,
+   "price_is_fictional": true,
+   "primary_language": "eng",
+   "rating": {
+    "average": 4.16,
+    "count": 140
+   },
+   "segments": [
+    "famous"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "Conduct of life, fiction",
+    "Fantasy fiction",
+    "Appearance (Philosophy)",
+    "Fiction",
+    "Conduct of life",
+    "Youthfulness",
+    "Portraits",
+    "Apparence (Philosophie)",
+    "Romans, nouvelles",
+    "Morale pratique",
+    "Juvénilité",
+    "General"
+   ],
+   "subtitle": null,
+   "title": "The Picture of Dorian Gray",
+   "title_pt": "O Retrato de Dorian Gray",
+   "work_key": "/works/OL8193416W"
+  },
+  {
+   "author_names": [
+    "Eça de Queirós"
+   ],
+   "authors": [
+    {
+     "id": "OL73090A",
+     "name": "Eça de Queirós"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL846513W",
+   "category": "Portuguese Literature",
+   "cover_id": 104218,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "“Os Maias” conta a história da família Maia. Afonso da Maia tem um filho, chamado Pedro, tímido e nervoso.\r\n\r\nPedro conhece Maria Monforte, filha de um negreiro e, contra a vontade de seu pai, casa-se com ela. A bela Maria apaixona-se por um italiano e foge com ele e com a filha, abandonando Pedro e o filho Carlos. Pedro, desgostoso, suicida-se.\r\n\r\nCarlos cresce criado pelo avô, forma-se em Medicina e parte para uma longa viagem pela Europa. De regresso, Carlos instala-se no Ramalhete, a casa de família, com o seu avô. Juntamente com o seu grande amigo João da Ega levam uma vida de ócio na sociedade Lisboeta, vivendo histórias repletas de festas e amantes.\r\n\r\nSurge então em Lisboa uma bela mulher, casada com um rico Brasileiro, por quem Carlos se apaixona e se envolve numa louca paixão. A história desenvolve-se de uma forma surpreendente, repleta de situações de mentira e conduta imoral, até revelar uma terrível relação incestuosa.\r\n\r\nEscrito pelo genial Eça de Queirós, é uma das mais importantes obras da literatura portuguesa.",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9789720040206",
+    "language": "por",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1900,
+   "id": "OL846513W",
+   "languages": [
+    "eng",
+    "por",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 9,
+    "currently_reading": 2,
+    "rank": 28,
+    "score": 1.9243,
+    "want_to_read": 52
+   },
+   "price_cents": 3490,
+   "price_is_fictional": true,
+   "primary_language": "por",
+   "rating": {
+    "average": 4.29,
+    "count": 7
+   },
+   "segments": [
+    "portuguese_language"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "Fiction",
+    "Portuguese fiction",
+    "Landowners",
+    "Fiction, general",
+    "Lisbon (portugal), fiction",
+    "Alcoholic beverages",
+    "Family",
+    "Gastronomy",
+    "Knowledge",
+    "Quotations",
+    "Quotations, maxims",
+    "Social conditions"
+   ],
+   "subtitle": null,
+   "title": "Os Maias",
+   "title_pt": "Os Maias",
+   "work_key": "/works/OL846513W"
+  },
+  {
+   "author_names": [
+    "Fernando Pessoa"
+   ],
+   "authors": [
+    {
+     "id": "OL73160A",
+     "name": "Fernando Pessoa"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL847061W",
+   "category": "Portuguese Literature",
+   "cover_id": 900685,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "The Book of Disquiet is the Portuguese modernist master Fernando Pessoa's greatest literary achievement. An \"autobiography\" or \"diary\" containing exquisite melancholy observations, aphorisms, and ruminations, this classic work grapples with all the eternal questions. Now, for the first time the texts are presented chronologically, in a complete English edition by master translator Margaret Jull Costa. Most of the texts in The Book of Disquiet are written under the semi-heteronym Bernardo Soares, an assistant bookkeeper. This existential masterpiece was first published in Portuguese in 1982, forty-seven years after Pessoa's death. A monumental literary event, this exciting, new, complete edition spans Fernando Pessoa's entire writing life. --",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9788526022065",
+    "language": "por",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1982,
+   "id": "OL847061W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 17,
+    "currently_reading": 27,
+    "rank": 21,
+    "score": 2.6375,
+    "want_to_read": 328
+   },
+   "price_cents": 3890,
+   "price_is_fictional": true,
+   "primary_language": "por",
+   "rating": {
+    "average": 4.0,
+    "count": 6
+   },
+   "segments": [
+    "portuguese_language"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "Portuguese Poets",
+    "Poetas portugueses",
+    "Fiction",
+    "Biografía",
+    "Biography",
+    "Modern fiction",
+    "General",
+    "Poetry",
+    "Poetry (poetic works by one author)",
+    "Poets, biography",
+    "Portugal, biography",
+    "Notebooks, sketchbooks"
+   ],
+   "subtitle": null,
+   "title": "Livro do Desassossego",
+   "title_pt": "Livro do Desassossego",
+   "work_key": "/works/OL847061W"
+  },
+  {
+   "author_names": [
+    "Luís de Camões"
+   ],
+   "authors": [
+    {
+     "id": "OL73347A",
+     "name": "Luís de Camões"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL848771W",
+   "category": "Portuguese Literature",
+   "cover_id": 5943496,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "*Os Lusíadas*, usually translated as *The Lusiads*, is a Portuguese epic poem written by Luís de Camões and first published in 1572. It is widely regarded as the most important work of Portuguese-language literature and is frequently compared to Virgil's *Aeneid*. The work celebrates the discovery of a sea route to India by the Portuguese explorer Vasco da Gama (1469–1524). The ten cantos of the poem are in ottava rima and total 1,102 stanzas.",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9781016636131",
+    "language": "por",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1572,
+   "id": "OL848771W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 8,
+    "currently_reading": 7,
+    "rank": 26,
+    "score": 2.0253,
+    "want_to_read": 67
+   },
+   "price_cents": 2890,
+   "price_is_fictional": true,
+   "primary_language": "por",
+   "rating": {
+    "average": 4.6,
+    "count": 5
+   },
+   "segments": [
+    "portuguese_language"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "Poetry",
+    "History",
+    "Discovery and exploration",
+    "Description and travel",
+    "Explorers",
+    "Portuguese Explorers",
+    "Colonies",
+    "Translations into English",
+    "Spanish poetry",
+    "Portuguese",
+    "Epic poetry",
+    "Concordances"
+   ],
+   "subtitle": null,
+   "title": "Os Lusíadas",
+   "title_pt": "Os Lusíadas",
+   "work_key": "/works/OL848771W"
+  },
+  {
+   "author_names": [
+    "Bram Stoker"
+   ],
+   "authors": [
+    {
+     "id": "OL31727A",
+     "name": "Bram Stoker"
+    }
+   ],
+   "book_url": "https://openlibrary.org/works/OL85892W",
+   "category": "Horror",
+   "cover_id": 12216503,
+   "currency": "USD",
+   "dataset_version": "ol-fixture-r1",
+   "description": "In the story, a couple and their friends are tormented by Count Dracula—a supernatural, blood-drinking entity bound by a contagious curse—who intends to leave his secluded castle in Transylvania for the bustling London of the 19th century. With the help of Professor Van Helsing, the group sets out to confront the undead, despite all the dangers such an offensive will entail.",
+   "description_source": "work",
+   "edition": {
+    "id": null,
+    "isbn_10": null,
+    "isbn_13": "9787550231221",
+    "language": "eng",
+    "pages": null,
+    "publish_year": null,
+    "publisher": null
+   },
+   "first_publish_year": 1897,
+   "id": "OL85892W",
+   "languages": [
+    "eng",
+    "por",
+    "spa",
+    "fre"
+   ],
+   "popularity": {
+    "already_read": 477,
+    "currently_reading": 219,
+    "rank": 11,
+    "score": 3.618,
+    "want_to_read": 2280
+   },
+   "price_cents": 790,
+   "price_is_fictional": true,
+   "primary_language": "eng",
+   "rating": {
+    "average": 4.0,
+    "count": 255
+   },
+   "segments": [
+    "famous"
+   ],
+   "source": {
+    "dump_date": "fixture",
+    "last_modified": null,
+    "license": "CC0",
+    "revision": "r1"
+   },
+   "subjects": [
+    "English literature",
+    "Fiction",
+    "Horror",
+    "Horror stories",
+    "Horror tales",
+    "Monsters",
+    "Thriller",
+    "Vampires",
+    "Vampires in literature",
+    "Horror fiction",
+    "Irish authors",
+    "Epistolary novels"
+   ],
+   "subtitle": null,
+   "title": "Dracula",
+   "title_pt": "Drácula",
+   "work_key": "/works/OL85892W"
+  }
+ ],
+ "count": 30,
+ "dataset_version": "ol-fixture-r1",
+ "license": "CC0-1.0"
+}

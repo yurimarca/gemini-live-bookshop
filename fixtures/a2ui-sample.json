@@ -1,0 +1,257 @@
+{
+ "cart_hold": [
+  {
+   "createSurface": {
+    "catalogId": "urn:bookshop:catalog:v1",
+    "surfaceId": "cart-hold"
+   },
+   "version": "1.0"
+  },
+  {
+   "updateComponents": {
+    "components": [
+     {
+      "component": "CartHold",
+      "expired": {
+       "@path": "/expired"
+      },
+      "expiresAt": {
+       "@path": "/expires_at"
+      },
+      "id": "root",
+      "itemCount": {
+       "@path": "/item_count"
+      },
+      "onDismiss": {
+       "event": {
+        "context": {
+         "surface": "cart-hold"
+        },
+        "name": "dismiss"
+       }
+      },
+      "totalCents": {
+       "@path": "/total_cents"
+      }
+     }
+    ],
+    "surfaceId": "cart-hold"
+   },
+   "version": "1.0"
+  },
+  {
+   "updateDataModel": {
+    "path": "/",
+    "surfaceId": "cart-hold",
+    "value": {
+     "expired": false,
+     "expires_at": 1800000000.0,
+     "item_count": 2,
+     "total_cents": 5480
+    }
+   },
+   "version": "1.0"
+  }
+ ],
+ "delete": [
+  {
+   "deleteSurface": {
+    "surfaceId": "recs"
+   },
+   "version": "1.0"
+  }
+ ],
+ "recs": [
+  {
+   "createSurface": {
+    "catalogId": "urn:bookshop:catalog:v1",
+    "surfaceId": "recs"
+   },
+   "version": "1.0"
+  },
+  {
+   "updateComponents": {
+    "components": [
+     {
+      "children": {
+       "componentId": "rec_card",
+       "path": "/books"
+      },
+      "component": "BookShelf",
+      "id": "root",
+      "onDismiss": {
+       "event": {
+        "context": {
+         "surface": "recs"
+        },
+        "name": "dismiss"
+       }
+      },
+      "subtitle": {
+       "@path": "/subtitle"
+      },
+      "title": {
+       "@path": "/title"
+      }
+     },
+     {
+      "author": {
+       "@path": "author"
+      },
+      "bookId": {
+       "@path": "id"
+      },
+      "component": "BookCard",
+      "coverId": {
+       "@path": "cover_id"
+      },
+      "id": "rec_card",
+      "onAdd": {
+       "event": {
+        "context": {
+         "book_id": {
+          "@path": "id"
+         }
+        },
+        "name": "add_to_cart"
+       }
+      },
+      "onOpen": {
+       "event": {
+        "context": {
+         "book_id": {
+          "@path": "id"
+         }
+        },
+        "name": "open_book"
+       }
+      },
+      "priceCents": {
+       "@path": "price_cents"
+      },
+      "reason": {
+       "@path": "reason"
+      },
+      "title": {
+       "@path": "title"
+      }
+     }
+    ],
+    "surfaceId": "recs"
+   },
+   "version": "1.0"
+  },
+  {
+   "updateDataModel": {
+    "path": "/",
+    "surfaceId": "recs",
+    "value": {
+     "books": [
+      {
+       "author": "J. R. R. Tolkien",
+       "cover_id": 14627509,
+       "id": "OL27482W",
+       "price_cents": 1590,
+       "reason": "Matches your interest in fantasy.",
+       "title": "The Hobbit"
+      },
+      {
+       "author": "Machado de Assis",
+       "cover_id": 12918116,
+       "id": "OL1003040W",
+       "price_cents": 3890,
+       "reason": "One of the most read in Brazilian Literature.",
+       "title": "Dom Casmurro"
+      }
+     ],
+     "subtitle": "Recommender",
+     "title": "Picked for you"
+    }
+   },
+   "version": "1.0"
+  }
+ ],
+ "recs_update": [
+  {
+   "updateDataModel": {
+    "path": "/",
+    "surfaceId": "recs",
+    "value": {
+     "books": [
+      {
+       "author": "J. R. R. Tolkien",
+       "cover_id": 14627509,
+       "id": "OL27482W",
+       "price_cents": 1590,
+       "reason": "Matches your interest in fantasy.",
+       "title": "The Hobbit"
+      }
+     ],
+     "subtitle": "Recommender",
+     "title": "More picks"
+    }
+   },
+   "version": "1.0"
+  }
+ ],
+ "taste": [
+  {
+   "createSurface": {
+    "catalogId": "urn:bookshop:catalog:v1",
+    "surfaceId": "taste"
+   },
+   "version": "1.0"
+  },
+  {
+   "updateComponents": {
+    "components": [
+     {
+      "component": "TasteProfile",
+      "dislikes": {
+       "@path": "/dislikes"
+      },
+      "id": "root",
+      "languages": {
+       "@path": "/languages"
+      },
+      "likes": {
+       "@path": "/likes"
+      },
+      "onDismiss": {
+       "event": {
+        "context": {
+         "surface": "taste"
+        },
+        "name": "dismiss"
+       }
+      },
+      "summary": {
+       "@path": "/summary"
+      }
+     }
+    ],
+    "surfaceId": "taste"
+   },
+   "version": "1.0"
+  },
+  {
+   "updateDataModel": {
+    "path": "/",
+    "surfaceId": "taste",
+    "value": {
+     "dislikes": [
+      "horror"
+     ],
+     "languages": [
+      "eng"
+     ],
+     "likes": [
+      "fantasy"
+     ],
+     "summary": "Likes fantasy."
+    }
+   },
+   "version": "1.0"
+  }
+ ]
+}

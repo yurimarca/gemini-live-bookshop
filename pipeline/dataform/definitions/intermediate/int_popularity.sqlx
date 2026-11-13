@@ -1,0 +1,35 @@
+config {
+  type: "table",
+  schema: "ol_staging",
+  description: "Shelf counts, popularity score and Bayesian rating per work."
+}
+
+WITH shelves AS (
+  SELECT
+    work_key,
+    COUNTIF(shelf = 'Want to Read') AS want_to_read,
+    COUNTIF(shelf = 'Currently Reading') AS currently_reading,
+    COUNTIF(shelf = 'Already Read') AS already_read
+  FROM ${ref("stg_reading_log")}
+  GROUP BY work_key
+),
+stars AS (
+  SELECT work_key, COUNT(*) AS rating_count, AVG(rating) AS rating_average, SUM(rating) AS rating_sum
+  FROM ${ref("stg_ratings")}
+  GROUP BY work_key
+),
+scored AS (
+  SELECT
+    s.work_key, s.want_to_read, s.currently_reading, s.already_read,
+    LOG10(1 + ${cfg.num("popularity_weight_want")} * s.want_to_read
+            + ${cfg.num("popularity_weight_reading")} * s.currently_reading
+            + ${cfg.num("popularity_weight_read")} * s.already_read) AS score,
+    IFNULL(r.rating_count, 0) AS rating_count,
+    r.rating_average,
+    (${cfg.num("rating_prior_count")} * ${cfg.num("rating_prior_mean")} + IFNULL(r.rating_sum, 0))
+      / (${cfg.num("rating_prior_count")} + IFNULL(r.rating_count, 0)) AS rating_bayes
+  FROM shelves AS s
+  LEFT JOIN stars AS r USING (work_key)
+)
+SELECT *, ROW_NUMBER() OVER (ORDER BY score DESC, work_key) AS popularity_rank
+FROM scored

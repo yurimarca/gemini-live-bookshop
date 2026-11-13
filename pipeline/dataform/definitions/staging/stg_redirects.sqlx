@@ -1,0 +1,12 @@
+config {
+  type: "table",
+  schema: "ol_staging",
+  description: "Work redirects (merged works). The redirects dump layout was not sampled during research; check it before the first run."
+}
+
+SELECT
+  key AS from_key,
+  JSON_VALUE(SAFE.PARSE_JSON(json, wide_number_mode => 'round'), '$.location') AS to_key
+FROM ${ref("redirects")}
+WHERE STARTS_WITH(key, '/works/')
+QUALIFY ROW_NUMBER() OVER (PARTITION BY key ORDER BY last_modified DESC) = 1

@@ -1,0 +1,38 @@
+config {
+  type: "table",
+  schema: "ol_staging",
+  description: "Per work: the display edition, the Portuguese edition and every edition language. Disabled for the first slice.",
+  disabled: !cfg.useEditions
+}
+
+WITH ranked AS (
+  SELECT
+    e.*,
+    ROW_NUMBER() OVER (
+      PARTITION BY work_key
+      ORDER BY ('eng' IN UNNEST(languages) OR 'por' IN UNNEST(languages)) DESC, cover_id IS NOT NULL DESC,
+               isbn_13 IS NOT NULL DESC, publish_year DESC NULLS LAST, edition_id
+    ) AS display_rank,
+    ROW_NUMBER() OVER (
+      PARTITION BY work_key, 'por' IN UNNEST(languages)
+      ORDER BY cover_id IS NOT NULL DESC, isbn_13 IS NOT NULL DESC, publish_year DESC NULLS LAST, edition_id
+    ) AS por_rank
+  FROM ${ref("stg_editions")} AS e
+),
+langs AS (
+  SELECT work_key, ARRAY_AGG(DISTINCT lang IGNORE NULLS ORDER BY lang) AS languages, MIN(publish_year) AS first_year
+  FROM ${ref("stg_editions")} LEFT JOIN UNNEST(languages) AS lang
+  GROUP BY work_key
+)
+SELECT
+  l.work_key,
+  l.languages,
+  l.first_year,
+  d.edition_id, d.isbn_13, d.isbn_10, d.publisher, d.pages, d.publish_year,
+  d.languages[SAFE_OFFSET(0)] AS edition_language,
+  d.cover_id AS edition_cover_id,
+  d.description AS edition_description,
+  p.title AS title_pt
+FROM langs AS l
+LEFT JOIN ranked AS d ON d.work_key = l.work_key AND d.display_rank = 1
+LEFT JOIN ranked AS p ON p.work_key = l.work_key AND p.por_rank = 1 AND 'por' IN UNNEST(p.languages)

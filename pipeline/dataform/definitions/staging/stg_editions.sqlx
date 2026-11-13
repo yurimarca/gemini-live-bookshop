@@ -1,0 +1,36 @@
+config {
+  type: "table",
+  schema: "ol_staging",
+  description: "Editions kept only for popular works or Portuguese-language editions. Disabled for the first slice.",
+  disabled: !cfg.useEditions,
+  bigquery: { clusterBy: ["work_key"] }
+}
+
+WITH parsed AS (
+  SELECT key, SAFE.PARSE_JSON(json, wide_number_mode => 'round') AS j
+  FROM ${ref("editions")}
+  WHERE type = '/type/edition'
+),
+slim AS (
+  SELECT
+    ${cfg.olid("key", "M")} AS edition_id,
+    JSON_VALUE(j, '$.works[0].key') AS work_key,
+    NULLIF(TRIM(JSON_VALUE(j, '$.title')), '') AS title,
+    ARRAY(SELECT REGEXP_EXTRACT(JSON_VALUE(l, '$.key'), r'/languages/(\w+)')
+          FROM UNNEST(JSON_QUERY_ARRAY(j, '$.languages')) AS l) AS languages,
+    JSON_VALUE(j, '$.isbn_13[0]') AS isbn_13,
+    JSON_VALUE(j, '$.isbn_10[0]') AS isbn_10,
+    NULLIF(TRIM(JSON_VALUE(j, '$.publishers[0]')), '') AS publisher,
+    SAFE_CAST(JSON_VALUE(j, '$.number_of_pages') AS INT64) AS pages,
+    SAFE_CAST(REGEXP_EXTRACT(JSON_VALUE(j, '$.publish_date'), r'\d{4}') AS INT64) AS publish_year,
+    (SELECT SAFE_CAST(c AS INT64) FROM UNNEST(JSON_VALUE_ARRAY(j, '$.covers')) AS c WITH OFFSET o
+     WHERE SAFE_CAST(c AS INT64) > 0 ORDER BY o LIMIT 1) AS cover_id,
+    NULLIF(TRIM(COALESCE(JSON_VALUE(j, '$.description.value'), JSON_VALUE(j, '$.description'))), '') AS description
+  FROM parsed
+  WHERE j IS NOT NULL
+)
+SELECT s.*
+FROM slim AS s
+WHERE s.work_key IS NOT NULL
+  AND ('por' IN UNNEST(s.languages)
+       OR s.work_key IN (SELECT work_key FROM ${ref("int_popularity")} WHERE popularity_rank <= 50000))

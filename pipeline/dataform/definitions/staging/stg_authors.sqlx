@@ -1,0 +1,17 @@
+config {
+  type: "table",
+  schema: "ol_staging",
+  description: "Author key to display name.",
+  bigquery: { clusterBy: ["author_id"] }
+}
+
+WITH parsed AS (
+  SELECT key, SAFE.PARSE_JSON(json, wide_number_mode => 'round') AS j
+  FROM ${ref("authors")}
+  WHERE type = '/type/author'
+)
+SELECT
+  ${cfg.olid("key", "A")} AS author_id,
+  NULLIF(TRIM(COALESCE(JSON_VALUE(j, '$.name'), JSON_VALUE(j, '$.personal_name'))), '') AS name
+FROM parsed
+WHERE j IS NOT NULL

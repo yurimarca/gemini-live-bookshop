@@ -1,121 +1,93 @@
-"""
-Application settings using Pydantic Settings for environment variable management.
-"""
+"""Settings from environment variables. No secrets or project IDs live in code."""
 
+from __future__ import annotations
+
+import os
+from functools import lru_cache
 from pathlib import Path
-from typing import List, Union
-import logging
-import yaml
+from typing import Literal
+
 from dotenv import load_dotenv
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-# Load .env into os.environ BEFORE anything else.
-# ADK's google.genai.Client reads GOOGLE_API_KEY / GOOGLE_GENAI_USE_VERTEXAI
-# directly from os.environ, so they must be there before ADK initialises.
+# google-genai and ADK read GOOGLE_* straight from os.environ, so .env must be loaded first.
 load_dotenv()
+# ADK captures prompt and response text in trace spans unless told otherwise.
+os.environ.setdefault("ADK_CAPTURE_MESSAGE_CONTENT_IN_SPANS", "false")
 
-logger = logging.getLogger(__name__)
-
-
-class VoiceConfig(BaseModel):
-    """Voice configuration for the AI agent."""
-    name: str = "Aoede"
-
-
-class GenerationConfig(BaseModel):
-    """Generation configuration for AI responses."""
-    response_modalities: List[str] = ["AUDIO"]
-
-
-class AgentConfig(BaseModel):
-    """AI Agent configuration loaded from YAML file."""
-    system_instruction: str
-    voice: VoiceConfig = VoiceConfig()
-    generation: GenerationConfig = GenerationConfig()
-
-
-def load_agent_config() -> AgentConfig:
-    """Load agent configuration from YAML file or return defaults."""
-    config_path = Path(__file__).parent / "agent_config.yaml"
-
-    # Default configuration
-    default_config = {
-        "system_instruction": (
-            "You are a friendly voice assistant for BookShop, an online bookstore.\n"
-            "You help customers browse books, find what they're looking for, "
-            "manage their cart, and complete purchases."
-        ),
-        "voice": {"name": "Aoede"},
-        "generation": {"response_modalities": ["AUDIO"]}
-    }
-
-    if config_path.exists():
-        try:
-            with open(config_path, 'r') as f:
-                config = yaml.safe_load(f)
-                if config:
-                    return AgentConfig(**config)
-                else:
-                    logger.warning("agent_config.yaml is empty. Using defaults.")
-                    return AgentConfig(**default_config)
-        except Exception as e:
-            logger.warning(f"Failed to load agent_config.yaml: {e}. Using defaults.")
-            return AgentConfig(**default_config)
-    else:
-        logger.info(f"agent_config.yaml not found at {config_path}. Using defaults.")
-        return AgentConfig(**default_config)
+REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
 class Settings(BaseSettings):
-    """Application settings loaded from environment variables."""
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore", case_sensitive=False)
 
-    # Google AI / Vertex AI Configuration
-    google_api_key: str = ""
-    google_genai_use_vertexai: bool = False
+    # Wiring
+    catalog_source: Literal["fixture", "cloud"] = "fixture"
+    catalog_fixture_path: str = str(REPO_ROOT / "fixtures" / "catalog-fixture.json")
+    catalog_bucket: str = ""
+    state_backend: Literal["memory", "firestore"] = "memory"
+    firestore_database: str = "(default)"
+    auth_mode: Literal["dev", "firebase"] = "firebase"
+    app_check_required: bool = False
+    tasks_backend: Literal["local", "cloud_tasks"] = "local"
+    tasks_queue: str = "cart-expiry"
+    tasks_service_account: str = ""
+    public_base_url: str = ""
+    specialists_backend: Literal["local", "agent_runtime"] = "local"
+    specialists_llm: Literal["on", "off"] = "on"
+    specialists_agent_resource: str = ""
+    specialist_timeout_seconds: float = 12.0
+    allowed_origins: list[str] | str = "http://localhost:5173"
+
+    # Models
     google_cloud_project: str = ""
     google_cloud_location: str = "us-central1"
-    ai_model_name: str = "gemini-live-2.5-flash-native-audio"
+    live_model: str = "gemini-3.8-live"
+    specialist_model: str = "gemini-3.5-flash"
+    voice_name: str = "Erinome"
 
-    # CORS Configuration
-    cors_origins: Union[List[str], str] = "http://localhost:5173,http://localhost:3000"
+    # Limits
+    session_max_seconds: int = 300
+    session_warn_seconds: int = 270
+    sessions_per_user_per_day: int = 5
+    sessions_global_per_day: int = 100
+    max_concurrent_sessions: int = 10
+    cart_hold_seconds: int = 600
+    cart_max_items: int = 10
+    cart_max_quantity: int = 5
+    announce_cart_expiry: bool = False  # needs spike 2 (unsolicited content) before it is turned on
 
-    # Server Configuration
-    host: str = "0.0.0.0"
-    port: int = 8000
-
-    # Agent Configuration
-    agent_config: AgentConfig = Field(default_factory=load_agent_config)
-
-    @model_validator(mode="after")
-    def validate_auth(self):
-        """Validate that appropriate auth is configured."""
-        if self.google_genai_use_vertexai:
-            if not self.google_cloud_project:
-                raise ValueError(
-                    "GOOGLE_CLOUD_PROJECT must be set when GOOGLE_GENAI_USE_VERTEXAI=TRUE"
-                )
-        else:
-            if not self.google_api_key:
-                raise ValueError(
-                    "GOOGLE_API_KEY must be set when not using Vertex AI"
-                )
-        return self
-
-    @field_validator("cors_origins", mode="before")
+    @field_validator("allowed_origins", mode="before")
     @classmethod
-    def parse_cors_origins(cls, v):
-        """Parse CORS origins from comma-separated string or list."""
+    def _origins(cls, v):
         if isinstance(v, str):
-            return [origin.strip() for origin in v.split(",") if origin.strip()]
+            return [o.strip().rstrip("/") for o in v.split(",") if o.strip()]
         return v
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8",
-        case_sensitive=False
-    )
+    @property
+    def on_cloud_run(self) -> bool:
+        return bool(os.environ.get("K_SERVICE"))
+
+    @model_validator(mode="after")
+    def _safe_on_cloud_run(self):
+        if self.on_cloud_run:
+            problems = []
+            if self.auth_mode != "firebase":
+                problems.append("AUTH_MODE must be firebase")
+            if self.state_backend != "firestore":
+                problems.append("STATE_BACKEND must be firestore")
+            if self.catalog_source != "cloud":
+                problems.append("CATALOG_SOURCE must be cloud")
+            if any("localhost" in o or o == "*" for o in self.allowed_origins):
+                problems.append("ALLOWED_ORIGINS may not contain localhost or *")
+            if problems:
+                raise ValueError("unsafe settings on Cloud Run: " + "; ".join(problems))
+        if self.session_warn_seconds >= self.session_max_seconds:
+            raise ValueError("SESSION_WARN_SECONDS must be below SESSION_MAX_SECONDS")
+        return self
 
 
-# Global settings instance
-settings = Settings()
+@lru_cache
+def get_settings() -> Settings:
+    return Settings()

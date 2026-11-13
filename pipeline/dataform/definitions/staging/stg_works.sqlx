@@ -1,0 +1,32 @@
+config {
+  type: "table",
+  schema: "ol_staging",
+  description: "One row per work, slim typed columns. Rows whose JSON does not parse go to ol_ops.rejects.",
+  bigquery: { clusterBy: ["work_key"] }
+}
+
+WITH parsed AS (
+  SELECT key, last_modified, SAFE.PARSE_JSON(json, wide_number_mode => 'round') AS j
+  FROM ${ref("works")}
+  WHERE type = '/type/work'
+)
+SELECT
+  key AS work_key,
+  ${cfg.olid("key", "W")} AS work_id,
+  NULLIF(TRIM(JSON_VALUE(j, '$.title')), '') AS title,
+  NULLIF(TRIM(JSON_VALUE(j, '$.subtitle')), '') AS subtitle,
+  -- Descriptions come as a plain string or as {type, value}.
+  NULLIF(TRIM(COALESCE(JSON_VALUE(j, '$.description.value'), JSON_VALUE(j, '$.description'))), '') AS description,
+  (SELECT SAFE_CAST(c AS INT64) FROM UNNEST(JSON_VALUE_ARRAY(j, '$.covers')) AS c WITH OFFSET o
+   WHERE SAFE_CAST(c AS INT64) > 0 ORDER BY o LIMIT 1) AS cover_id,
+  ARRAY(
+    SELECT ${cfg.olid("JSON_VALUE(a, '$.author.key')", "A")}
+    FROM UNNEST(JSON_QUERY_ARRAY(j, '$.authors')) AS a WITH OFFSET o
+    WHERE ${cfg.olid("JSON_VALUE(a, '$.author.key')", "A")} IS NOT NULL
+    ORDER BY o
+  ) AS author_ids,
+  ARRAY(SELECT TRIM(s) FROM UNNEST(JSON_VALUE_ARRAY(j, '$.subjects')) AS s WHERE TRIM(s) != '') AS subjects,
+  SAFE_CAST(REGEXP_EXTRACT(JSON_VALUE(j, '$.first_publish_date'), r'\d{4}') AS INT64) AS first_publish_year,
+  last_modified
+FROM parsed
+WHERE j IS NOT NULL

@@ -1,0 +1,13 @@
+config {
+  type: "table",
+  schema: "ol_staging",
+  description: "Reading-log rows with merged works resolved. The log has no user ID, so popularity is a row count per shelf."
+}
+
+SELECT
+  COALESCE(r.to_key, l.work_key) AS work_key,
+  l.shelf,
+  l.log_date
+FROM ${ref("reading_log")} AS l
+LEFT JOIN ${ref("stg_redirects")} AS r ON r.from_key = l.work_key AND STARTS_WITH(r.to_key, '/works/')
+WHERE l.work_key IS NOT NULL

@@ -1,0 +1,28 @@
+# Selection config. Changing anything here means a new revision (r1 -> r2).
+# Values are flattened into Dataform vars by `olpipe dataform-vars`; they may not contain ',' or '='.
+popularity:
+  weight_want: 1
+  weight_reading: 2
+  weight_read: 3
+rating:
+  prior_mean: 3.8      # Bayesian average prior
+  prior_count: 20
+segments:
+  famous_size: 1200
+  brazilian_author_size: 400
+  portuguese_language_size: 300
+limits:
+  max_per_author: 8
+  min_books: 1000
+  max_books: 2000
+  min_portuguese_share: 0.10
+  min_famous_description_coverage: 0.95
+  max_reject_rate: 0.001
+  min_year: -800
+  max_year: 2026
+# Works whose subjects contain any of these (lowercase substring) are excluded from a public demo.
+excluded_subjects:
+  - erotic
+  - erotica
+  - pornograph
+  - adult content

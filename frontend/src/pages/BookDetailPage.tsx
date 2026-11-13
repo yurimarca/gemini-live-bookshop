@@ -1,153 +1,78 @@
-/**
- * Book detail: single book, Add to cart.
- */
+import { ArrowLeft, ExternalLink } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
+import { DemoPriceTag } from '../a2ui/catalog'
+import { api } from '../api/client'
+import { AddToCartButton } from '../components/BookGridCard'
+import { Cover } from '../components/Cover'
+import { useLocale, useT } from '../i18n'
+import { LANGUAGE_NAMES } from '../lib/format'
+import { displayTitle } from '../stores/catalog'
+import type { CatalogBook } from '../types/catalog'
 
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { useEcommerceStore } from '../hooks/useEcommerceStore';
-import type { Book } from '../types/book';
+type State = { status: 'loading' } | { status: 'missing' } | { status: 'ready'; book: CatalogBook }
 
 export function BookDetailPage() {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const { getBookById, addToCart } = useEcommerceStore();
-  const [book, setBook] = useState<Book | null>(null);
-  const [added, setAdded] = useState(false);
+  const t = useT()
+  const locale = useLocale()
+  const { olid = '' } = useParams()
+  const [state, setState] = useState<State>({ status: 'loading' })
 
   useEffect(() => {
-    if (!id) return;
-    getBookById(id).then(setBook);
-  }, [id, getBookById]);
+    let cancelled = false
+    setState({ status: 'loading' })
+    api.book(olid).then(
+      (book) => { if (!cancelled) setState({ status: 'ready', book }) },
+      () => { if (!cancelled) setState({ status: 'missing' }) },
+    )
+    return () => { cancelled = true }
+  }, [olid])
 
-  const handleAddToCart = () => {
-    if (!book) return;
-    addToCart(book.id, 1);
-    setAdded(true);
-  };
+  const back = (
+    <Link to="/" className="mb-4 inline-flex items-center gap-1 text-sm text-mist-700 hover:text-brand-red">
+      <ArrowLeft className="h-4 w-4" aria-hidden />{t.backToCatalog}
+    </Link>
+  )
+  if (state.status === 'loading') return <div>{back}<p className="py-12 text-center text-mist-600" aria-busy="true">{t.loading}</p></div>
+  if (state.status === 'missing') return <div>{back}<p className="py-12 text-center text-mist-700">{t.notFound}</p></div>
 
-  if (!id) {
-    return (
-      <div className="max-w-4xl mx-auto px-4 py-8 text-center text-mist-900">
-        <p>No book selected.</p>
-        <Link to="/" className="text-brand-red hover:underline">Back to home</Link>
-      </div>
-    );
-  }
-
-  if (!book) {
-    return (
-      <div className="max-w-4xl mx-auto px-4 py-8 text-center text-mist-900">
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
-  const hasProductInfo = book.productInformation && Object.keys(book.productInformation).length > 0;
-
+  const { book } = state
+  const title = displayTitle(book, locale)
+  const languages = book.languages.map((code) => LANGUAGE_NAMES[code]?.[locale] ?? code)
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <Link to="/" className="flex items-center gap-2 text-mist-700 hover:text-mist-900 transition-colors mb-8 group">
-        <span className="group-hover:-translate-x-1 transition-transform">←</span>
-        Back to home
-      </Link>
-
-      <div className="bg-mist-900/5 backdrop-blur-xl rounded-3xl border border-mist-900/10 shadow-2xl p-8 md:p-10">
-        <div className="flex flex-col md:flex-row gap-8 lg:gap-12 mb-10">
-          {book.imageUrl && (
-            <div className="flex-shrink-0 w-full md:w-1/3">
-              <img
-                src={book.imageUrl}
-                alt={book.title}
-                className="w-full rounded-2xl border border-mist-900/10 shadow-2xl shadow-mist-900/20"
-              />
-            </div>
-          )}
-          <div className="flex-1 min-w-0 flex flex-col">
-            <h1 className="text-3xl md:text-4xl font-display font-bold text-mist-900 mb-3 leading-tight">{book.title}</h1>
-            <div className="flex items-center gap-3 mb-6">
-              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-mist-900/10 text-brand-red border border-mist-900/5">
-                {book.category}
-              </span>
-              <span className="text-mist-700 text-sm flex items-center gap-1">
-                ⭐ {book.rating}/5
-              </span>
-              <span className="text-mist-600 text-sm">•</span>
-              <span className="text-mist-700 text-sm">
-                {book.stock} in stock
-              </span>
-            </div>
-
-            <div className="mt-auto pt-6 border-t border-mist-900/5">
-              <div className="flex items-end justify-between mb-6">
-                <div>
-                  <p className="text-sm text-mist-700 mb-1">Price</p>
-                  <p className="text-4xl font-bold text-brand-red">${book.price.toFixed(2)}</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <button
-                  onClick={handleAddToCart}
-                  className={`
-                    px-6 py-4 font-bold rounded-xl text-lg flex items-center justify-center gap-2 transition-all duration-300
-                    ${added
-                      ? 'bg-success-light text-success-foreground border border-success-border'
-                      : 'bg-gradient-to-r from-brand-red to-brand-coral text-primary-foreground hover:shadow-lg hover:shadow-brand-coral/25 hover:-translate-y-0.5'
-                    }
-                  `}
-                >
-                  {added ? (
-                    <>
-                      <span>✓ Added</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>Add to Cart</span>
-                    </>
-                  )}
-                </button>
-                <button
-                  onClick={() => navigate('/cart')}
-                  className="px-6 py-4 bg-mist-900/5 text-mist-900 font-semibold rounded-xl border border-mist-900/10 hover:bg-mist-900/10 hover:border-mist-900/20 transition-all hover:-translate-y-0.5"
-                >
-                  View Cart
-                </button>
-              </div>
-            </div>
+    <div>
+      {back}
+      <article className="grid gap-6 sm:grid-cols-[200px_minmax(0,1fr)]">
+        <div className="mx-auto w-40 sm:w-full"><Cover coverId={book.cover_id} title={title} size="L" eager /></div>
+        <div className="min-w-0">
+          <h1 className="font-display text-2xl font-bold leading-tight">{title}</h1>
+          {title !== book.title ? <p className="text-sm italic text-mist-600">{book.title}</p> : null}
+          <p className="mt-1 text-mist-700">{book.author_names.join(', ')}</p>
+          <div className="mt-4 flex flex-wrap items-center gap-4">
+            <span className="text-lg"><DemoPriceTag cents={book.price_cents} /></span>
+            <AddToCartButton bookId={book.id} />
           </div>
-        </div>
-
-        {book.description && (
-          <section className="mb-10">
-            <h2 className="text-xl font-bold text-mist-900 mb-4 flex items-center gap-2">
-              <span className="w-1 h-6 bg-brand-red rounded-full"></span>
-              Description
-            </h2>
-            <p className="text-mist-700 leading-relaxed text-lg font-light">{book.description}</p>
-          </section>
-        )}
-
-        {hasProductInfo && (
-          <section>
-            <h2 className="text-xl font-bold text-mist-900 mb-4 flex items-center gap-2">
-              <span className="w-1 h-6 bg-brand-red rounded-full"></span>
-              Product Details
-            </h2>
-            <div className="rounded-xl border border-mist-900/10 overflow-hidden">
-              <table className="w-full">
-                <tbody>
-                  {Object.entries(book.productInformation!).map(([key, value], index) => (
-                    <tr key={key} className={`border-b border-mist-900/5 last:border-0 ${index % 2 === 0 ? 'bg-mist-900/5' : 'bg-transparent'}`}>
-                      <td className="px-6 py-4 font-medium text-mist-700 w-1/3">{key}</td>
-                      <td className="px-6 py-4 text-mist-900">{value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          {/* Shown only when Open Library has ratings; no claim is made otherwise. */}
+          {book.rating && book.rating.count > 0 ? <p className="mt-3 text-sm text-mist-700">{t.ratedBy(book.rating.average.toFixed(1), book.rating.count)}</p> : null}
+          <dl className="mt-4 grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-1 text-sm">
+            {book.first_publish_year ? <><dt className="text-mist-600">{t.firstPublished}</dt><dd className="tabular-nums">{book.first_publish_year}</dd></> : null}
+            {languages.length ? <><dt className="text-mist-600">{t.languages}</dt><dd>{languages.join(', ')}</dd></> : null}
+          </dl>
+          {book.description ? (
+            // Plain text only: descriptions are never rendered as HTML or Markdown.
+            <p className="mt-4 max-w-prose whitespace-pre-line text-sm leading-relaxed text-mist-900">{book.description}</p>
+          ) : <p className="mt-4 text-sm text-mist-600">{t.noDescription}</p>}
+          <a href={book.book_url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1 text-sm text-brand-red underline underline-offset-2 hover:text-brand-coral">
+            {t.onOpenLibrary}<ExternalLink className="h-3.5 w-3.5" aria-hidden />
+          </a>
+          {book.subjects.length ? (
+            <div className="mt-5">
+              <h2 className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-mist-600">{t.subjects}</h2>
+              <ul className="flex flex-wrap gap-1.5">{book.subjects.map((s) => <li key={s} className="rounded-full bg-mist-100 px-2.5 py-0.5 text-xs text-mist-700">{s}</li>)}</ul>
             </div>
-          </section>
-        )}
-      </div>
+          ) : null}
+        </div>
+      </article>
     </div>
-  );
+  )
 }

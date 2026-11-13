@@ -1,0 +1,17 @@
+config {
+  type: "table",
+  schema: "ol_staging",
+  description: "One row per normalised title and primary author, with a cap of works per author."
+}
+
+WITH one_per_title AS (
+  SELECT *
+  FROM ${ref("int_candidates")}
+  QUALIFY ROW_NUMBER() OVER (
+    PARTITION BY title_folded, authors[OFFSET(0)].id ORDER BY score DESC, work_key
+  ) = 1
+)
+SELECT *
+FROM one_per_title
+QUALIFY ROW_NUMBER() OVER (PARTITION BY authors[OFFSET(0)].id ORDER BY score DESC, work_key)
+        <= ${cfg.num("limits_max_per_author")}

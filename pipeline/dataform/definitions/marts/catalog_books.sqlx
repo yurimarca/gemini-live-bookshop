@@ -1,0 +1,75 @@
+config {
+  type: "table",
+  schema: "ol_marts",
+  description: "The published catalog, one row per book, in the CatalogBook schema. Exported to NDJSON and written to Firestore by `olpipe publish`."
+}
+
+WITH ranked AS (
+  SELECT
+    d.*,
+    d.work_key IN (SELECT work_key FROM ${ref("seed_overrides")} WHERE action = 'include') AS forced,
+    ROW_NUMBER() OVER (
+      PARTITION BY (d.cover_id IS NOT NULL AND d.description IS NOT NULL) ORDER BY d.score DESC, d.work_key
+    ) AS famous_rank,
+    ROW_NUMBER() OVER (
+      PARTITION BY (d.cover_id IS NOT NULL AND d.is_brazilian_author) ORDER BY d.score DESC, d.work_key
+    ) AS brazilian_rank,
+    ROW_NUMBER() OVER (
+      PARTITION BY (d.cover_id IS NOT NULL AND d.has_portuguese_edition AND d.title_pt IS NOT NULL)
+      ORDER BY d.score DESC, d.work_key
+    ) AS portuguese_rank
+  FROM ${ref("int_dedup")} AS d
+),
+flagged AS (
+  SELECT
+    *,
+    (cover_id IS NOT NULL AND description IS NOT NULL
+      AND famous_rank <= ${cfg.num("segments_famous_size")}) AS in_famous,
+    (cover_id IS NOT NULL AND is_brazilian_author
+      AND brazilian_rank <= ${cfg.num("segments_brazilian_author_size")}) AS in_brazilian,
+    -- Portuguese here means a Portuguese edition of a work that is not already in on fame alone.
+    (cover_id IS NOT NULL AND has_portuguese_edition AND title_pt IS NOT NULL
+      AND portuguese_rank <= ${cfg.num("segments_portuguese_language_size")}) AS in_portuguese
+  FROM ranked
+),
+selected AS (
+  SELECT * FROM flagged
+  WHERE in_famous OR in_brazilian OR in_portuguese OR (forced AND cover_id IS NOT NULL)
+)
+SELECT
+  work_id AS id,
+  work_key,
+  title,
+  subtitle,
+  title_pt,
+  authors,
+  ARRAY(SELECT name FROM UNNEST(authors)) AS author_names,
+  description,
+  description_source,
+  subjects,
+  category,
+  cover_id,
+  first_publish_year,
+  languages,
+  CASE WHEN has_portuguese_edition AND (in_portuguese OR in_brazilian) THEN 'por'
+       WHEN ARRAY_LENGTH(languages) > 0 THEN IF('eng' IN UNNEST(languages), 'eng', languages[OFFSET(0)])
+       WHEN in_brazilian THEN 'por' END AS primary_language,
+  ARRAY_CONCAT(
+    IF(in_famous, ['famous'], []),
+    IF(in_brazilian, ['brazilian_author'], []),
+    IF(in_portuguese, ['portuguese_language'], [])
+  ) AS segments,
+  edition,
+  ${cfg.priceCents("work_key")} AS price_cents,
+  'USD' AS currency,
+  TRUE AS price_is_fictional,
+  IF(rating_count > 0, STRUCT(ROUND(rating_average, 2) AS average, rating_count AS count), NULL) AS rating,
+  STRUCT(
+    ROUND(score, 4) AS score,
+    ROW_NUMBER() OVER (ORDER BY score DESC, work_key) AS rank,
+    want_to_read, currently_reading, already_read
+  ) AS popularity,
+  CONCAT('https://openlibrary.org', work_key) AS book_url,
+  '${cfg.datasetVersion}' AS dataset_version,
+  STRUCT('${cfg.dumpDate}' AS dump_date, '${cfg.revision}' AS revision, last_modified, 'CC0' AS license) AS source
+FROM selected

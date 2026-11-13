@@ -1,0 +1,31 @@
+priority,subject_contains,category
+10,science fiction,Science Fiction
+11,dystopia,Science Fiction
+20,fantasy,Fantasy
+21,fairy tales,Fantasy
+30,detective,Mystery
+31,mystery,Mystery
+32,crime,Mystery
+40,horror,Horror
+41,gothic,Horror
+42,vampires,Horror
+50,poetry,Poetry
+51,epic poetry,Poetry
+60,children,Children
+61,juvenile,Children
+70,romance,Romance
+71,love stories,Romance
+80,philosophy,Philosophy
+90,biography,Biography
+91,autobiography,Biography
+100,history,History
+110,adventure,Adventure
+111,sea stories,Adventure
+120,drama,Drama
+121,plays,Drama
+130,brazilian,Brazilian Literature
+131,brazil,Brazilian Literature
+140,portuguese,Portuguese Literature
+141,portugal,Portuguese Literature
+150,classic,Classics
+160,fiction,Fiction

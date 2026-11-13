@@ -1,0 +1,31 @@
+config {
+  type: "table",
+  schema: "ol_staging",
+  description: "Open Library author ID (P648) to citizenship (P27) from the wikidata dump. Disabled for the first slice. The JSON layout is read both ways (claims and statements) because it was not confirmed during research.",
+  disabled: !cfg.useEditions
+}
+
+WITH parsed AS (
+  SELECT id AS wikidata_id, SAFE.PARSE_JSON(json, wide_number_mode => 'round') AS j
+  FROM ${ref("wikidata")}
+),
+flat AS (
+  SELECT
+    wikidata_id,
+    ARRAY_CONCAT(
+      ARRAY(SELECT JSON_VALUE(c, '$.mainsnak.datavalue.value') FROM UNNEST(JSON_QUERY_ARRAY(j, '$.claims.P648')) AS c),
+      ARRAY(SELECT JSON_VALUE(c, '$.value.content') FROM UNNEST(JSON_QUERY_ARRAY(j, '$.statements.P648')) AS c)
+    ) AS ol_ids,
+    ARRAY_CONCAT(
+      ARRAY(SELECT JSON_VALUE(c, '$.mainsnak.datavalue.value.id') FROM UNNEST(JSON_QUERY_ARRAY(j, '$.claims.P27')) AS c),
+      ARRAY(SELECT JSON_VALUE(c, '$.value.content') FROM UNNEST(JSON_QUERY_ARRAY(j, '$.statements.P27')) AS c)
+    ) AS citizenships
+  FROM parsed
+  WHERE j IS NOT NULL
+)
+SELECT DISTINCT
+  ol_id AS author_id,
+  'Q155' IN UNNEST(citizenships) AS is_brazilian,   -- Q155 is Brazil
+  'Q45' IN UNNEST(citizenships) AS is_portuguese    -- Q45 is Portugal
+FROM flat, UNNEST(ol_ids) AS ol_id
+WHERE REGEXP_CONTAINS(ol_id, r'^OL\d+A$')

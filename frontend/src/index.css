@@ -4,43 +4,27 @@
 
 @layer base {
   :root {
-    font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
     line-height: 1.5;
-    font-weight: 400;
     color-scheme: light;
-    font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
     @apply bg-mist-50 text-mist-900;
     margin: 0;
-    display: flex;
-    place-items: center;
     min-width: 320px;
     min-height: 100vh;
-    /* Values match theme/colors.config.ts brand.coral and brand.red */
-    background-image:
-      radial-gradient(circle at 15% 50%, rgba(233, 123, 98, 0.08) 0%, transparent 25%),
-      radial-gradient(circle at 85% 30%, rgba(206, 69, 50, 0.06) 0%, transparent 25%);
   }
 
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: radial-gradient(circle, rgba(32, 29, 27, 0.04) 1px, transparent 1px);
-    background-size: 32px 32px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  #root {
-    width: 100%;
-    min-height: 100vh;
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
-/* Scrollbar styles are injected by Tailwind plugin from theme/colors.config.ts */
+/* Scrollbar styles are injected by the Tailwind plugin from theme/colors.config.ts */
