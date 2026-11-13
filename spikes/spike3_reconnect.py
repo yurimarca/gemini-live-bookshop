@@ -37,25 +37,41 @@ def config(handle: str | None) -> types.LiveConnectConfig:
                            "and keep chatting while it runs.")
 
 
-async def listen(session, seconds: float, state: dict) -> None:
+async def listen(session, seconds: float, state: dict, stop_when_ready: bool = False) -> None:
+    """Log server messages. With stop_when_ready, return as soon as a tool call is pending and a
+    resumption handle has arrived after it (the moment to drop the connection)."""
     async def loop() -> None:
-        async for message in session.receive():
-            if message.session_resumption_update and message.session_resumption_update.new_handle:
-                state["handle"] = message.session_resumption_update.new_handle
-                log("RESUMPTION_HANDLE", f"resumable={message.session_resumption_update.resumable}")
-            if message.tool_call:
-                for call in message.tool_call.function_calls or []:
-                    state["call"] = call
-                    log("TOOL_CALL", f"id={call.id} name={call.name}")
-            if message.tool_call_cancellation:
-                log("TOOL_CANCELLED", str(message.tool_call_cancellation.ids))
-            content = message.server_content
-            if content and content.output_transcription and content.output_transcription.text:
-                log("AGENT_SAYS", repr(content.output_transcription.text))
-            if content and content.turn_complete:
-                log("TURN_COMPLETE")
-            if message.go_away:
-                log("GO_AWAY", str(message.go_away.time_left))
+        # session.receive() ends at each turn_complete, so keep calling it until the timeout.
+        while True:
+            async for message in session.receive():
+                if handle(message):
+                    return
+
+    def handle(message) -> bool:
+        """Log one message; True means stop listening."""
+        update = message.session_resumption_update
+        if update:
+            log("RESUMPTION_UPDATE", f"resumable={update.resumable} new_handle={bool(update.new_handle)} "
+                                     f"after_call={'call' in state}")
+            if update.new_handle:
+                state["handle"] = update.new_handle
+                state["handles"] = state.get("handles", 0) + 1
+                if "call" in state:
+                    state["handle_after_call"] = True
+        if message.tool_call:
+            for call in message.tool_call.function_calls or []:
+                state["call"] = call
+                log("TOOL_CALL", f"id={call.id} name={call.name}")
+        if message.tool_call_cancellation:
+            log("TOOL_CANCELLED", str(message.tool_call_cancellation.ids))
+        content = message.server_content
+        if content and content.output_transcription and content.output_transcription.text:
+            log("AGENT_SAYS", repr(content.output_transcription.text))
+        if content and content.turn_complete:
+            log("TURN_COMPLETE")
+        if message.go_away:
+            log("GO_AWAY", str(message.go_away.time_left))
+        return bool(stop_when_ready and state.get("handle_after_call"))
 
     try:
         await asyncio.wait_for(loop(), timeout=seconds)
@@ -71,10 +87,13 @@ async def main() -> None:
     async with client.aio.live.connect(model=MODEL, config=config(None)) as session:
         await session.send_client_content(turns=types.Content(role="user", parts=[types.Part(
             text="Please recommend a few Brazilian classics.")]), turn_complete=True)
-        await listen(session, 12, state)
-    log("DROPPED", f"call pending={'call' in state} handle={'handle' in state}")
+        # Wait up to 45 s for a call and then a handle issued after it; dropping earlier tests nothing.
+        await listen(session, 45, state, stop_when_ready=True)
+    log("DROPPED", f"call pending={'call' in state} handles={state.get('handles', 0)} "
+                   f"handle_after_call={state.get('handle_after_call', False)}")
     if "call" not in state or "handle" not in state:
-        log("RESULT", "no tool call or no resumption handle: nothing to test. Record that.")
+        log("RESULT", "no tool call or no resumption handle in 45 s: nothing to test. Record that "
+                      "(it may mean the server issues no handle while a call is pending).")
         return
     try:
         log("CONNECT 2", "with the resumption handle")
