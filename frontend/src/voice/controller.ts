@@ -6,13 +6,14 @@
 import { createA2uiSession, rendererCapabilities, type A2uiSession } from '../a2ui/adapter'
 import { MIC_CONSTRAINTS, startCapture, type Capture } from '../audio/capture'
 import { PcmPlayer } from '../audio/player'
-import { appCheckToken, idToken } from '../auth/firebase'
+import { api } from '../api/client'
+import { appCheckToken, hasIdentity, idToken } from '../auth/firebase'
 import { applyCart, setCartQuantity } from '../cart/actions'
 import { config, liveSocketUrl } from '../config'
-import { localeStore, t } from '../i18n'
+import { localeStore, setLocale, t } from '../i18n'
 import { newId } from '../lib/format'
 import { go } from '../lib/nav'
-import { MAX_USER_TEXT, closeKind, shouldRetry, type AgentName, type ServerEvent } from '../protocol/events'
+import { MAX_USER_TEXT, catalogPath, closeKind, shouldRetry, type AgentName, type ServerEvent } from '../protocol/events'
 import { IDLE_SESSION, patchSession, patchUi, sessionStore, surfacesStore, uiStore } from '../stores/app'
 import { closeRunning, timelineReducer, timelineStore } from '../stores/timeline'
 import { dispatchTranscript, transcriptStore } from '../stores/transcript'
@@ -33,12 +34,24 @@ function sendAction(message: Record<string, unknown>): void {
     socket.send({ type: 'a2ui.action', op_id: newId(), message })
     return
   }
-  // The session is over but its cards are still on screen: honour the two harmless actions locally.
+  // The session is over but its cards are still on screen: honour the harmless actions over REST.
   const action = message.action as { name?: string; context?: { book_id?: unknown } } | undefined
+  if (action?.name === 'forget_taste') {
+    void forgetTasteOffline()
+    return
+  }
   const bookId = action?.context?.book_id
   if (typeof bookId !== 'string') return
   if (action?.name === 'open_book') go(`/book/${bookId}`)
   if (action?.name === 'add_to_cart') void setCartQuantity(bookId, 1)
+}
+
+async function forgetTasteOffline(): Promise<void> {
+  if (!hasIdentity()) return
+  try {
+    await api.forgetTaste(await idToken())
+    if (a2ui) syncSurfaces(a2ui.process(['taste', 'taste-recs'].map((surfaceId) => ({ version: '1.0', deleteSurface: { surfaceId } }))), 'taste_profiler')
+  } catch { /* the card stays; the visitor can try again */ }
 }
 
 function syncSurfaces(touched: string[], agent: AgentName): void {
@@ -96,10 +109,20 @@ function onEvent(event: ServerEvent): void {
     case 'ui.command':
       if (event.command === 'open_cart') patchUi({ cartOpen: true })
       else if (event.command === 'open_book' && event.book_id) go(`/book/${event.book_id}`)
+      else if (event.command === 'highlight_book' && event.book_id) patchUi({ highlight: { bookId: event.book_id, at: Date.now() } })
       else if (event.command === 'show_books' && event.book_ids?.length) {
         patchUi({ spotlight: { title: event.title ?? null, bookIds: event.book_ids } })
         go('/')
       }
+      break
+    case 'ui.locale':
+      // As if the EN|PT toggle had been pressed; the gateway already knows, so nothing is sent back.
+      setLocale(event.locale)
+      break
+    case 'ui.navigate':
+      // Through the router (a history push), so Back returns to where the visitor was. Focus stays put.
+      patchUi({ spotlight: null })
+      go(catalogPath(event.params))
       break
     case 'cart.updated':
       applyCart(event, event.op_id)
@@ -111,7 +134,8 @@ function onEvent(event: ServerEvent): void {
       patchSession({ ended: event.reason === 'client' ? 'ended' : event.reason })
       break
     case 'error':
-      patchSession({ notice: event.message })
+      // 4403 means either a rejected origin or a failed App Check; the error code tells them apart.
+      patchSession(event.fatal && event.code === 'origin' ? { notice: event.message, ended: 'origin' } : { notice: event.message })
       break
     case 'turn.complete':
     case 'pong':

@@ -1,8 +1,12 @@
 import type { Locale } from '../protocol/events'
 
-/** Prices are fictional USD in both locales; only the number format changes. */
+/**
+ * Prices are fictional: the same number is labelled dollars in English and reais in Portuguese,
+ * never converted. 1290 cents is $12.90 or R$ 12,90.
+ */
 export function formatPrice(cents: number, locale: Locale): string {
-  return new Intl.NumberFormat(locale === 'pt-BR' ? 'pt-BR' : 'en-US', { style: 'currency', currency: 'USD' }).format(cents / 100)
+  const [tag, currency] = locale === 'pt-BR' ? ['pt-BR', 'BRL'] : ['en-US', 'USD']
+  return new Intl.NumberFormat(tag, { style: 'currency', currency }).format(cents / 100)
 }
 
 /**

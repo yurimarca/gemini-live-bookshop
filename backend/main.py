@@ -12,6 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app import services as services_module
 from app.api import cart as cart_api
+from app.api import profile as profile_api
 from app.api import catalog as catalog_api
 from app.api import internal_tasks, ws_live
 from app.auth.quota import QuotaService
@@ -24,6 +25,7 @@ from app.live.voice_agent import build_runner
 from app.services import Services
 from app.specialists.client import build_specialists
 from app.state import open_state
+from app.taste.profile import TasteStore
 
 # Message content (transcripts, tool arguments) is never logged; only event types and counts are.
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
@@ -55,13 +57,13 @@ async def build_services(settings: Settings) -> Services:
     cart.set_hold_scheduler(timer.schedule)
 
     svc = Services(settings=settings, catalog=catalog, cart=cart, quota=quota,
-                   specialists=build_specialists(settings), hold_timer=timer)
+                   specialists=build_specialists(settings), hold_timer=timer, taste=TasteStore(state))
 
     async def fan_out(uid: str, view: CartView, op_id: str | None) -> None:
         # Best effort: a Cloud Tasks callback may land on another instance than the user's socket.
         # Firestore is the durable truth and the browser re-reads the cart on load.
         for ctx in svc.registry.for_uid(uid):
-            publish_cart(ctx, view, op_id, timer.runs_on)
+            publish_cart(ctx, view, op_id, timer.runs_on, announce=settings.announce_cart_expiry)
 
     cart.on_change(fan_out)
     return svc
@@ -89,6 +91,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                        allow_headers=["Authorization", "Content-Type"], max_age=600)
     app.include_router(catalog_api.router)
     app.include_router(cart_api.router)
+    app.include_router(profile_api.router)
     app.include_router(internal_tasks.router)
     app.include_router(ws_live.router)
 

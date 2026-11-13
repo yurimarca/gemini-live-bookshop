@@ -38,7 +38,6 @@ class CartView(BaseModel):
     items: list[CartItem] = []
     total_cents: int = 0
     hold_expires_at: float | None = None  # epoch seconds
-    currency: str = "USD"
     prices_are_fictional: bool = True
 
 

@@ -210,6 +210,9 @@
       "dislikes": {
        "@path": "/dislikes"
       },
+      "fresh": {
+       "@path": "/fresh"
+      },
       "id": "root",
       "languages": {
        "@path": "/languages"
@@ -217,12 +220,24 @@
       "likes": {
        "@path": "/likes"
       },
+      "notesSession": {
+       "@path": "/notes_session"
+      },
+      "notesTotal": {
+       "@path": "/notes_total"
+      },
       "onDismiss": {
        "event": {
         "context": {
          "surface": "taste"
         },
         "name": "dismiss"
+       }
+      },
+      "onForget": {
+       "event": {
+        "context": {},
+        "name": "forget_taste"
        }
       },
       "summary": {
@@ -242,13 +257,125 @@
      "dislikes": [
       "horror"
      ],
+     "fresh": [
+      "poetry"
+     ],
      "languages": [
       "eng"
      ],
      "likes": [
-      "fantasy"
+      "fantasy \u00d72",
+      "poetry"
      ],
+     "notes_session": 3,
+     "notes_total": 7,
      "summary": "Likes fantasy."
+    }
+   },
+   "version": "1.0"
+  }
+ ],
+ "taste_recs": [
+  {
+   "createSurface": {
+    "catalogId": "urn:bookshop:catalog:v1",
+    "surfaceId": "taste-recs"
+   },
+   "version": "1.0"
+  },
+  {
+   "updateComponents": {
+    "components": [
+     {
+      "children": {
+       "componentId": "rec_card",
+       "path": "/books"
+      },
+      "component": "BookShelf",
+      "id": "root",
+      "onDismiss": {
+       "event": {
+        "context": {
+         "surface": "taste-recs"
+        },
+        "name": "dismiss"
+       }
+      },
+      "subtitle": {
+       "@path": "/subtitle"
+      },
+      "title": {
+       "@path": "/title"
+      }
+     },
+     {
+      "author": {
+       "@path": "author"
+      },
+      "bookId": {
+       "@path": "id"
+      },
+      "component": "BookCard",
+      "coverId": {
+       "@path": "cover_id"
+      },
+      "id": "rec_card",
+      "onAdd": {
+       "event": {
+        "context": {
+         "book_id": {
+          "@path": "id"
+         }
+        },
+        "name": "add_to_cart"
+       }
+      },
+      "onOpen": {
+       "event": {
+        "context": {
+         "book_id": {
+          "@path": "id"
+         }
+        },
+        "name": "open_book"
+       }
+      },
+      "priceCents": {
+       "@path": "price_cents"
+      },
+      "reason": {
+       "@path": "reason"
+      },
+      "tag": {
+       "@path": "tag"
+      },
+      "title": {
+       "@path": "title"
+      }
+     }
+    ],
+    "surfaceId": "taste-recs"
+   },
+   "version": "1.0"
+  },
+  {
+   "updateDataModel": {
+    "path": "/",
+    "surfaceId": "taste-recs",
+    "value": {
+     "books": [
+      {
+       "author": "J. R. R. Tolkien",
+       "cover_id": 14627509,
+       "id": "OL27482W",
+       "price_cents": 1590,
+       "reason": "Matches your interest in fantasy.",
+       "tag": "fantasy",
+       "title": "The Hobbit"
+      }
+     ],
+     "subtitle": "Researcher \u2192 recommender",
+     "title": "Based on your taste"
     }
    },
    "version": "1.0"

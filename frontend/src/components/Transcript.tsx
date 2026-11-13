@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useT } from '../i18n'
 import { useStore } from '../lib/store'
 import { useNow } from '../lib/useNow'
+import { m } from '../motion'
 import { patchUi, sessionStore } from '../stores/app'
 import { transcriptStore, type TranscriptItem } from '../stores/transcript'
 import { player } from '../voice/controller'
@@ -18,29 +19,32 @@ function AgentText({ item, pacing }: { item: Extract<TranscriptItem, { kind: 'ut
   return <>{shown}{item.interrupted ? '—' : !item.final || progress < 1 ? '…' : ''}</>
 }
 
+// A new line fades in; it does not move, so the log never jumps under the reader.
+const lineIn = { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.2 } } as const
+
 function Row({ item, pacing }: { item: TranscriptItem; pacing: boolean }) {
   const t = useT()
-  if (item.kind === 'note') return <li className="py-1 text-center text-xs text-mist-600">{item.text}</li>
+  if (item.kind === 'note') return <m.li {...lineIn} className="py-1 text-center text-xs text-mist-600">{item.text}</m.li>
   if (item.kind === 'marker') {
     return (
-      <li className="py-1 text-xs text-mist-700">
+      <m.li {...lineIn} className="py-1 text-xs text-mist-700">
         <span aria-hidden>› </span>{t.posted(t[`agent_${item.agent}`])}{' '}
         <button type="button" onClick={() => patchUi({ focusSurface: item.surfaceId, sheetTab: 'foryou' })}
           className="rounded font-medium text-brand-red underline underline-offset-2 hover:text-brand-coral focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-coral">{t.view}</button>
-      </li>
+      </m.li>
     )
   }
   const isUser = item.role === 'user'
   return (
     // Only finished utterances are exposed to assistive technology, and the agent's are skipped:
     // its voice already said them.
-    <li className="py-1" aria-hidden={!item.final || !isUser ? true : undefined}>
+    <m.li {...lineIn} className="py-1" aria-hidden={!item.final || !isUser ? true : undefined}>
       <span className={`mr-2 text-[11px] font-semibold uppercase tracking-wide ${isUser ? 'text-mist-600' : 'text-brand-red'}`}>{isUser ? t.you : t.agent}</span>
       <span className={`text-sm leading-relaxed ${item.final ? 'text-mist-900' : 'text-mist-700'}`}>
         {isUser ? item.text : <AgentText item={item} pacing={pacing} />}
       </span>
       {item.interrupted ? <span className="ml-1.5 rounded bg-mist-100 px-1 text-[10px] uppercase tracking-wide text-mist-600">{t.interrupted}</span> : null}
-    </li>
+    </m.li>
   )
 }
 

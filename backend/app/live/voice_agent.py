@@ -2,7 +2,7 @@
 
 The two official doc sets disagree on the default tool behavior, so each tool
 states it. Fast tools are BLOCKING. Specialist tools are NON_BLOCKING:
-recommendations answer WHEN_IDLE, taste notes answer SILENT. No tool is an
+recommendations and research answer WHEN_IDLE, taste notes answer SILENT. No tool is an
 async generator: ADK would send partial FunctionResponses, which the Agent
 Platform Live API does not support.
 """
@@ -35,7 +35,11 @@ TOOL_TABLE = [
     (ui_tools.show_books, B, None),
     (ui_tools.open_book, B, None),
     (ui_tools.open_cart, B, None),
+    (ui_tools.highlight_book, B, None),
+    (ui_tools.set_language, B, None),
+    (ui_tools.browse_catalog, B, None),
     (specialist_tools.recommend_books, NB, WHEN_IDLE),
+    (specialist_tools.research_for_taste, NB, WHEN_IDLE),
     (specialist_tools.note_taste, NB, SILENT),
 ]
 

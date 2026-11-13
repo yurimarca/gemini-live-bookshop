@@ -20,13 +20,14 @@ MAX_RESULTS = 6
 def _brief(e: IndexEntry) -> dict:
     return {"id": e.id, "title": e.title, "title_pt": e.title_pt, "authors": e.author_names[:2],
             "category": e.category, "year": e.year, "languages": e.languages,
-            "price": f"${e.price_cents / 100:.2f} (demo price)"}
+            "price_cents": e.price_cents}
 
 
 def _cart_payload(view) -> dict:
     return {"items": [{"id": i.id, "title": i.title, "quantity": i.quantity,
-                       "price": f"${i.price_cents / 100:.2f}"} for i in view.items],
-            "total": f"${view.total_cents / 100:.2f} (demo prices, nothing is charged)",
+                       "price_cents": i.price_cents} for i in view.items],
+            "total_cents": view.total_cents,
+            "note": "Demo prices; nothing is charged.",
             "hold_seconds_left": max(0, int(view.hold_expires_at - services.get().cart._clock()))
             if view.hold_expires_at else None}
 
@@ -65,7 +66,7 @@ async def get_book_details(tool_context: ToolContext, book_id: str) -> dict:
             "year": book.first_publish_year, "category": book.category, "subjects": book.subjects[:6],
             "languages": book.languages, "description": (book.description or "")[:600] or None,
             "rating": book.rating.model_dump() if book.rating else None,
-            "price": f"${book.price_cents / 100:.2f} (demo price)"}
+            "price_cents": book.price_cents}
 
 
 async def add_to_cart(tool_context: ToolContext, book_id: str, quantity: int = 1) -> dict:

@@ -78,8 +78,8 @@ class CatalogBook(_Model):
     primary_language: str | None = None
     segments: list[Segment] = Field(default_factory=list)
     edition: Edition | None = None
+    # No currency field: the same fictional number is shown as $ in English and R$ in Portuguese, never converted.
     price_cents: int = Field(gt=0)
-    currency: Literal["USD"] = "USD"
     price_is_fictional: Literal[True] = True
     rating: Rating | None = None
     popularity: Popularity

@@ -125,7 +125,7 @@ def main() -> None:
                 "languages": langs, "primary_language": "por" if "portuguese_language" in segments else "eng",
                 "segments": segments,
                 "edition": {"isbn_13": isbn13, "language": "por" if "portuguese_language" in segments else "eng"},
-                "price_cents": fictional_price_cents(doc["key"]), "currency": "USD", "price_is_fictional": True,
+                "price_cents": fictional_price_cents(doc["key"]), "price_is_fictional": True,
                 "rating": ({"average": round(doc["ratings_average"], 2), "count": doc["ratings_count"]}
                            if doc.get("ratings_count") else None),
                 "popularity": {"score": round(math.log10(1 + want + 2 * reading + 3 * read), 4), "rank": 1,

@@ -28,7 +28,8 @@ from ..cart.service import CartError, CartView
 from ..protocol import events as ev
 from ..services import Services
 from . import timeline
-from .prompts import GREETING
+from ..tools.specialist_tools import forget_profile, publish_taste_card
+from .prompts import CART_EXPIRED, GREETING, RETURNING
 from .run_config import INPUT_MIME, build_run_config
 from .session_bus import SessionBus, SessionContext
 from .transcript import TranscriptAggregator
@@ -47,10 +48,17 @@ def cart_event(view: CartView, op_id: str | None = None) -> ev.CartUpdated:
                           hold_expires_at=view.hold_expires_at, op_id=op_id)
 
 
-def publish_cart(ctx: SessionContext, view: CartView, op_id: str | None, runs_on: str) -> None:
-    """Push the cart and the cart-hold card to one session. Called for every cart change of its user."""
+def publish_cart(ctx: SessionContext, view: CartView, op_id: str | None, runs_on: str, *,
+                 announce: bool = False) -> None:
+    """Push the cart and the cart-hold card to one session. Called for every cart change of its user.
+
+    With ``announce``, an expired hold is also spoken: the gateway injects a short ``[system]`` line in
+    the session's language (spike 2 showed injected text is answered).
+    """
     ctx.bus.publish(cart_event(view, op_id))
     expired = op_id == "hold-expired"
+    if expired and announce and ctx.inject:
+        ctx.inject(CART_EXPIRED.get(ctx.locale, CART_EXPIRED["en"]))
     timer_call = f"cart-hold-{ctx.session_id}"
     if view.items and timer_call not in ctx.open_calls:
         timeline.started(ctx, call_id=timer_call, agent="cart_timer", tool="hold_cart", behavior="NON_BLOCKING",
@@ -73,7 +81,8 @@ class LiveSession:
         self.settings = services.settings
         self.session_id = uuid.uuid4().hex
         self.bus = SessionBus()
-        self.ctx = SessionContext(session_id=self.session_id, uid=uid, locale=locale, bus=self.bus)
+        self.ctx = SessionContext(session_id=self.session_id, uid=uid, locale=locale, bus=self.bus,
+                                  inject=self._inject)
         self.transcript = TranscriptAggregator(self.bus)
         self.queue = LiveRequestQueue()
         self.sessions_left = sessions_left
@@ -81,6 +90,11 @@ class LiveSession:
         self.end_reason: str | None = None
         self.last_activity = time.monotonic()
         self.started_at = time.time()
+
+    def _inject(self, text: str) -> None:
+        """A server-written ``[system]`` line to the voice model. Never client text."""
+        if not self.bus.closed:
+            self.queue.send_content(types.Content(role="user", parts=[types.Part(text=text)]))
 
     # --- lifecycle -----------------------------------------------------------------
     async def run(self) -> None:
@@ -97,8 +111,12 @@ class LiveSession:
             dataset_version=self.svc.catalog.dataset_version, cart=cart_event(cart).model_dump(exclude={"type"})))
         if cart.items:
             publish_cart(self.ctx, cart, None, self.svc.hold_timer.runs_on)
-        # The greeting prompt is written by the server, never by the client.
-        self.queue.send_content(types.Content(role="user", parts=[types.Part(text=GREETING[self.ctx.locale])]))
+        self.ctx.profile = await self.svc.taste.load(self.ctx.uid)
+        returning = not self.ctx.profile.is_empty()
+        if returning:
+            publish_taste_card(self.ctx)
+        # The greeting prompt is written by the server, never by the client. It names no stored tags.
+        self._inject(GREETING[self.ctx.locale] + (RETURNING if returning else ""))
 
         sender = asyncio.create_task(self._sender(), name="sender")
         workers = [asyncio.create_task(c, name=n) for n, c in (
@@ -227,7 +245,9 @@ class LiveSession:
             return
         name, context, _surface = parsed
         book_id = context.get("book_id")
-        if name == "dismiss":
+        if name == "forget_taste":
+            await forget_profile(self.ctx.uid)
+        elif name == "dismiss":
             surface = context.get("surface")
             if surface in self.ctx.surfaces:
                 self.ctx.surfaces.discard(surface)

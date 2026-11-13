@@ -2,6 +2,7 @@ import { useT } from '../i18n'
 import { formatLatency } from '../lib/format'
 import { useStore } from '../lib/store'
 import { useNow } from '../lib/useNow'
+import { m } from '../motion'
 import { timelineStore, type TimelineRow } from '../stores/timeline'
 
 const STATUS_STYLE: Record<TimelineRow['status'], string> = {
@@ -27,7 +28,10 @@ export function Timeline() {
   return (
     <ol className="flex flex-col gap-1.5 px-3 py-2">
       {rows.map((row) => (
-        <li key={row.callId} className={`rounded-md border border-mist-900/10 bg-white px-2 py-1.5 text-xs ${row.parentCallId ? 'ml-4 border-l-2 border-l-brand-coral/60' : ''}`}>
+        // Nested specialists (researcher → recommender) indent one step per level.
+        <m.li key={row.callId} initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.2, ease: 'easeOut' }}
+          style={row.depth ? { marginLeft: `${row.depth}rem` } : undefined}
+          className={`rounded-md border border-mist-900/10 bg-white px-2 py-1.5 text-xs ${row.depth ? 'border-l-2 border-l-brand-coral/60' : ''}`}>
           <div className="flex items-center justify-between gap-2">
             <code className="truncate font-mono text-[12px] font-semibold text-mist-900">{row.tool}</code>
             <span className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${row.behavior === 'NON_BLOCKING' ? 'bg-brand-coral/15 text-brand-red' : 'bg-mist-100 text-mist-700'}`}>{row.behavior}</span>
@@ -42,10 +46,11 @@ export function Timeline() {
               </span>
             ) : null}
             <span className="ml-auto tabular-nums"><Elapsed row={row} /></span>
-            <span className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${STATUS_STYLE[row.status]}`}>{t[`status_${row.status}`]}</span>
+            <m.span key={row.status} initial={{ opacity: 0.3, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }}
+              className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${STATUS_STYLE[row.status]}`}>{t[`status_${row.status}`]}</m.span>
           </div>
           {row.stage ?? row.summary ?? row.argsSummary ? <p className="mt-0.5 truncate text-[11px] text-mist-600">{row.stage ?? row.summary ?? row.argsSummary}</p> : null}
-        </li>
+        </m.li>
       ))}
     </ol>
   )

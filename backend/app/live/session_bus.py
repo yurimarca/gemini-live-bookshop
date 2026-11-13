@@ -12,22 +12,12 @@ from __future__ import annotations
 import asyncio
 import time
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Callable
 
 from ..protocol.events import ServerEvent
+from ..taste.profile import Profile
 
 MAX_QUEUE = 2000
-
-
-@dataclass
-class TasteProfile:
-    likes: list[str] = field(default_factory=list)
-    dislikes: list[str] = field(default_factory=list)
-    languages: list[str] = field(default_factory=list)
-    summary: str = ""
-
-    def is_empty(self) -> bool:
-        return not (self.likes or self.dislikes or self.languages)
 
 
 class SessionBus:
@@ -74,12 +64,23 @@ class SessionContext:
     uid: str
     locale: str
     bus: SessionBus
-    taste: TasteProfile = field(default_factory=TasteProfile)
+    profile: Profile = field(default_factory=Profile)              # the user's stored taste, loaded at start
+    taste_notes_session: int = 0                                     # notes that changed the profile this session
+    notes_since_research: int = 0                                    # drives the automatic researcher
+    research_running: bool = False
+    inject: Callable[[str], None] | None = None                     # send a [system] line to the voice model
     user_speaking: bool = False
     shown_book_ids: list[str] = field(default_factory=list)
     surfaces: set[str] = field(default_factory=set)             # A2UI surfaces already created
     open_calls: dict[str, float] = field(default_factory=dict)   # call_id -> started (monotonic)
     background_tasks: set[asyncio.Task] = field(default_factory=set)
+
+    def spawn(self, coro) -> asyncio.Task:
+        """Run work for this session in the background; it is cancelled when the session ends."""
+        task = asyncio.create_task(coro)
+        self.background_tasks.add(task)
+        task.add_done_callback(self.background_tasks.discard)
+        return task
 
 
 class SessionRegistry:

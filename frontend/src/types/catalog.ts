@@ -44,7 +44,6 @@ export interface CatalogBook {
   segments: string[]
   edition: { isbn_13: string | null; publisher: string | null; pages: number | null; publish_year: number | null } | null
   price_cents: number
-  currency: 'USD'
   price_is_fictional: true
   rating: { average: number; count: number } | null
   book_url: string

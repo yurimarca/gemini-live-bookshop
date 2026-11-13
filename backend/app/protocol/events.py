@@ -15,7 +15,8 @@ PROTOCOL_VERSION = 2
 MAX_USER_TEXT = 500
 
 Locale = Literal["en", "pt-BR"]
-AgentName = Literal["voice", "taste_profiler", "recommender", "cart_timer"]
+AgentName = Literal["voice", "taste_profiler", "researcher", "recommender", "cart_timer"]
+SortKey = Literal["popular", "year_new", "year_old"]
 Behavior = Literal["BLOCKING", "NON_BLOCKING"]
 Scheduling = Literal["INTERRUPT", "WHEN_IDLE", "SILENT"]
 RunsOn = Literal["gateway", "agent_runtime", "cloud_tasks"]
@@ -169,10 +170,32 @@ class A2ui(_Event):
 
 class UiCommand(_Event):
     type: Literal["ui.command"] = "ui.command"
-    command: Literal["show_books", "open_book", "open_cart"]
+    command: Literal["show_books", "open_book", "open_cart", "highlight_book"]
     book_ids: list[str] = Field(default_factory=list)
     book_id: str | None = None
     title: str | None = None
+
+
+class UiLocale(_Event):
+    """The voice agent switched the page language, as if the EN|PT toggle had been pressed."""
+
+    type: Literal["ui.locale"] = "ui.locale"
+    locale: Locale
+
+
+class CatalogFilters(_Event):
+    q: str | None = None
+    subject: str | None = None
+    lang: str | None = None
+    sort: SortKey | None = None
+
+
+class UiNavigate(_Event):
+    """Open the catalog with these filters, through the router, so Back works."""
+
+    type: Literal["ui.navigate"] = "ui.navigate"
+    path: Literal["/"] = "/"
+    params: CatalogFilters
 
 
 class CartUpdated(_Event):
@@ -207,5 +230,6 @@ class Pong(_Event):
 
 ServerEvent = Union[
     SessionReady, AudioStart, TranscriptDelta, TranscriptFinal, TurnInterrupted, TurnComplete, ToolStarted,
-    ToolProgress, ToolFinished, A2ui, UiCommand, CartUpdated, SessionWarning, SessionEnded, ErrorEvent, Pong,
+    ToolProgress, ToolFinished, A2ui, UiCommand, UiLocale, UiNavigate, CartUpdated, SessionWarning, SessionEnded,
+    ErrorEvent, Pong,
 ]

@@ -4,6 +4,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { usingDevAuth } from '../auth/firebase'
 import { setLocale, useLocale, useT } from '../i18n'
 import { formatClock } from '../lib/format'
+import { m } from '../motion'
 import { useStore } from '../lib/store'
 import type { Locale } from '../protocol/events'
 import { cartStore, patchUi } from '../stores/app'
@@ -63,7 +64,11 @@ export function Header() {
           <button type="button" onClick={() => patchUi({ cartOpen: true })} aria-label={`${t.cart} (${count})`}
             className="relative flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm text-mist-700 hover:bg-mist-900/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-coral">
             <ShoppingCart className="h-5 w-5" aria-hidden />
-            {count > 0 ? <span className="rounded-full bg-brand-red px-1.5 text-xs font-bold text-white">{count}</span> : null}
+            {count > 0 ? (
+              // Re-keyed on every change, so an added item bumps the badge (a scale, no layout change).
+              <m.span key={count} initial={{ scale: 1.6 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 500, damping: 18 }}
+                className="inline-block rounded-full bg-brand-red px-1.5 text-xs font-bold text-white">{count}</m.span>
+            ) : null}
             {hold !== null ? <span className="hidden text-xs tabular-nums text-mist-600 sm:inline">{formatClock(hold)}</span> : null}
           </button>
         </nav>

@@ -60,3 +60,22 @@ class ProfileRequest(BaseModel):
 class ProfileResult(BaseModel):
     taste: Taste
     source: Literal["llm", "heuristic"] = "heuristic"
+
+
+class ResearchRequest(BaseModel):
+    """The whole profile, likes ranked by weight (strongest first)."""
+
+    taste: Taste
+    locale: Locale = "en"
+    max_angles: int = Field(default=4, ge=1, le=4)
+
+
+class Angle(BaseModel):
+    label: str = Field(max_length=60, description="Short shelf label for the angle, in the shopper's language")
+    query: str = Field(max_length=60, description="Catalog search words: an author, genre, subject or theme")
+    tag: str = Field(max_length=40, description="The profile tag this angle comes from, copied exactly")
+
+
+class ResearchResult(BaseModel):
+    angles: list[Angle]
+    source: Literal["llm", "heuristic"] = "heuristic"

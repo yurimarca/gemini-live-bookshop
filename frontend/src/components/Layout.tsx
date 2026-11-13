@@ -1,10 +1,27 @@
-import { useEffect, useState } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { setNavigator } from '../lib/nav'
+import { m } from '../motion'
 import { AgentCanvas } from './AgentCanvas'
 import { CartDrawer } from './CartDrawer'
 import { DesktopDock, MobileDock } from './ConversationDock'
 import { Header } from './Header'
+
+/**
+ * Route changes fade in. Keyed by path, so a filter change on the catalog does not replay it.
+ * The first page renders as is: animating it in would only delay first paint.
+ */
+function RouteFade() {
+  const { pathname } = useLocation()
+  const mounted = useRef(false)
+  const animate = mounted.current
+  useEffect(() => { mounted.current = true }, [])
+  return (
+    <m.div key={pathname} initial={animate ? { opacity: 0, y: 6 } : false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18, ease: 'easeOut' }}>
+      <Outlet />
+    </m.div>
+  )
+}
 
 function useIsDesktop(): boolean {
   const query = '(min-width: 1024px)'
@@ -35,7 +52,7 @@ export function Layout() {
         <main className="min-w-0 flex-1 px-4 pb-44 pt-4 lg:pb-10">
           {/* One canvas at a time: each A2UI surface is mounted in exactly one place. */}
           {desktop ? <div className="mb-5"><AgentCanvas /></div> : null}
-          <Outlet />
+          <RouteFade />
         </main>
         {desktop ? <DesktopDock /> : null}
       </div>

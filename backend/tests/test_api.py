@@ -14,7 +14,7 @@ def test_catalog_has_etag_and_revalidates(client):
 
 def test_book_detail(client):
     body = client.get("/api/books/OL27482W").json()
-    assert body["title"] == "The Hobbit" and body["price_is_fictional"] is True and body["currency"] == "USD"
+    assert body["title"] == "The Hobbit" and body["price_is_fictional"] is True and "currency" not in body
     assert client.get("/api/books/OL1W").status_code == 404
     assert client.get("/api/books/not-an-id").status_code == 422
 

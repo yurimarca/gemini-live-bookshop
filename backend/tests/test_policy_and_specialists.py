@@ -19,6 +19,9 @@ def test_every_tool_states_its_behavior_and_is_on_the_allowlist():
     assert tools["recommend_books"].behavior is types.Behavior.NON_BLOCKING
     assert tools["recommend_books"].response_scheduling is types.FunctionResponseScheduling.WHEN_IDLE
     assert tools["note_taste"].response_scheduling is types.FunctionResponseScheduling.SILENT
+    assert tools["research_for_taste"].response_scheduling is types.FunctionResponseScheduling.WHEN_IDLE
+    for name in ("set_language", "browse_catalog", "highlight_book"):
+        assert tools[name].behavior is types.Behavior.BLOCKING
     assert tools["add_to_cart"].behavior is types.Behavior.BLOCKING
     assert "tool_context" not in json.dumps(tools["search_books"]._get_declaration().model_dump(mode="json"))
 
@@ -40,6 +43,18 @@ def test_policy_denies_everything_else():
     assert check_args("search_books", {"query": "x" * 121}) == "bad_query"
     assert check_args("show_books", {"book_ids": ["OL1W"] * 7}) == "bad_book_ids"
     assert check_args("recommend_books", "not a dict") == "bad_arguments"
+    assert check_args("set_language", {"locale": "fr"}) == "bad_locale"
+    assert check_args("set_language", {}) == "missing_argument"
+    assert check_args("browse_catalog", {"sort": "price"}) == "bad_sort"
+    assert check_args("browse_catalog", {"language": "klingon"}) == "bad_language"
+    assert check_args("highlight_book", {"book_id": "OL1W<script>"}) == "bad_book_id"
+    assert check_args("research_for_taste", {"request": "x"}) == "unknown_argument"
+
+
+def test_browse_catalog_subject_must_be_a_catalog_category(svc):
+    assert check_args("browse_catalog", {"subject": "poetry", "language": "pt", "sort": "year_new"}) is None
+    assert check_args("browse_catalog", {"subject": "Made Up Shelf"}) == "bad_subject"
+    assert svc.catalog.subject("POETRY") == "Poetry"
 
 
 def test_timeline_summaries_never_carry_free_text():
@@ -102,8 +117,12 @@ def test_a2ui_builders_match_the_committed_sample():
         "recs": builders.recommendations(headline="Picked for you", subtitle="Recommender", books=books, first=True),
         "recs_update": builders.recommendations(headline="More picks", subtitle="Recommender", books=books[:1],
                                                 first=False),
-        "taste": builders.taste_profile(summary="Likes fantasy.", likes=["fantasy"], dislikes=["horror"],
-                                        languages=["eng"], first=True),
+        "taste": builders.taste_profile(summary="Likes fantasy.", likes=["fantasy ×2", "poetry"], dislikes=["horror"],
+                                        languages=["eng"], fresh=["poetry"], notes_session=3, notes_total=7,
+                                        first=True),
+        "taste_recs": builders.taste_recommendations(headline="Based on your taste",
+                                                     subtitle="Researcher → recommender",
+                                                     books=[{**books[0], "tag": "fantasy"}], first=True),
         "cart_hold": builders.cart_hold(expires_at=1_800_000_000.0, item_count=2, total_cents=5480, expired=False,
                                         first=True),
         "delete": builders.delete_surface("recs"),
@@ -122,4 +141,5 @@ def test_action_parsing_is_a_closed_set():
     ok = {"version": "1.0", "action": {"name": "add_to_cart", "surfaceId": "recs", "context": {"book_id": "OL1W"}}}
     assert builders.parse_action(ok) == ("add_to_cart", {"book_id": "OL1W"}, "recs")
     assert builders.parse_action({"action": {"name": "checkout", "context": {}}}) is None
+    assert builders.parse_action({"action": {"name": "forget_taste", "context": {}}}) == ("forget_taste", {}, None)
     assert builders.parse_action("add_to_cart") is None

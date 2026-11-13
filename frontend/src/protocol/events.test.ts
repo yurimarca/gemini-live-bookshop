@@ -1,12 +1,32 @@
 import { describe, expect, it } from 'vitest'
 import { createResampler } from '../audio/resample'
 import { LiveSocket } from '../voice/socket'
-import { CloseCode, closeKind, parseServerEvent, shouldRetry, type ServerEvent } from './events'
+import { formatPrice } from '../lib/format'
+import { CloseCode, catalogPath, closeKind, parseServerEvent, shouldRetry, type ServerEvent } from './events'
 
 describe('protocol parsing', () => {
   it('parses known events and keeps snake_case fields', () => {
     const event = parseServerEvent('{"type":"tool.started","seq":3,"ts":1.5,"call_id":"c1","agent":"voice","tool":"search_books","behavior":"BLOCKING","runs_on":"gateway"}')
     expect(event).toMatchObject({ type: 'tool.started', call_id: 'c1', seq: 3 })
+  })
+
+  it('parses the page-driving events the voice agent sends', () => {
+    expect(parseServerEvent('{"type":"ui.locale","locale":"pt-BR","seq":1,"ts":1}')).toMatchObject({ locale: 'pt-BR' })
+    expect(parseServerEvent('{"type":"ui.navigate","path":"/","params":{"subject":"Poetry","lang":"por"},"seq":2,"ts":1}'))
+      .toMatchObject({ params: { subject: 'Poetry', lang: 'por' } })
+    expect(parseServerEvent('{"type":"ui.command","command":"highlight_book","book_id":"OL1W","seq":3,"ts":1}')).not.toBeNull()
+  })
+
+  it('builds catalog URLs from known filter keys only', () => {
+    expect(catalogPath({ subject: 'Science Fiction', lang: 'eng', sort: 'year_new' })).toBe('/?subject=Science+Fiction&lang=eng&sort=year_new')
+    expect(catalogPath({ q: 'machado', sort: 'popular' })).toBe('/?q=machado')
+    expect(catalogPath({})).toBe('/')
+    expect(catalogPath({ q: 'x', next: '//evil.example' } as never)).toBe('/?q=x')
+  })
+
+  it('formats one fictional number as $ in English and R$ in Portuguese, never converted', () => {
+    expect(formatPrice(1290, 'en')).toBe('$12.90')
+    expect(formatPrice(1290, 'pt-BR')).toBe('R$\u00a012,90')
   })
 
   it('drops unknown or malformed frames instead of throwing', () => {

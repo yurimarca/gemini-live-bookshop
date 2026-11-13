@@ -5,7 +5,8 @@ from __future__ import annotations
 import re
 import unicodedata
 
-from .schemas import Candidate, Pick, ProfileRequest, ProfileResult, RecommendRequest, RecommendResult, Taste
+from .schemas import (Angle, Candidate, Pick, ProfileRequest, ProfileResult, RecommendRequest, RecommendResult,
+                      ResearchRequest, ResearchResult, Taste)
 
 MAX_TAGS = 8
 _TOKEN = re.compile(r"[a-z0-9]+")
@@ -107,6 +108,34 @@ def profile(req: ProfileRequest) -> ProfileResult:
     )
     taste.summary = summarize(taste, req.locale)
     return ProfileResult(taste=taste, source="heuristic")
+
+
+def research(req: ResearchRequest) -> ResearchResult:
+    """Search angles from the strongest likes: one per like, plus the top two combined."""
+    likes = [like for like in req.taste.likes if _tokens(like)]
+    pt = req.locale == "pt-BR"
+    angles = [Angle(label=(f"Mais {like}" if pt else f"More {like}")[:60], query=like[:60], tag=like[:40])
+              for like in likes[:3]]
+    if len(likes) >= 2 and len(angles) < req.max_angles:
+        a, b = likes[0], likes[1]
+        angles.append(Angle(label=f"{a} + {b}"[:60], query=f"{a} {b}"[:60], tag=a[:40]))
+    return ResearchResult(angles=angles[:req.max_angles], source="heuristic")
+
+
+def clean_llm_research(result: ResearchResult, req: ResearchRequest) -> ResearchResult | None:
+    """Keep angles whose tag is a real like and whose query has search words. None means: use the heuristic."""
+    likes = {_fold(like).strip(): like for like in req.taste.likes}
+    angles, seen = [], set()
+    for angle in result.angles:
+        tag = likes.get(_fold(angle.tag).strip())
+        key = _fold(angle.query).strip()
+        if tag is None or not _tokens(angle.query) or key in seen:
+            continue
+        seen.add(key)
+        angles.append(Angle(label=angle.label.strip()[:60] or tag, query=angle.query.strip()[:60], tag=tag))
+    if not angles:
+        return None
+    return ResearchResult(angles=angles[:req.max_angles], source="llm")
 
 
 def clean_llm_recommendation(result: RecommendResult, req: RecommendRequest) -> RecommendResult | None:

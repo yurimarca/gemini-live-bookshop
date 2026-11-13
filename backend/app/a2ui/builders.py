@@ -1,4 +1,4 @@
-"""A2UI v1.0 envelopes for the three specialist surfaces.
+"""A2UI v1.0 envelopes for the four specialist surfaces.
 
 The gateway builds every envelope from validated specialist output. Neither the
 voice model nor a specialist model writes A2UI JSON, so an agent can only ever
@@ -18,9 +18,10 @@ from typing import Any
 A2UI_VERSION = "1.0"
 CATALOG_ID = "urn:bookshop:catalog:v1"
 SURFACE_RECS = "recs"
+SURFACE_TASTE_RECS = "taste-recs"
 SURFACE_TASTE = "taste"
 SURFACE_CART_HOLD = "cart-hold"
-ALLOWED_ACTIONS = frozenset({"add_to_cart", "open_book", "dismiss"})
+ALLOWED_ACTIONS = frozenset({"add_to_cart", "open_book", "dismiss", "forget_taste"})
 
 
 def _msg(kind: str, body: dict[str, Any]) -> dict[str, Any]:
@@ -43,37 +44,55 @@ def delete_surface(surface_id: str) -> list[dict[str, Any]]:
     return [_msg("deleteSurface", {"surfaceId": surface_id})]
 
 
-def recommendations(*, headline: str, subtitle: str, books: list[dict[str, Any]], first: bool) -> list[dict[str, Any]]:
-    """``books`` items: id, title, author, cover_id, price_cents, reason."""
+def _shelf(surface_id: str, *, headline: str, subtitle: str, books: list[dict[str, Any]], first: bool,
+           tagged: bool) -> list[dict[str, Any]]:
     messages: list[dict[str, Any]] = []
     if first:
-        messages.append(_create(SURFACE_RECS))
-        messages.append(_msg("updateComponents", {"surfaceId": SURFACE_RECS, "components": [
+        card = {"id": "rec_card", "component": "BookCard", "bookId": {"@path": "id"}, "title": {"@path": "title"},
+                "author": {"@path": "author"}, "coverId": {"@path": "cover_id"},
+                "priceCents": {"@path": "price_cents"}, "reason": {"@path": "reason"},
+                "onAdd": _event("add_to_cart", {"book_id": {"@path": "id"}}),
+                "onOpen": _event("open_book", {"book_id": {"@path": "id"}})}
+        if tagged:
+            card["tag"] = {"@path": "tag"}
+        messages.append(_create(surface_id))
+        messages.append(_msg("updateComponents", {"surfaceId": surface_id, "components": [
             {"id": "root", "component": "BookShelf", "title": {"@path": "/title"}, "subtitle": {"@path": "/subtitle"},
              "children": {"componentId": "rec_card", "path": "/books"},
-             "onDismiss": _event("dismiss", {"surface": SURFACE_RECS})},
-            {"id": "rec_card", "component": "BookCard", "bookId": {"@path": "id"}, "title": {"@path": "title"},
-             "author": {"@path": "author"}, "coverId": {"@path": "cover_id"}, "priceCents": {"@path": "price_cents"},
-             "reason": {"@path": "reason"},
-             "onAdd": _event("add_to_cart", {"book_id": {"@path": "id"}}),
-             "onOpen": _event("open_book", {"book_id": {"@path": "id"}})},
+             "onDismiss": _event("dismiss", {"surface": surface_id})},
+            card,
         ]}))
-    messages.append(_data(SURFACE_RECS, {"title": headline, "subtitle": subtitle, "books": books}))
+    messages.append(_data(surface_id, {"title": headline, "subtitle": subtitle, "books": books}))
     return messages
 
 
-def taste_profile(*, summary: str, likes: list[str], dislikes: list[str], languages: list[str],
-                  first: bool) -> list[dict[str, Any]]:
+def recommendations(*, headline: str, subtitle: str, books: list[dict[str, Any]], first: bool) -> list[dict[str, Any]]:
+    """``books`` items: id, title, author, cover_id, price_cents, reason."""
+    return _shelf(SURFACE_RECS, headline=headline, subtitle=subtitle, books=books, first=first, tagged=False)
+
+
+def taste_recommendations(*, headline: str, subtitle: str, books: list[dict[str, Any]],
+                          first: bool) -> list[dict[str, Any]]:
+    """The researcher's shelf. ``books`` items also carry ``tag``: the profile tag the pick came from."""
+    return _shelf(SURFACE_TASTE_RECS, headline=headline, subtitle=subtitle, books=books, first=first, tagged=True)
+
+
+def taste_profile(*, summary: str, likes: list[str], dislikes: list[str], languages: list[str], fresh: list[str],
+                  notes_session: int, notes_total: int, first: bool) -> list[dict[str, Any]]:
+    """The whole stored profile. ``likes`` are chips ranked by weight; ``fresh`` names the chips just heard."""
     messages: list[dict[str, Any]] = []
     if first:
         messages.append(_create(SURFACE_TASTE))
         messages.append(_msg("updateComponents", {"surfaceId": SURFACE_TASTE, "components": [
             {"id": "root", "component": "TasteProfile", "summary": {"@path": "/summary"}, "likes": {"@path": "/likes"},
-             "dislikes": {"@path": "/dislikes"}, "languages": {"@path": "/languages"},
+             "dislikes": {"@path": "/dislikes"}, "languages": {"@path": "/languages"}, "fresh": {"@path": "/fresh"},
+             "notesSession": {"@path": "/notes_session"}, "notesTotal": {"@path": "/notes_total"},
+             "onForget": _event("forget_taste", {}),
              "onDismiss": _event("dismiss", {"surface": SURFACE_TASTE})},
         ]}))
     messages.append(_data(SURFACE_TASTE, {"summary": summary, "likes": likes, "dislikes": dislikes,
-                                          "languages": languages}))
+                                          "languages": languages, "fresh": fresh, "notes_session": notes_session,
+                                          "notes_total": notes_total}))
     return messages
 
 

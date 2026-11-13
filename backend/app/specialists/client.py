@@ -15,7 +15,8 @@ from typing import Protocol
 
 from ..config.settings import Settings
 from .core import heuristics
-from .core.schemas import ProfileRequest, ProfileResult, RecommendRequest, RecommendResult, Taste
+from .core.schemas import (ProfileRequest, ProfileResult, RecommendRequest, RecommendResult, ResearchRequest,
+                           ResearchResult, Taste)
 
 log = logging.getLogger(__name__)
 
@@ -25,6 +26,7 @@ class SpecialistClient(Protocol):
 
     async def recommend(self, req: RecommendRequest) -> RecommendResult: ...
     async def profile(self, req: ProfileRequest) -> ProfileResult: ...
+    async def research(self, req: ResearchRequest) -> ResearchResult: ...
 
 
 def _parse_recommend(text: str, req: RecommendRequest) -> RecommendResult | None:
@@ -46,6 +48,17 @@ def _parse_profile(text: str, req: ProfileRequest) -> ProfileResult | None:
     return ProfileResult(taste=taste, source="llm")
 
 
+def _parse_research(text: str, req: ResearchRequest) -> ResearchResult | None:
+    try:
+        raw = ResearchResult.model_validate({**json.loads(text), "source": "llm"})
+    except (ValueError, TypeError):
+        return None
+    return heuristics.clean_llm_research(raw, req)
+
+
+_BUILDERS = {"recommend": "build_recommender", "profile": "build_profiler", "research": "build_researcher"}
+
+
 class LocalSpecialists:
     """In-process ADK agents. With ``use_llm=False`` only the heuristic runs (tests, offline work)."""
 
@@ -61,7 +74,7 @@ class LocalSpecialists:
 
             from .core import agents
 
-            agent = agents.build_recommender(self._model) if kind == "recommend" else agents.build_profiler(self._model)
+            agent = getattr(agents, _BUILDERS[kind])(self._model)
             self._runners[kind] = InMemoryRunner(agent=agent, app_name=f"specialist_{kind}")
         return self._runners[kind]
 
@@ -98,6 +111,10 @@ class LocalSpecialists:
     async def profile(self, req: ProfileRequest) -> ProfileResult:
         text = await self._try("profile", req.model_dump_json())
         return (text and _parse_profile(text, req)) or heuristics.profile(req)
+
+    async def research(self, req: ResearchRequest) -> ResearchResult:
+        text = await self._try("research", req.model_dump_json())
+        return (text and _parse_research(text, req)) or heuristics.research(req)
 
 
 class AgentRuntimeSpecialists:
@@ -158,6 +175,10 @@ class AgentRuntimeSpecialists:
     async def profile(self, req: ProfileRequest) -> ProfileResult:
         text = await self._ask("profile", req.model_dump(mode="json"))
         return (text and _parse_profile(text, req)) or await self._fallback.profile(req)
+
+    async def research(self, req: ResearchRequest) -> ResearchResult:
+        text = await self._ask("research", req.model_dump(mode="json"))
+        return (text and _parse_research(text, req)) or await self._fallback.research(req)
 
 
 def build_specialists(settings: Settings) -> SpecialistClient:

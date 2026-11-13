@@ -89,6 +89,19 @@ describe('timeline reducer', () => {
     expect(state.rows.map((r) => r.callId)).toEqual(['c1', 'c1:recommender', 'c2'])
   })
 
+  it('nests researcher then recommender two levels deep, in start order', () => {
+    const state = play([
+      started('c1', { tool: 'research_for_taste' }), started('c2', { tool: 'search_books', behavior: 'BLOCKING' }),
+      started('c1:researcher', { agent: 'researcher', tool: 'plan_angles', parent_call_id: 'c1' }),
+      started('c1:researcher:recommender', { agent: 'recommender', tool: 'rank_candidates', parent_call_id: 'c1:researcher' }),
+      started('auto-1', { agent: 'researcher', tool: 'research_for_taste' }),
+      started('auto-1:recommender', { agent: 'recommender', tool: 'rank_candidates', parent_call_id: 'auto-1' }),
+    ])
+    expect(state.rows.map((r) => [r.callId, r.depth])).toEqual([
+      ['c1', 0], ['c1:researcher', 1], ['c1:researcher:recommender', 2], ['c2', 0], ['auto-1', 0], ['auto-1:recommender', 1],
+    ])
+  })
+
   it('ignores duplicate starts and events for unknown calls', () => {
     const state = play([started('c1'), started('c1'), { ...base, type: 'tool.finished', call_id: 'zz', status: 'ok', latency_ms: 1 }])
     expect(state.rows).toHaveLength(1)

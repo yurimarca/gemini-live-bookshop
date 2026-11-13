@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { loadCart } from './cart/actions'
 import { Layout } from './components/Layout'
 import { localeStore } from './i18n'
+import { MotionProvider } from './motion'
 import { AboutPage } from './pages/AboutPage'
 import { BookDetailPage } from './pages/BookDetailPage'
 import { CatalogPage } from './pages/CatalogPage'
@@ -17,15 +18,17 @@ export default function App() {
   }, [])
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<CatalogPage />} />
-          <Route path="/book/:olid" element={<BookDetailPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <MotionProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/" element={<CatalogPage />} />
+            <Route path="/book/:olid" element={<BookDetailPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </MotionProvider>
   )
 }

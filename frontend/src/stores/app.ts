@@ -40,8 +40,9 @@ export interface UiState {
   sheetOpen: boolean
   sheetTab: SheetTab
   focusSurface: string | null
+  highlight: { bookId: string; at: number } | null // a book the voice agent pointed at
 }
-export const uiStore = createStore<UiState>({ cartOpen: false, spotlight: null, sheetOpen: false, sheetTab: 'transcript', focusSurface: null })
+export const uiStore = createStore<UiState>({ cartOpen: false, spotlight: null, sheetOpen: false, sheetTab: 'transcript', focusSurface: null, highlight: null })
 export const patchUi = (patch: Partial<UiState>) => uiStore.set((s) => ({ ...s, ...patch }))
 
 // --- A2UI surfaces ------------------------------------------------------------------

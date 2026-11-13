@@ -2,6 +2,7 @@ import { A2uiSurface } from '@a2ui/react'
 import { useEffect, useRef, useSyncExternalStore } from 'react'
 import { useT } from '../i18n'
 import { useStore } from '../lib/store'
+import { AnimatePresence, Flash, enter, m } from '../motion'
 import { patchUi, surfacesStore, uiStore } from '../stores/app'
 import { getA2ui } from '../voice/controller'
 
@@ -36,13 +37,17 @@ export function AgentCanvas({ compact = false }: { compact?: boolean }) {
         <p className="px-1 py-3 text-sm text-mist-600">{t.canvasEmpty}</p>
       ) : (
         <div className={compact ? 'flex flex-col gap-3' : 'grid gap-3 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]'}>
-          {surfaces.map((surface, i) => (
-            <div key={surface.id} ref={(el) => { if (el) slots.current.set(surface.id, el); else slots.current.delete(surface.id) }}
-              data-updated={updatedAt[surface.id]}
-              className={`min-w-0 rounded-xl transition-shadow duration-500 ${focus === surface.id ? 'ring-2 ring-brand-coral' : ''} ${!compact && i === 0 && surface.id === 'recs' ? 'xl:row-span-2' : ''}`}>
-              <A2uiSurface surface={surface} />
-            </div>
-          ))}
+          <AnimatePresence initial={false}>
+            {surfaces.map((surface, i) => (
+              // A new card fades and rises in; an update in place only flashes a ring over it.
+              <m.div key={surface.id} {...enter} ref={(el: HTMLDivElement | null) => { if (el) slots.current.set(surface.id, el); else slots.current.delete(surface.id) }}
+                data-updated={updatedAt[surface.id]}
+                className={`relative min-w-0 rounded-xl transition-shadow duration-500 ${focus === surface.id ? 'ring-2 ring-brand-coral' : ''} ${!compact && i === 0 && surface.id.endsWith('recs') ? 'xl:row-span-2' : ''}`}>
+                <A2uiSurface surface={surface} />
+                {updatedAt[surface.id] ? <Flash flashKey={updatedAt[surface.id]} /> : null}
+              </m.div>
+            ))}
+          </AnimatePresence>
         </div>
       )}
     </section>

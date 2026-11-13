@@ -35,7 +35,7 @@ class Settings(BaseSettings):
     tasks_service_account: str = ""
     public_base_url: str = ""
     specialists_backend: Literal["local", "agent_runtime"] = "local"
-    specialists_llm: Literal["on", "off"] = "on"
+    specialists_llm: Literal["on", "off"] = "off"
     specialists_agent_resource: str = ""
     specialist_timeout_seconds: float = 12.0
     allowed_origins: list[str] | str = "http://localhost:5173"
@@ -56,7 +56,8 @@ class Settings(BaseSettings):
     cart_hold_seconds: int = 600
     cart_max_items: int = 10
     cart_max_quantity: int = 5
-    announce_cart_expiry: bool = False  # needs spike 2 (unsolicited content) before it is turned on
+    announce_cart_expiry: bool = True  # spike 2: injected text is spoken; the gateway writes the line
+    auto_research_after_notes: int = 3  # run the researcher after this many new taste notes; 0 turns it off
 
     @field_validator("allowed_origins", mode="before")
     @classmethod

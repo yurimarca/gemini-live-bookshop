@@ -19,6 +19,7 @@ from google.adk.tools import BaseTool, ToolContext
 from google.genai import types
 
 from .. import services
+from ..catalog.search import normalize_language
 from . import timeline
 
 log = logging.getLogger(__name__)
@@ -35,6 +36,21 @@ def _book_id(v: Any) -> bool:
 
 def _int_between(low: int, high: int) -> Callable[[Any], bool]:
     return lambda v: isinstance(v, int) and not isinstance(v, bool) and low <= v <= high
+
+
+def _one_of(*allowed: str) -> Callable[[Any], bool]:
+    return lambda v: isinstance(v, str) and v in allowed
+
+
+def _language(v: Any) -> bool:
+    return isinstance(v, str) and (v == "" or normalize_language(v) is not None)
+
+
+def _subject(v: Any) -> bool:
+    """Empty, or a category that exists in the loaded catalog."""
+    if not isinstance(v, str) or len(v) > 60:
+        return False
+    return v.strip() == "" or services.get().catalog.subject(v) is not None
 
 
 def _list_of(item: Callable[[Any], bool], max_len: int) -> Callable[[Any], bool]:
@@ -60,7 +76,13 @@ POLICIES: dict[str, ToolPolicy] = {
     "show_books": ToolPolicy({"book_ids": _list_of(_book_id, 6), "title": _text(60)}, frozenset({"book_ids"})),
     "open_book": ToolPolicy({"book_id": _book_id}, frozenset({"book_id"}), frozenset({"book_id"})),
     "open_cart": ToolPolicy({}),
+    "highlight_book": ToolPolicy({"book_id": _book_id}, frozenset({"book_id"}), frozenset({"book_id"})),
+    "set_language": ToolPolicy({"locale": _one_of("en", "pt-BR")}, frozenset({"locale"}), frozenset({"locale"})),
+    "browse_catalog": ToolPolicy({"query": _text(120), "subject": _subject, "language": _language,
+                                  "sort": _one_of("", "popular", "year_new", "year_old")},
+                                 visible=frozenset({"subject", "language", "sort"})),
     "recommend_books": ToolPolicy({"request": _text(500)}, frozenset({"request"})),
+    "research_for_taste": ToolPolicy({}),
     "note_taste": ToolPolicy({"likes": _list_of(_text(40), 8), "dislikes": _list_of(_text(40), 8),
                               "languages": _list_of(_text(8), 4)}),
 }

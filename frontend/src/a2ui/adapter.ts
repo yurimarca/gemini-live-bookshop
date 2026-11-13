@@ -8,8 +8,8 @@ import { A2UI_VERSION, bookshopCatalog, CATALOG_ID } from './catalog'
 export type Surface = Parameters<typeof import('@a2ui/react').A2uiSurface>[0]['surface']
 export type ActionSender = (message: Record<string, unknown>) => void
 
-export const SURFACE_ORDER = ['recs', 'taste', 'cart-hold']
-export const ALLOWED_ACTIONS = new Set(['add_to_cart', 'open_book', 'dismiss'])
+export const SURFACE_ORDER = ['recs', 'taste-recs', 'taste', 'cart-hold']
+export const ALLOWED_ACTIONS = new Set(['add_to_cart', 'open_book', 'dismiss', 'forget_taste'])
 
 /** Capabilities sent in session.start, so the gateway knows what this page can render. */
 export const rendererCapabilities = { [A2UI_VERSION]: { supportedCatalogIds: [CATALOG_ID] } }

@@ -1,11 +1,13 @@
 import { Check, Plus } from 'lucide-react'
+import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { DemoPriceTag } from '../a2ui/catalog'
 import { setCartQuantity } from '../cart/actions'
 import { useLocale, useT } from '../i18n'
 import { LANGUAGE_NAMES } from '../lib/format'
 import { useStore } from '../lib/store'
-import { cartStore } from '../stores/app'
+import { Flash, useReducedMotion } from '../motion'
+import { cartStore, uiStore } from '../stores/app'
 import { displayTitle } from '../stores/catalog'
 import type { IndexEntry } from '../types/catalog'
 import { Cover } from './Cover'
@@ -34,11 +36,24 @@ export function AddToCartButton({ bookId, compact = false }: { bookId: string; c
   )
 }
 
+/** The voice agent pointed at this book: scroll it into view (never focus it) and pulse once. */
+function useHighlight(bookId: string) {
+  const highlight = useStore(uiStore, (s) => (s.highlight?.bookId === bookId ? s.highlight.at : null))
+  const reduced = useReducedMotion()
+  const ref = useRef<HTMLElement>(null)
+  useEffect(() => {
+    if (highlight !== null) ref.current?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' })
+  }, [highlight, reduced])
+  return { ref, highlight }
+}
+
 export function BookGridCard({ book, eager = false }: { book: IndexEntry; eager?: boolean }) {
   const locale = useLocale()
   const title = displayTitle(book, locale)
+  const { ref, highlight } = useHighlight(book.id)
   return (
-    <article className="flex flex-col gap-1.5">
+    <article ref={ref} className="relative flex flex-col gap-1.5">
+      {highlight !== null ? <Flash flashKey={highlight} className="-inset-1.5 rounded-lg" /> : null}
       <Link to={`/book/${book.id}`} className="group focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-coral">
         <Cover coverId={book.cover_id} title={title} eager={eager} />
         <h3 className="mt-2 line-clamp-2 text-sm font-medium leading-snug text-mist-900 group-hover:text-brand-red">{title}</h3>

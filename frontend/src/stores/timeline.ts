@@ -4,6 +4,7 @@ import type { AgentName, Behavior, RunsOn, Scheduling, ServerEvent, ToolStatus }
 export interface TimelineRow {
   callId: string
   parentCallId: string | null
+  depth: number // 0 for a voice call, +1 per nesting level (researcher → recommender)
   agent: AgentName
   tool: string
   behavior: Behavior
@@ -31,7 +32,7 @@ export function timelineReducer(state: TimelineState, event: ToolEvent | { type:
   if (event.type === 'tool.started') {
     if (index !== -1) return state // a duplicate start
     const row: TimelineRow = {
-      callId: event.call_id, parentCallId: event.parent_call_id ?? null, agent: event.agent, tool: event.tool,
+      callId: event.call_id, parentCallId: event.parent_call_id ?? null, depth: 0, agent: event.agent, tool: event.tool,
       behavior: event.behavior, runsOn: event.runs_on, schedulingRequested: event.scheduling_requested ?? null,
       schedulingEffective: null, argsSummary: event.args_summary ?? null, stage: null, status: 'running',
       startedAt: event.ts, latencyMs: null, summary: null,
@@ -39,7 +40,13 @@ export function timelineReducer(state: TimelineState, event: ToolEvent | { type:
     const rows = state.rows.slice()
     const parent = row.parentCallId ? rows.findIndex((r) => r.callId === row.parentCallId) : -1
     if (parent === -1) rows.push(row)
-    else rows.splice(parent + 1, 0, row)
+    else {
+      // After the parent and any rows already nested under it, so the tree reads top to bottom.
+      row.depth = rows[parent].depth + 1
+      let at = parent + 1
+      while (at < rows.length && rows[at].depth > rows[parent].depth) at += 1
+      rows.splice(at, 0, row)
+    }
     return { rows: rows.slice(-MAX_ROWS) }
   }
   if (index === -1) return state

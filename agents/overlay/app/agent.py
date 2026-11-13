@@ -1,7 +1,7 @@
 """Root agent of the ``bookshop-specialists`` deployment on Agent Runtime.
 
-One deployment, two specialists, and a deterministic router in front of them: the gateway
-sends ``{"kind": "recommend" | "profile", "payload": {...}}`` and no LLM decides where it goes.
+One deployment, three specialists, and a deterministic router in front of them: the gateway
+sends ``{"kind": "recommend" | "profile" | "research", "payload": {...}}`` and no LLM decides where it goes.
 The specialist code itself lives in ``app/core`` and is copied from the gateway by
 ``agents/sync.sh``, so both hosts run exactly the same prompts, schemas and fallbacks.
 """

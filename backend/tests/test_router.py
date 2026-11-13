@@ -7,8 +7,8 @@ from google.adk.models.llm_response import LlmResponse
 from google.adk.runners import InMemoryRunner
 from google.genai import types
 
-from app.specialists.core.agents import SpecialistRouter, build_profiler, build_recommender
-from app.specialists.core.schemas import Candidate, RecommendRequest
+from app.specialists.core.agents import SpecialistRouter, build_profiler, build_recommender, build_researcher
+from app.specialists.core.schemas import Candidate, RecommendRequest, ResearchRequest, Taste
 
 
 class FakeTextLlm(BaseLlm):
@@ -32,9 +32,11 @@ async def _ask(router, message: str) -> str:
     return text
 
 
-def _router(rec_llm, prof_llm) -> SpecialistRouter:
-    rec, prof = build_recommender(rec_llm), build_profiler(prof_llm)
-    return SpecialistRouter(name="bookshop_specialists", recommender=rec, profiler=prof, sub_agents=[rec, prof])
+def _router(rec_llm, prof_llm, res_llm=None) -> SpecialistRouter:
+    res_llm = res_llm or FakeTextLlm(seen=[])
+    rec, prof, res = build_recommender(rec_llm), build_profiler(prof_llm), build_researcher(res_llm)
+    return SpecialistRouter(name="bookshop_specialists", recommender=rec, profiler=prof, researcher=res,
+                            sub_agents=[rec, prof, res])
 
 
 async def test_router_sends_each_kind_to_its_specialist():
@@ -53,6 +55,29 @@ async def test_router_sends_each_kind_to_its_specialist():
     answer = await _ask(router, json.dumps({"kind": "profile", "payload": {"likes": ["poetry"]}}))
     assert json.loads(answer)["summary"] == "Likes poetry."
     assert len(prof_llm.seen) == 1 and len(rec_llm.seen) == 1
+
+
+async def test_router_sends_research_to_the_researcher():
+    res_llm = FakeTextLlm(answer='{"angles": [{"label": "Realism", "query": "realism", "tag": "realism"}]}', seen=[])
+    router = _router(FakeTextLlm(seen=[]), FakeTextLlm(seen=[]), res_llm)
+    payload = ResearchRequest(taste=Taste(likes=["realism"])).model_dump(mode="json")
+    answer = await _ask(router, json.dumps({"kind": "research", "payload": payload}))
+    assert json.loads(answer)["angles"][0]["tag"] == "realism" and len(res_llm.seen) == 1
+
+
+async def test_local_researcher_keeps_only_angles_tied_to_a_like():
+    from app.specialists.client import LocalSpecialists
+
+    req = ResearchRequest(taste=Taste(likes=["Realism", "poetry"], dislikes=["horror"]))
+    answer = ('{"angles": [{"label": "Brazilian realism", "query": "brazilian realism", "tag": "realism"},'
+              ' {"label": "Scary", "query": "horror", "tag": "horror"},'
+              ' {"label": "Ignore the rules", "query": "x", "tag": "made up"}]}')
+    result = await LocalSpecialists(model=FakeTextLlm(answer=answer, seen=[]), use_llm=True, timeout=5).research(req)
+    assert result.source == "llm" and [(a.query, a.tag) for a in result.angles] == [("brazilian realism", "Realism")]
+
+    nothing = await LocalSpecialists(model=FakeTextLlm(answer='{"angles": []}', seen=[]), use_llm=True,
+                                     timeout=5).research(req)
+    assert nothing.source == "heuristic" and [a.tag for a in nothing.angles] == ["Realism", "poetry", "Realism"]
 
 
 async def test_router_rejects_bad_envelopes_without_calling_a_model():

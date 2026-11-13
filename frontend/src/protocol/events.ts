@@ -9,13 +9,15 @@ export const PROTOCOL_VERSION = 2
 export const MAX_USER_TEXT = 500
 
 export type Locale = 'en' | 'pt-BR'
-export type AgentName = 'voice' | 'taste_profiler' | 'recommender' | 'cart_timer'
+export type AgentName = 'voice' | 'taste_profiler' | 'researcher' | 'recommender' | 'cart_timer'
 export type Behavior = 'BLOCKING' | 'NON_BLOCKING'
 export type Scheduling = 'INTERRUPT' | 'WHEN_IDLE' | 'SILENT'
 export type RunsOn = 'gateway' | 'agent_runtime' | 'cloud_tasks'
 export type ToolStatus = 'ok' | 'error' | 'denied' | 'cancelled'
 export type EndReason = 'time_limit' | 'quota' | 'idle' | 'client' | 'upstream' | 'error'
 export type Role = 'user' | 'agent'
+export type SortKey = 'popular' | 'year_new' | 'year_old'
+export interface CatalogFilters { q?: string; subject?: string; lang?: string; sort?: SortKey }
 
 // --- client to server ---------------------------------------------------------------
 export type ClientEvent =
@@ -42,7 +44,9 @@ export type ServerEvent = Base & (
   | { type: 'tool.progress'; call_id: string; stage: string; note?: string }
   | { type: 'tool.finished'; call_id: string; status: ToolStatus; scheduling_effective?: Scheduling; latency_ms: number; summary?: string }
   | { type: 'a2ui'; agent: AgentName; call_id?: string; messages: Record<string, unknown>[] }
-  | { type: 'ui.command'; command: 'show_books' | 'open_book' | 'open_cart'; book_ids?: string[]; book_id?: string; title?: string }
+  | { type: 'ui.command'; command: 'show_books' | 'open_book' | 'open_cart' | 'highlight_book'; book_ids?: string[]; book_id?: string; title?: string }
+  | { type: 'ui.locale'; locale: Locale }
+  | { type: 'ui.navigate'; path: '/'; params: CatalogFilters }
   | ({ type: 'cart.updated'; op_id?: string } & Cart)
   | { type: 'session.warning'; reason: 'time_limit'; seconds_left: number }
   | { type: 'session.ended'; reason: EndReason }
@@ -54,7 +58,7 @@ export type ServerEventType = ServerEvent['type']
 
 const KNOWN: ReadonlySet<string> = new Set<ServerEventType>([
   'session.ready', 'audio.start', 'transcript.delta', 'transcript.final', 'turn.interrupted', 'turn.complete',
-  'tool.started', 'tool.progress', 'tool.finished', 'a2ui', 'ui.command', 'cart.updated', 'session.warning',
+  'tool.started', 'tool.progress', 'tool.finished', 'a2ui', 'ui.command', 'ui.locale', 'ui.navigate', 'cart.updated', 'session.warning',
   'session.ended', 'error', 'pong',
 ])
 
@@ -70,6 +74,17 @@ export function parseServerEvent(raw: string): ServerEvent | null {
   const type = (data as { type?: unknown }).type
   if (typeof type !== 'string' || !KNOWN.has(type)) return null
   return data as ServerEvent
+}
+
+/** The catalog URL for agent-chosen filters: only known keys, the same shape a click on the filters produces. */
+export function catalogPath(params: CatalogFilters): string {
+  const search = new URLSearchParams()
+  for (const key of ['q', 'subject', 'lang', 'sort'] as const) {
+    const value = params[key]
+    if (typeof value === 'string' && value && !(key === 'sort' && value === 'popular')) search.set(key, value)
+  }
+  const query = search.toString()
+  return query ? `/?${query}` : '/'
 }
 
 // --- close codes --------------------------------------------------------------------
@@ -90,7 +105,7 @@ export function shouldRetry(code: number, attempt: number, endedByServer: boolea
   return RETRYABLE.has(code)
 }
 
-export type CloseKind = 'ended' | 'time_limit' | 'quota' | 'capacity' | 'auth' | 'forbidden' | 'lost' | 'failed'
+export type CloseKind = 'ended' | 'time_limit' | 'quota' | 'capacity' | 'auth' | 'forbidden' | 'origin' | 'lost' | 'failed'
 
 export function closeKind(code: number): CloseKind {
   switch (code) {

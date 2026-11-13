@@ -6,12 +6,13 @@
  */
 import { Catalog, CommonSchemas } from '@a2ui/web_core/v1_0'
 import { createComponentImplementation } from '@a2ui/react'
-import { X } from 'lucide-react'
+import { Heart, X } from 'lucide-react'
 import { z } from 'zod'
 import { Cover } from '../components/Cover'
 import { useT, useLocale } from '../i18n'
 import { formatClock, formatPrice, LANGUAGE_NAMES } from '../lib/format'
 import { useNow } from '../lib/useNow'
+import { Flash } from '../motion'
 
 export const CATALOG_ID = 'urn:bookshop:catalog:v1'
 export const A2UI_VERSION = '1.0'
@@ -82,7 +83,7 @@ const BookCard = createComponentImplementation(
     schema: z.object({
       bookId: CommonSchemas.DynamicString, title: CommonSchemas.DynamicString, author: CommonSchemas.DynamicString,
       coverId: CommonSchemas.DynamicNumber.optional(), priceCents: CommonSchemas.DynamicNumber,
-      reason: CommonSchemas.DynamicString.optional(),
+      reason: CommonSchemas.DynamicString.optional(), tag: CommonSchemas.DynamicString.optional(),
       onAdd: CommonSchemas.Action.optional(), onOpen: CommonSchemas.Action.optional(),
     }).strict(),
   },
@@ -96,6 +97,12 @@ const BookCard = createComponentImplementation(
           <span className="mt-1.5 line-clamp-2 text-sm font-medium leading-snug text-mist-900 group-hover:text-brand-red">{title}</span>
         </button>
         <span className="truncate text-xs text-mist-700">{String(props.author ?? '')}</span>
+        {props.tag ? (
+          <span className="inline-flex max-w-full items-center gap-1 self-start rounded-full bg-success-light px-2 py-0.5 text-[11px] text-success-foreground" title={t.tasteFrom(String(props.tag))}>
+            <Heart className="h-3 w-3 shrink-0" aria-hidden /><span className="sr-only">{t.tasteFrom(String(props.tag))}</span>
+            <span aria-hidden className="truncate">{String(props.tag)}</span>
+          </span>
+        ) : null}
         {props.reason ? <p className="line-clamp-3 text-xs italic text-mist-700">{String(props.reason)}</p> : null}
         <div className="mt-auto flex flex-col gap-1.5 pt-1">
           <DemoPriceTag cents={Number(props.priceCents) || 0} />
@@ -109,13 +116,19 @@ const BookCard = createComponentImplementation(
   },
 )
 
-function Chips({ label, items, tone }: { label: string; items: string[]; tone: 'like' | 'avoid' | 'plain' }) {
+/** Chips in the order given (strongest first). A chip just heard gets a ring that fades out. */
+function Chips({ label, items, tone, fresh = [] }: { label: string; items: string[]; tone: 'like' | 'avoid' | 'plain'; fresh?: string[] }) {
   if (items.length === 0) return null
   const color = tone === 'like' ? 'bg-success-light text-success-foreground' : tone === 'avoid' ? 'bg-error-light text-error-foreground' : 'bg-mist-100 text-mist-700'
   return (
     <div className="flex flex-wrap items-center gap-1.5">
       <span className="text-[11px] uppercase tracking-wide text-mist-600">{label}</span>
-      {items.map((item) => <span key={item} className={`rounded-full px-2 py-0.5 text-xs ${color}`}>{item}</span>)}
+      {items.map((item) => (
+        <span key={item} className={`relative rounded-full px-2 py-0.5 text-xs ${color} ${fresh.includes(item) ? 'font-semibold' : ''}`}>
+          {item}
+          {fresh.includes(item) ? <Flash flashKey={item} className="inset-0 rounded-full" /> : null}
+        </span>
+      ))}
     </div>
   )
 }
@@ -127,20 +140,33 @@ const TasteProfile = createComponentImplementation(
     name: 'TasteProfile',
     schema: z.object({
       summary: CommonSchemas.DynamicString, likes: CommonSchemas.DynamicStringList, dislikes: CommonSchemas.DynamicStringList,
-      languages: CommonSchemas.DynamicStringList, onDismiss: CommonSchemas.Action.optional(),
+      languages: CommonSchemas.DynamicStringList, fresh: CommonSchemas.DynamicStringList.optional(),
+      notesSession: CommonSchemas.DynamicNumber.optional(), notesTotal: CommonSchemas.DynamicNumber.optional(),
+      onForget: CommonSchemas.Action.optional(), onDismiss: CommonSchemas.Action.optional(),
     }).strict(),
   },
   ({ props }) => {
     const t = useT()
     const locale = useLocale()
     const languages = strings(props.languages).map((code) => LANGUAGE_NAMES[code]?.[locale] ?? code)
+    const fresh = strings(props.fresh)
+    const total = Number(props.notesTotal) || 0
     return (
       <CardFrame title={t.tasteTitle} agent={t.agent_taste_profiler} onDismiss={props.onDismiss as Run}>
         <p className="mb-2 text-sm text-mist-900">{String(props.summary ?? '')}</p>
         <div className="flex flex-col gap-1.5">
-          <Chips label={t.tasteLikes} items={strings(props.likes)} tone="like" />
-          <Chips label={t.tasteAvoids} items={strings(props.dislikes)} tone="avoid" />
+          <Chips label={t.tasteLikes} items={strings(props.likes)} tone="like" fresh={fresh} />
+          <Chips label={t.tasteAvoids} items={strings(props.dislikes)} tone="avoid" fresh={fresh} />
           <Chips label={t.tasteReads} items={languages} tone="plain" />
+        </div>
+        <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 border-t border-mist-900/10 pt-2 text-[11px] text-mist-600">
+          {total > 0 ? <span className="tabular-nums">{t.tasteNotes(Number(props.notesSession) || 0, total)}</span> : <span />}
+          {props.onForget ? (
+            <button type="button" onClick={run(props.onForget as Run)} title={t.tasteKept}
+              className="rounded px-1 font-medium text-brand-red underline underline-offset-2 hover:text-brand-coral focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-coral">
+              {t.tasteForget}
+            </button>
+          ) : null}
         </div>
       </CardFrame>
     )

@@ -16,6 +16,7 @@ from .catalog.repository import CatalogRepository
 from .config.settings import Settings
 from .live.session_bus import SessionRegistry
 from .specialists.client import SpecialistClient
+from .taste.profile import TasteStore
 
 
 @dataclass
@@ -26,6 +27,7 @@ class Services:
     quota: QuotaService
     specialists: SpecialistClient
     hold_timer: HoldTimer
+    taste: TasteStore
     registry: SessionRegistry = field(default_factory=SessionRegistry)
 
 

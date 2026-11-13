@@ -5,7 +5,7 @@ def test_fixture_matches_the_contract(fixture_books):
     assert len(fixture_books) == 30
     books = [CatalogBook.model_validate(b) for b in fixture_books]
     assert len({b.id for b in books}) == 30
-    assert all(b.price_is_fictional and b.currency == "USD" for b in books)
+    assert all(b.price_is_fictional for b in books)
     assert any("portuguese_language" in b.segments for b in books)
     assert any("brazilian_author" in b.segments for b in books)
 

@@ -61,7 +61,6 @@ SELECT
   ) AS segments,
   edition,
   ${cfg.priceCents("work_key")} AS price_cents,
-  'USD' AS currency,
   TRUE AS price_is_fictional,
   IF(rating_count > 0, STRUCT(ROUND(rating_average, 2) AS average, rating_count AS count), NULL) AS rating,
   STRUCT(

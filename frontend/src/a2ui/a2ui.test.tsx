@@ -93,6 +93,37 @@ describe('bookshop A2UI catalog', () => {
     expect(host.textContent).toContain('2 copies')
   })
 
+  it('labels the same number in dollars in English and in reais in Portuguese', () => {
+    session.process(sample.recs as Messages)
+    render()
+    expect(host.textContent).toContain('$15.90')
+    act(() => setLocale('pt-BR'))
+    expect(host.textContent).toContain('R$\u00a015,90')
+    expect(host.textContent).not.toContain('$15.90')
+    expect(host.textContent?.match(/preço fictício/g)).toHaveLength(2)
+  })
+
+  it('shows the whole taste profile: ranked chips, counts, and a forget action', async () => {
+    session.process(sample.taste as Messages)
+    render()
+    const chips = Array.from(host.querySelectorAll('span.rounded-full')).map((s) => s.textContent)
+    expect(chips.slice(0, 2)).toEqual(['fantasy ×2', 'poetry'])
+    expect(host.textContent).toContain('3 notes this session, 7 overall')
+    const forget = Array.from(host.querySelectorAll('button')).find((b) => b.textContent === 'Forget my taste')!
+    await act(async () => { forget.click() })
+    expect((sent[0].action as { name: string }).name).toBe('forget_taste')
+  })
+
+  it('renders the researcher shelf with the taste each pick came from', () => {
+    session.process(sample.taste as Messages)
+    session.process(sample.taste_recs as Messages)
+    session.process(sample.recs as Messages)
+    render()
+    expect(session.surfaces().map((s) => s.id)).toEqual(['recs', 'taste-recs', 'taste'])
+    expect(host.textContent).toContain('Based on your taste')
+    expect(host.textContent).toContain('For your taste in fantasy')
+  })
+
   it('deletes a surface', () => {
     session.process(sample.recs as Messages)
     session.process(sample.delete as Messages)

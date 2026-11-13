@@ -16,7 +16,7 @@ import logging
 from pathlib import Path
 
 from .models import CatalogBook, CatalogIndex, CatalogPointer, IndexEntry
-from .search import SearchIndex
+from .search import SearchIndex, fold
 
 log = logging.getLogger(__name__)
 
@@ -70,6 +70,14 @@ class CatalogRepository:
     @property
     def slim_json(self) -> bytes:
         return self._slim_json
+
+    def categories(self) -> list[str]:
+        return sorted({e.category for e in self.index.entries.values()})
+
+    def subject(self, value: str) -> str | None:
+        """The category that ``value`` names, ignoring case and accents."""
+        wanted = fold(value).strip()
+        return next((c for c in self.categories() if fold(c) == wanted), None) if wanted else None
 
     def entry(self, book_id: str) -> IndexEntry | None:
         return self.index.entries.get(book_id)
