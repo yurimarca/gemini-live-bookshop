@@ -45,6 +45,7 @@ class Settings(BaseSettings):
     google_cloud_location: str = "us-central1"
     live_model: str = "gemini-3.8-live"
     specialist_model: str = "gemini-3.5-flash"
+    specialist_location: str = "global"  # gemini-3.5-flash is not served in us-central1 (404); "" = GOOGLE_CLOUD_LOCATION
     voice_name: str = "Erinome"
 
     # Limits

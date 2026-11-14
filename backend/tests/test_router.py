@@ -106,3 +106,23 @@ async def test_local_specialists_use_the_model_and_fall_back_when_it_invents_a_b
 
     broken = LocalSpecialists(model=FakeTextLlm(answer="not json", seen=[]), use_llm=True, timeout=5)
     assert (await broken.recommend(req)).source == "heuristic"
+
+
+def test_specialist_model_pins_its_own_location():
+    from google.adk.models import Gemini
+
+    from app.specialists.core.agents import specialist_model
+
+    assert specialist_model("gemini-3.5-flash") == "gemini-3.5-flash"
+    pinned = specialist_model("gemini-3.5-flash", "global")
+    assert isinstance(pinned, Gemini)
+    assert pinned.model == "gemini-3.5-flash" and pinned.client_kwargs == {"location": "global"}
+    assert build_recommender(pinned).model is pinned
+
+
+def test_local_specialists_wrap_a_model_name_with_the_location():
+    from app.specialists.client import LocalSpecialists
+
+    specialists = LocalSpecialists(model="gemini-3.5-flash", use_llm=True, timeout=5, location="global")
+    runner = specialists._runner("recommend")
+    assert runner.agent.model.client_kwargs == {"location": "global"}

@@ -12,7 +12,7 @@ It is an open-source demo for developers, built around three technologies:
 
 ## Status
 
-The code is complete and tested locally against a 30-book fixture. It has not been deployed, and it has not yet talked to the real Live model: that needs a Google Cloud project and the spikes in [`spikes/`](spikes/README.md).
+Deployed and working on a private preview: the gateway runs on Cloud Run with a catalog of about 1,400 Open Library books (about 200 by Brazilian authors) published by the pipeline, and the page runs on Firebase Hosting. The voice agent, the three specialists (running inside the gateway) and the cart-expiry timer on Cloud Tasks all work against the real models. Not done yet: the specialists on Agent Runtime and the public launch.
 
 | Part | What it is | Local checks |
 |---|---|---|

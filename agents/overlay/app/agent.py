@@ -8,6 +8,7 @@ The specialist code itself lives in ``app/core`` and is copied from the gateway 
 
 import os
 
-from .core.agents import build_router
+from .core.agents import build_router, specialist_model
 
-root_agent = build_router(os.environ.get("SPECIALIST_MODEL", "gemini-3.5-flash"))
+root_agent = build_router(specialist_model(os.environ.get("SPECIALIST_MODEL", "gemini-3.5-flash"),
+                                           os.environ.get("SPECIALIST_LOCATION", "global")))

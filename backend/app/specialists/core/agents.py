@@ -12,6 +12,7 @@ from typing import AsyncGenerator
 from google.adk.agents import BaseAgent, LlmAgent
 from google.adk.agents.invocation_context import InvocationContext
 from google.adk.events import Event
+from google.adk.models import BaseLlm
 from google.genai import types
 from pydantic import BaseModel, Field
 
@@ -68,14 +69,28 @@ class RecommendOutput(BaseModel):
     picks: list[Pick]
 
 
-def build_recommender(model: str) -> LlmAgent:
+def specialist_model(name: str, location: str = "") -> str | BaseLlm:
+    """The specialists' model, optionally pinned to its own Vertex location.
+
+    Some text models answer only on the ``global`` endpoint while the live model needs a region
+    (``gemini-3.5-flash``: 404 in us-central1, 200 on global, 2026-11-14). ``location`` overrides
+    ``GOOGLE_CLOUD_LOCATION`` for these agents only; project and credentials still come from the env.
+    """
+    if not location:
+        return name
+    from google.adk.models import Gemini
+
+    return Gemini(model=name, client_kwargs={"location": location})
+
+
+def build_recommender(model: str | BaseLlm) -> LlmAgent:
     return LlmAgent(
         name="recommender", model=model, instruction=RECOMMENDER_INSTRUCTION, output_schema=RecommendOutput,
         generate_content_config=types.GenerateContentConfig(temperature=0.4),
     )
 
 
-def build_profiler(model: str) -> LlmAgent:
+def build_profiler(model: str | BaseLlm) -> LlmAgent:
     return LlmAgent(
         name="taste_profiler", model=model, instruction=PROFILER_INSTRUCTION, output_schema=Taste,
         generate_content_config=types.GenerateContentConfig(temperature=0.2),
@@ -86,7 +101,7 @@ class ResearchOutput(BaseModel):
     angles: list[Angle]
 
 
-def build_researcher(model: str) -> LlmAgent:
+def build_researcher(model: str | BaseLlm) -> LlmAgent:
     return LlmAgent(
         name="researcher", model=model, instruction=RESEARCHER_INSTRUCTION, output_schema=ResearchOutput,
         generate_content_config=types.GenerateContentConfig(temperature=0.3),
@@ -128,11 +143,11 @@ class SpecialistRouter(BaseAgent):
             yield event
 
 
-def build_router(model: str) -> SpecialistRouter:
+def build_router(model: str | BaseLlm) -> SpecialistRouter:
     recommender, profiler, researcher = build_recommender(model), build_profiler(model), build_researcher(model)
     return SpecialistRouter(name="bookshop_specialists", recommender=recommender, profiler=profiler,
                             researcher=researcher, sub_agents=[recommender, profiler, researcher])
 
 
-__all__ = ["build_recommender", "build_profiler", "build_researcher", "build_router", "RecommendOutput",
+__all__ = ["specialist_model", "build_recommender", "build_profiler", "build_researcher", "build_router", "RecommendOutput",
            "ResearchOutput", "heuristics"]

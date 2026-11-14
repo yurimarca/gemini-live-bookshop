@@ -64,8 +64,8 @@ class LocalSpecialists:
 
     runs_on = "gateway"
 
-    def __init__(self, *, model: str, use_llm: bool, timeout: float) -> None:
-        self._model, self._use_llm, self._timeout = model, use_llm, timeout
+    def __init__(self, *, model, use_llm: bool, timeout: float, location: str = "") -> None:
+        self._model, self._use_llm, self._timeout, self._location = model, use_llm, timeout, location
         self._runners: dict[str, object] = {}
 
     def _runner(self, kind: str):
@@ -74,6 +74,8 @@ class LocalSpecialists:
 
             from .core import agents
 
+            if isinstance(self._model, str):
+                self._model = agents.specialist_model(self._model, self._location)
             agent = getattr(agents, _BUILDERS[kind])(self._model)
             self._runners[kind] = InMemoryRunner(agent=agent, app_name=f"specialist_{kind}")
         return self._runners[kind]
@@ -183,7 +185,7 @@ class AgentRuntimeSpecialists:
 
 def build_specialists(settings: Settings) -> SpecialistClient:
     local = LocalSpecialists(model=settings.specialist_model, use_llm=settings.specialists_llm == "on",
-                             timeout=settings.specialist_timeout_seconds)
+                             timeout=settings.specialist_timeout_seconds, location=settings.specialist_location)
     if settings.specialists_backend == "agent_runtime":
         return AgentRuntimeSpecialists(resource=settings.specialists_agent_resource,
                                        location=settings.google_cloud_location,
