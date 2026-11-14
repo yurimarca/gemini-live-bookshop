@@ -36,6 +36,8 @@ class SearchIndex:
         self.entries = {e.id: e for e in entries}
         self._postings: dict[str, dict[str, float]] = defaultdict(dict)
         self._by_popularity = [e.id for e in sorted(entries, key=lambda e: (-e.popularity, e.id))]
+        # Until the pipeline reads editions (r3), no book carries languages and a language filter matches nothing.
+        self.has_languages = any(e.languages for e in entries)
         for e in entries:
             fields = {
                 "title": " ".join(filter(None, [e.title, e.title_pt])),
@@ -63,7 +65,7 @@ class SearchIndex:
         return merged
 
     def search(self, query: str = "", *, subject: str | None = None, language: str | None = None,
-               segment: str | None = None, limit: int = 10) -> list[IndexEntry]:
+               segment: str | None = None, collection: str | None = None, limit: int = 10) -> list[IndexEntry]:
         lang = normalize_language(language)
         subject_folded = fold(subject).strip() if subject else None
 
@@ -71,6 +73,8 @@ class SearchIndex:
             if lang and lang not in e.languages:
                 return False
             if segment and segment not in e.segments:
+                return False
+            if collection and collection not in e.collections:
                 return False
             if subject_folded and subject_folded not in fold(e.category) and not any(
                     subject_folded in fold(s) for s in e.subjects):

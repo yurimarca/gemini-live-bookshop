@@ -17,7 +17,7 @@ export function loadCatalog(force = false): Promise<void> {
 }
 
 export type SortKey = 'popular' | 'year_new' | 'year_old'
-export interface CatalogQuery { q: string; subject: string; lang: string; sort: SortKey }
+export interface CatalogQuery { q: string; subject: string; lang: string; collection?: string; sort: SortKey }
 
 const haystacks = new WeakMap<IndexEntry, string>()
 function haystack(book: IndexEntry): string {
@@ -35,6 +35,7 @@ export function filterBooks(books: IndexEntry[], query: CatalogQuery): IndexEntr
   const filtered = books.filter((book) => {
     if (query.lang && !book.languages.includes(query.lang)) return false
     if (query.subject && book.category !== query.subject) return false
+    if (query.collection && !(book.collections ?? []).includes(query.collection)) return false
     const text = haystack(book)
     return words.every((word) => text.includes(word))
   })
@@ -44,6 +45,14 @@ export function filterBooks(books: IndexEntry[], query: CatalogQuery): IndexEntr
     case 'year_old': return filtered.sort((a, b) => year(a, Infinity) - year(b, Infinity))
     default: return filtered.sort((a, b) => b.popularity - a.popularity)
   }
+}
+
+export const COLLECTIONS = ['brazilian', 'classics'] as const
+
+/** Collections that at least one book is on, in a fixed order. */
+export function collectionsOf(books: IndexEntry[]): string[] {
+  const present = new Set(books.flatMap((b) => b.collections ?? []))
+  return COLLECTIONS.filter((c) => present.has(c))
 }
 
 export function categoriesOf(books: IndexEntry[]): string[] {

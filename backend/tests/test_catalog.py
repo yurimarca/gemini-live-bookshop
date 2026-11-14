@@ -54,3 +54,25 @@ async def test_get_returns_full_document_and_rejects_unknown_ids(svc):
     book = await svc.catalog.get("OL27482W")
     assert book.title == "The Hobbit" and book.price_is_fictional
     assert await svc.catalog.get("OL0W") is None
+
+
+def test_collection_filter(svc):
+    brazilian = svc.catalog.index.search("", collection="brazilian", limit=30)
+    assert brazilian and all("brazilian" in e.collections for e in brazilian)
+    assert {e.category for e in brazilian} != {"Brazilian Literature"}  # nationality is not a genre
+
+
+async def test_language_filter_is_refused_without_language_data(svc, monkeypatch):
+    from types import SimpleNamespace
+
+    from app.tools import shop_tools, ui_tools
+
+    monkeypatch.setattr(svc.catalog.index, "has_languages", False)
+    ctx = SimpleNamespace()
+    monkeypatch.setattr(shop_tools, "session_of", lambda _: SimpleNamespace(shown_book_ids=[]))
+    monkeypatch.setattr(ui_tools, "session_of", lambda _: SimpleNamespace())
+    found = await shop_tools.search_books(ctx, query="", language="pt")
+    assert found["count"] == 0 and found["note"] == shop_tools.LANGUAGES_UNAVAILABLE
+    shown = await ui_tools.browse_catalog(ctx, language="pt")
+    assert shown["status"] == "not_shown"
+    assert "languages" not in shop_tools._brief(svc.catalog.index.entries["OL27482W"].model_copy(update={"languages": []}))

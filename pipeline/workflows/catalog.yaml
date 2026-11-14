@@ -99,11 +99,16 @@ main:
         args: {project: "${project}", region: "${region}", dataset: ol_staging, table: seed_brazilian_authors,
                uris: ["${\"gs://\" + lake + \"/seeds/\" + revision + \"/brazilian_authors.csv\"}"],
                schema: "author_key:STRING,name:STRING,note:STRING", delimiter: ",", quote: "\"", skip: 1}
-    - load_seed_categories:
+    - load_seed_category_rules:
         call: load_table
-        args: {project: "${project}", region: "${region}", dataset: ol_staging, table: seed_subject_category_map,
-               uris: ["${\"gs://\" + lake + \"/seeds/\" + revision + \"/subject_category_map.csv\"}"],
-               schema: "priority:INT64,subject_contains:STRING,category:STRING", delimiter: ",", quote: "\"", skip: 1}
+        args: {project: "${project}", region: "${region}", dataset: ol_staging, table: seed_category_rules,
+               uris: ["${\"gs://\" + lake + \"/seeds/\" + revision + \"/category_rules.csv\"}"],
+               schema: "rule_id:INT64,category:STRING,applies:STRING,pattern:STRING,weight:INT64", delimiter: ",", quote: "\"", skip: 1}
+    - load_seed_category_gold:
+        call: load_table
+        args: {project: "${project}", region: "${region}", dataset: ol_staging, table: seed_category_gold,
+               uris: ["${\"gs://\" + lake + \"/seeds/\" + revision + \"/category_gold.csv\"}"],
+               schema: "work_id:STRING,title:STRING,expected:STRING", delimiter: ",", quote: "\"", skip: 1}
     - load_seed_overrides:
         call: load_table
         args: {project: "${project}", region: "${region}", dataset: ol_staging, table: seed_overrides,

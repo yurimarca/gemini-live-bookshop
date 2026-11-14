@@ -1,0 +1,37 @@
+rule_id,category,applies,pattern,weight
+1,_ignore,any,history and criticism|criticism and interpretation|study and teaching|\bin literature\b|translations (into|from)|fictitious character|^reading level|^accessible book|^protected daisy|^in library$|^large type|open.syllabus|new york times|^nyt:|staff picks|long now manual|award winner|great.books|^general$|bestseller|^literature$|language materials|adaptations|^readers$|textbooks|examinations|^illustrations$|translations$,0
+2,_nonfiction,any,\bnon-?fiction\b,0
+3,_fiction,any,\bfiction\b|ficci[oó]n|fic[cç][aã]o|\bnovels?\b|\bnovela\b|\bstories\b|\btales\b|\bromans?\b|^romance( brasileiro| portugu[eê]s| literature)?$|\bcontos?\b|\bcuentos\b|\bplays\b|^drama$|\bpoetry\b|\bpoems\b,0
+10,Science Fiction,any,science[ -]fiction|\bsci-fi\b,3
+11,Science Fiction,any,dystopia|space opera|cyberpunk,3
+12,Science Fiction,any,interplanetary|extraterrestrial|time travel|life on other planets|space warfare|human-alien|\brobots\b|\bandroids\b,1
+20,Fantasy,any,\bfantasy\b|\bfantastique\b|\bfantas[ií]a\b,3
+21,Fantasy,any,\b(wizards|dragons|elves|fairies|fairy tales|imaginary places|imaginary wars|magic|witches|quests)\b,2
+30,Mystery,any,\bdetective\b|\bmystery\b|\bmysteries\b|\bthrillers?\b|\bsuspense\b|crime (fiction|stories|novels)|fiction\W+crime|\bnoir\b|roman policier|\bpolicial\b,3
+31,Mystery,any,\bmurder\b|private investigators|\binvestigation\b|\bkidnapping\b|\bpolice\b,1
+40,Horror,any,\bhorror\b|\bterror\b,3
+41,Horror,any,ghost stories|\bvampires?\b|\bgothic\b|\bsupernatural\b|\bparanormal\b|\bmonsters\b,1
+50,Romance,any,love stories|romance fiction|fiction\W+romance|\bromance\W+(contemporary|historical|suspense|general|fantasy|paranormal)|(contemporary|dark|historical|paranormal|new adult) romance|love & romance|romantic (suspense|comedy),3
+51,Romance,any,enemies to lovers|forbidden love|second chance|\bromcom\b|man-woman relationships|\blove\b,1
+60,Historical Fiction,any,historical fiction|fiction\W+historical|romance hist[oó]rico|roman historique,3
+70,Adventure,any,adventure (stories|fiction)|action & adventure|sea stories|fiction\W+action,3
+71,Adventure,any,adventure and adventurers|\bsurvival\b|\bpirates\b|\bshipwrecks\b,1
+80,Children,any,^children's (fiction|stories|literature|books|poetry|songs)$|^juvenile (fiction|literature|works|poetry)$|picture books|stories in rhyme|ficci[oó]n juvenil|literatura infantil|cuentos infantiles|toy and movable|^juvenile fiction / |^children's|board books|bedtime,2
+81,Children,any,pour la jeunesse|^juvenile$|^children$|\bnursery\b|\bjeunesse\b|\bkinderbuch,1
+90,Young Adult,any,young adult|new adult|\bya fiction\b|juvenile fiction / (romance|dystopian|coming of age|social themes)|teen & young adult|\bgrades? (7|8|9|10|11|12)\b,5
+91,Young Adult,any,high schools|teenage (girls|boys)|\bteenagers\b|coming of age|\bteen\b|emotional problems of teenagers|\bdating \(social customs\),2
+100,Poetry,any,\bpoetry\b|\bpoems\b|\bpoesia\b|\bpoes[ií]a\b|\bsonnets\b|\bpo[eé]sie\b,3
+110,Drama,any,^drama$|^(english|american|french|german|spanish|italian|russian|greek|latin|brazilian|portuguese|norwegian|irish) drama\b|\bplays\b|\btragedies\b|\bcomedies\b|\bteatro\b|\btheater\b|\btheatre\b,3
+120,Comics,any,"^graphic novels?$|\bmanga\b|^comic books, strips, etc|\bsuperheroes\b|^comics?$|comics & graphic novels / |\bbandes dessin|^graphic novels?, |^comics \(graphic works\)",3
+121,Comics,any,\bcomics?\b|\bcartoons\b|graphic novels?,1
+150,Fiction,any,"fiction, literary|literary fiction|psychological fiction|fiction, psychological|domestic fiction|fiction, family life|bildungsroman|fiction, classics|fiction classics|classic(al)? literature|^classics?$|^cl[aá]ssicos?$|^literary$|fiction, general / literary|satire|allegories",2
+151,Fiction,any,"^fiction$|^fiction, general$|^general fiction$|^(english|american|french|german|russian|spanish|italian|brazilian|portuguese|irish|scottish|canadian|latin american|japanese|colombian|czech|austrian|african|nigerian|indian) (fiction|literature|novel)|^romance brasileiro$|^romance portugu[eê]s$|^novela|social classes|literature & fiction",1
+200,Biography,nonfiction,biograph|\bmemoirs?\b|\bdiaries\b|personal narratives|autobiograph|\bcorrespondence\b,5
+210,History,nonfiction,\bhistory\b|\bhistoria\b|world war|\bcivilization\b|\bhistoire\b|\bholocaust\b,3
+220,Philosophy,nonfiction,philosoph|\bethics\b|\bstoic|existentialism|\blogic\b|political science|\bpolitics\b|\bpower \(social sciences\),3
+230,Self-Help,nonfiction,self[- ]help|self-actualization|self-realization|personal (growth|development)|self-improvement|conduct of life|\bsuccess\b|\bhabits?\b|self-management|self-esteem|time management|\bhappiness\b|\bmotivation|applied psychology|psychologie appliqu|persuasion|interpersonal (relations|communication)|\bmindfulness\b|inspiration & personal growth|\bprocrastination\b|personal finance|\bmanipulation\b,3
+240,Business,nonfiction,\bbusiness\b|\bmanagement\b|\bleadership\b|\bmarketing\b|advertising|entrepreneur|\bfinance\b|\binvestments?\b|\beconomics\b|\bcommerce\b|\bstocks\b|\bwealth\b|\bmoney\b|\bspeculation\b,3
+250,Science,nonfiction,\bscience\b|\bphysics\b|\bmathematics\b|\bbiology\b|\bastronomy\b|\bevolution\b|\bprogramming\b|\balgorithms\b|\bmedicine\b|neuroscience|\bcosmology\b|\bcognitive\b|\bbrain\b|\bdecision making\b|\bchemistry\b|computer science,3
+252,Science,nonfiction,\bcomputers?\b|\btechnology\b|\bengineering\b,1
+251,Science,nonfiction,\bpsycholog,1
+260,Religion,nonfiction,religio|\bchristian|\bbible\b|\bspiritual|buddhis|\btheology\b|occultism|\bislam|new thought|\bgod\b|\bprayer|\btaoism\b|\bhinduism\b|\bmysticism\b|\bmeditation\b|sacred books,3

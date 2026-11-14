@@ -1,17 +1,19 @@
 config {
   type: "table",
   schema: "ol_staging",
-  description: "One row per normalised title and primary author, with a cap of works per author."
+  description: "One row per normalised title and primary author, with a cap of works per author. A Brazilian seed author is one person across all their author keys, with a higher cap."
 }
 
-WITH one_per_title AS (
-  SELECT *
+WITH keyed AS (
+  SELECT *, COALESCE(brazilian_person, authors[OFFSET(0)].id) AS author_group
   FROM ${ref("int_candidates")}
-  QUALIFY ROW_NUMBER() OVER (
-    PARTITION BY title_folded, authors[OFFSET(0)].id ORDER BY score DESC, work_key
-  ) = 1
+),
+one_per_title AS (
+  SELECT *
+  FROM keyed
+  QUALIFY ROW_NUMBER() OVER (PARTITION BY title_folded, author_group ORDER BY score DESC, work_key) = 1
 )
-SELECT *
+SELECT * EXCEPT (author_group)
 FROM one_per_title
-QUALIFY ROW_NUMBER() OVER (PARTITION BY authors[OFFSET(0)].id ORDER BY score DESC, work_key)
-        <= ${cfg.num("limits_max_per_author")}
+QUALIFY ROW_NUMBER() OVER (PARTITION BY author_group ORDER BY score DESC, work_key)
+        <= IF(brazilian_person IS NOT NULL, ${cfg.num("limits_max_per_author_brazilian")}, ${cfg.num("limits_max_per_author")})

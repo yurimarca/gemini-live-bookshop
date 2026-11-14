@@ -1,0 +1,11 @@
+config {
+  type: "assertion",
+  schema: "ol_ops",
+  description: "Each of main_genres has at least limits_min_genre_books books."
+}
+
+SELECT genre, COUNTIF(b.category = genre) AS n
+FROM UNNEST(${cfg.mainGenres}) AS genre
+CROSS JOIN ${ref("catalog_books")} AS b
+GROUP BY genre
+HAVING n < ${cfg.num("limits_min_genre_books")}

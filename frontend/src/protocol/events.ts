@@ -17,7 +17,8 @@ export type ToolStatus = 'ok' | 'error' | 'denied' | 'cancelled'
 export type EndReason = 'time_limit' | 'quota' | 'idle' | 'client' | 'upstream' | 'error'
 export type Role = 'user' | 'agent'
 export type SortKey = 'popular' | 'year_new' | 'year_old'
-export interface CatalogFilters { q?: string; subject?: string; lang?: string; sort?: SortKey }
+export type CollectionKey = 'brazilian' | 'classics'
+export interface CatalogFilters { q?: string; subject?: string; lang?: string; collection?: CollectionKey; sort?: SortKey }
 
 // --- client to server ---------------------------------------------------------------
 export type ClientEvent =
@@ -79,7 +80,7 @@ export function parseServerEvent(raw: string): ServerEvent | null {
 /** The catalog URL for agent-chosen filters: only known keys, the same shape a click on the filters produces. */
 export function catalogPath(params: CatalogFilters): string {
   const search = new URLSearchParams()
-  for (const key of ['q', 'subject', 'lang', 'sort'] as const) {
+  for (const key of ['q', 'subject', 'lang', 'collection', 'sort'] as const) {
     const value = params[key]
     if (typeof value === 'string' && value && !(key === 'sort' && value === 'popular')) search.set(key, value)
   }

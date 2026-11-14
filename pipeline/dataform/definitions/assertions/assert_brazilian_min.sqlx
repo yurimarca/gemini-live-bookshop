@@ -1,0 +1,8 @@
+config {
+  type: "assertion",
+  schema: "ol_ops",
+  description: "The brazilian collection holds at least limits_min_brazilian_books books."
+}
+
+SELECT n FROM (SELECT COUNTIF('brazilian' IN UNNEST(collections)) AS n FROM ${ref("catalog_books")})
+WHERE n < ${cfg.num("limits_min_brazilian_books")}

@@ -1,0 +1,8 @@
+config {
+  type: "assertion",
+  schema: "ol_ops",
+  description: "Descriptions carry no URLs, Markdown links, bold markers or reference marks."
+}
+
+SELECT id, SUBSTR(description, 1, 120) AS sample FROM ${ref("catalog_books")}
+WHERE REGEXP_CONTAINS(description, r'https?://|\]\(|\*\*|\[\d+\]|\(\[source\]')

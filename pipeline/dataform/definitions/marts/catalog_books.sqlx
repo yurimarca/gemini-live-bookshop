@@ -35,40 +35,99 @@ flagged AS (
 selected AS (
   SELECT * FROM flagged
   WHERE in_famous OR in_brazilian OR in_portuguese OR (forced AND cover_id IS NOT NULL)
+),
+
+-- Genre: the scored rule table in seeds/category_rules.csv, applied to every subject of the selected works.
+-- Same algorithm as src/olpipe/categories.py (tests/test_categories.py runs it on the gold set).
+-- Only the selected books are scored, so the regular expressions run over a few thousand rows.
+rules AS (SELECT * FROM ${ref("seed_category_rules")}),
+subject_rows AS (
+  SELECT w.work_key, o, LOWER(TRIM(x)) AS subject
+  FROM ${ref("stg_works")} AS w, UNNEST(w.subjects) AS x WITH OFFSET o
+  WHERE w.work_key IN (SELECT work_key FROM selected) AND TRIM(x) != ''
+),
+ignored AS (
+  SELECT DISTINCT k.work_key, k.o
+  FROM subject_rows AS k JOIN rules AS r ON r.category = '_ignore' AND REGEXP_CONTAINS(k.subject, r.pattern)
+),
+kept AS (
+  SELECT k.* FROM subject_rows AS k LEFT JOIN ignored AS i USING (work_key, o) WHERE i.o IS NULL
+),
+signals AS (
+  SELECT
+    k.work_key,
+    LOGICAL_OR(r.category = '_fiction') AND NOT LOGICAL_OR(r.category = '_nonfiction') AS is_fiction,
+    LOGICAL_OR(r.category = '_nonfiction') AS nonfiction_hit
+  FROM kept AS k JOIN rules AS r ON r.category IN ('_fiction', '_nonfiction') AND REGEXP_CONTAINS(k.subject, r.pattern)
+  GROUP BY k.work_key
+),
+-- Each subject adds, per genre, the highest weight among that genre's matching rules.
+subject_genre AS (
+  SELECT k.work_key, k.o, r.category, MAX(r.weight) AS weight, MIN(r.rule_id) AS first_rule
+  FROM kept AS k
+  LEFT JOIN signals AS g USING (work_key)
+  JOIN rules AS r
+    ON NOT STARTS_WITH(r.category, '_')
+   AND (r.applies = 'any' OR NOT IFNULL(g.is_fiction, FALSE))
+   AND REGEXP_CONTAINS(k.subject, r.pattern)
+  GROUP BY k.work_key, k.o, r.category
+),
+genre AS (
+  SELECT work_key, ARRAY_AGG(category ORDER BY score DESC, first_rule LIMIT 1)[OFFSET(0)] AS category
+  FROM (
+    SELECT work_key, category, SUM(weight) AS score, MIN(first_rule) AS first_rule
+    FROM subject_genre GROUP BY work_key, category
+  )
+  GROUP BY work_key
+),
+collection_hits AS (
+  SELECT
+    work_key,
+    LOGICAL_OR(REGEXP_CONTAINS(subject, ${cfg.raw(cfg.re.brazilianSubject)})) AS brazilian_subject,
+    LOGICAL_OR(REGEXP_CONTAINS(subject, ${cfg.raw(cfg.re.classicsSubject)})) AS classics_subject
+  FROM subject_rows GROUP BY work_key
 )
 SELECT
-  work_id AS id,
-  work_key,
-  title,
-  subtitle,
-  title_pt,
-  authors,
-  ARRAY(SELECT name FROM UNNEST(authors)) AS author_names,
-  description,
-  description_source,
-  subjects,
-  category,
-  cover_id,
-  first_publish_year,
-  languages,
-  CASE WHEN has_portuguese_edition AND (in_portuguese OR in_brazilian) THEN 'por'
-       WHEN ARRAY_LENGTH(languages) > 0 THEN IF('eng' IN UNNEST(languages), 'eng', languages[OFFSET(0)])
-       WHEN in_brazilian THEN 'por' END AS primary_language,
+  s.work_id AS id,
+  s.work_key,
+  s.title,
+  s.subtitle,
+  s.title_pt,
+  s.authors,
+  ARRAY(SELECT name FROM UNNEST(s.authors)) AS author_names,
+  s.description,
+  s.description_source,
+  s.subjects,
+  -- No genre score: Nonfiction when a subject says so, otherwise Fiction (most of the catalog).
+  COALESCE(g.category, IF(IFNULL(sg.nonfiction_hit, FALSE), 'Nonfiction', 'Fiction')) AS category,
+  s.cover_id,
+  s.first_publish_year,
+  s.languages,
+  -- Only claim a language that an edition shows. Without editions (r2) this is NULL for every book.
+  CASE WHEN s.has_portuguese_edition AND (s.in_portuguese OR s.in_brazilian) THEN 'por'
+       ELSE s.edition.language END AS primary_language,
   ARRAY_CONCAT(
-    IF(in_famous, ['famous'], []),
-    IF(in_brazilian, ['brazilian_author'], []),
-    IF(in_portuguese, ['portuguese_language'], [])
+    IF(s.in_famous, ['famous'], []),
+    IF(s.in_brazilian, ['brazilian_author'], []),
+    IF(s.in_portuguese, ['portuguese_language'], [])
   ) AS segments,
-  edition,
-  ${cfg.priceCents("work_key")} AS price_cents,
+  ARRAY_CONCAT(
+    IF(s.is_brazilian_author OR IFNULL(c.brazilian_subject, FALSE), ['brazilian'], []),
+    IF(IFNULL(c.classics_subject, FALSE), ['classics'], [])
+  ) AS collections,
+  s.edition,
+  ${cfg.priceCents("s.work_key")} AS price_cents,
   TRUE AS price_is_fictional,
-  IF(rating_count > 0, STRUCT(ROUND(rating_average, 2) AS average, rating_count AS count), NULL) AS rating,
+  IF(s.rating_count > 0, STRUCT(ROUND(s.rating_average, 2) AS average, s.rating_count AS count), NULL) AS rating,
   STRUCT(
-    ROUND(score, 4) AS score,
-    ROW_NUMBER() OVER (ORDER BY score DESC, work_key) AS rank,
-    want_to_read, currently_reading, already_read
+    ROUND(s.score, 4) AS score,
+    ROW_NUMBER() OVER (ORDER BY s.score DESC, s.work_key) AS rank,
+    s.want_to_read, s.currently_reading, s.already_read
   ) AS popularity,
-  CONCAT('https://openlibrary.org', work_key) AS book_url,
+  CONCAT('https://openlibrary.org', s.work_key) AS book_url,
   '${cfg.datasetVersion}' AS dataset_version,
-  STRUCT('${cfg.dumpDate}' AS dump_date, '${cfg.revision}' AS revision, last_modified, 'CC0' AS license) AS source
-FROM selected
+  STRUCT('${cfg.dumpDate}' AS dump_date, '${cfg.revision}' AS revision, s.last_modified, 'CC0' AS license) AS source
+FROM selected AS s
+LEFT JOIN genre AS g USING (work_key)
+LEFT JOIN signals AS sg USING (work_key)
+LEFT JOIN collection_hits AS c USING (work_key)

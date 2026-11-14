@@ -1,0 +1,14 @@
+config {
+  type: "assertion",
+  schema: "ol_ops",
+  description: "At least limits_min_gold_share of the hand-checked titles in seeds/category_gold.csv that are in the catalog get an expected genre."
+}
+
+SELECT present, correct, share FROM (
+  SELECT COUNT(*) AS present,
+         COUNTIF(b.category IN UNNEST(SPLIT(g.expected, '|'))) AS correct,
+         SAFE_DIVIDE(COUNTIF(b.category IN UNNEST(SPLIT(g.expected, '|'))), COUNT(*)) AS share
+  FROM ${ref("seed_category_gold")} AS g
+  JOIN ${ref("catalog_books")} AS b ON b.id = g.work_id
+)
+WHERE present > 0 AND share < ${cfg.num("limits_min_gold_share")}

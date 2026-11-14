@@ -18,6 +18,8 @@ DESCRIPTION_SNIPPET_CHARS = 280
 MAX_SUBJECTS = 12
 
 Segment = Literal["famous", "brazilian_author", "portuguese_language"]
+# Shelves a book belongs to besides its one genre. Nationality is a collection, not a genre.
+Collection = Literal["brazilian", "classics"]
 
 
 class _Model(BaseModel):
@@ -78,6 +80,7 @@ class CatalogBook(_Model):
     languages: list[str] = Field(default_factory=list)
     primary_language: str | None = None
     segments: list[Segment] = Field(default_factory=list)
+    collections: list[Collection] = Field(default_factory=list)
     edition: Edition | None = None
     # No currency field: the same fictional number is shown as $ in English and R$ in Portuguese, never converted.
     price_cents: int = Field(gt=0)
@@ -107,6 +110,7 @@ class CatalogBook(_Model):
             year=self.first_publish_year,
             languages=self.languages,
             segments=self.segments,
+            collections=self.collections,
             price_cents=self.price_cents,
             rating=self.rating.average if self.rating else None,
             rating_count=self.rating.count if self.rating else None,
@@ -128,6 +132,7 @@ class IndexEntry(_Model):
     year: int | None = None
     languages: list[str] = Field(default_factory=list)
     segments: list[str] = Field(default_factory=list)
+    collections: list[str] = Field(default_factory=list)
     price_cents: int
     rating: float | None = None
     rating_count: int | None = None

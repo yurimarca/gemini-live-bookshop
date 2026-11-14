@@ -23,38 +23,39 @@ DATASET_VERSION = "ol-fixture-r1"
 FIELDS = ("key,title,author_name,author_key,cover_i,first_publish_year,subject,language,ratings_average,"
           "ratings_count,want_to_read_count,currently_reading_count,already_read_count,isbn")
 
-# (search title, display author, search by author too, segments, Portuguese title or None, category)
+# (search title, display author, search by author too, segments, Portuguese title or None, genre).
+# Nationality is a collection, not a genre: brazilian_author books get the `brazilian` collection.
 TITLES = [
     ("Pride and Prejudice", "Jane Austen", True, ["famous"], "Orgulho e Preconceito", "Romance"),
     ("Nineteen Eighty-Four", "George Orwell", True, ["famous"], "1984", "Science Fiction"),
-    ("To Kill a Mockingbird", "Harper Lee", True, ["famous"], None, "Classics"),
-    ("The Great Gatsby", "F. Scott Fitzgerald", True, ["famous"], "O Grande Gatsby", "Classics"),
+    ("To Kill a Mockingbird", "Harper Lee", True, ["famous"], None, "Fiction"),
+    ("The Great Gatsby", "F. Scott Fitzgerald", True, ["famous"], "O Grande Gatsby", "Fiction"),
     ("Jane Eyre", "Charlotte Brontë", True, ["famous"], None, "Romance"),
     ("Frankenstein", "Mary Shelley", True, ["famous"], None, "Horror"),
     ("Dracula", "Bram Stoker", True, ["famous"], "Drácula", "Horror"),
     ("Moby Dick", "Herman Melville", True, ["famous"], None, "Adventure"),
-    ("Crime and Punishment", "Fyodor Dostoevsky", False, ["famous"], "Crime e Castigo", "Classics"),
+    ("Crime and Punishment", "Fyodor Dostoevsky", False, ["famous"], "Crime e Castigo", "Fiction"),
     ("The Hobbit", "J. R. R. Tolkien", True, ["famous"], "O Hobbit", "Fantasy"),
     ("Fahrenheit 451", "Ray Bradbury", True, ["famous"], None, "Science Fiction"),
     ("Le Petit Prince", "Antoine de Saint-Exupéry", True, ["famous"], "O Pequeno Príncipe", "Children"),
     ("Cien años de soledad", "Gabriel García Márquez", True, ["famous"], "Cem Anos de Solidão", "Fiction"),
-    ("Don Quixote", "Miguel de Cervantes", False, ["famous"], "Dom Quixote", "Classics"),
-    ("The Picture of Dorian Gray", "Oscar Wilde", True, ["famous"], "O Retrato de Dorian Gray", "Classics"),
+    ("Don Quixote", "Miguel de Cervantes", False, ["famous"], "Dom Quixote", "Fiction"),
+    ("The Picture of Dorian Gray", "Oscar Wilde", True, ["famous"], "O Retrato de Dorian Gray", "Fiction"),
     ("Wuthering Heights", "Emily Brontë", True, ["famous"], "O Morro dos Ventos Uivantes", "Romance"),
     ("Alice's Adventures in Wonderland", "Lewis Carroll", True, ["famous"], "Alice no País das Maravilhas", "Children"),
     ("The Odyssey", "Homer", False, ["famous"], "Odisseia", "Poetry"),
-    ("Dom Casmurro", "Machado de Assis", True, ["brazilian_author", "portuguese_language"], "Dom Casmurro", "Brazilian Literature"),
-    ("Memórias Póstumas de Brás Cubas", "Machado de Assis", True, ["brazilian_author", "portuguese_language"], "Memórias Póstumas de Brás Cubas", "Brazilian Literature"),
-    ("O Alquimista", "Paulo Coelho", True, ["famous", "brazilian_author", "portuguese_language"], "O Alquimista", "Brazilian Literature"),
-    ("Capitães da Areia", "Jorge Amado", True, ["brazilian_author", "portuguese_language"], "Capitães da Areia", "Brazilian Literature"),
-    ("Gabriela, cravo e canela", "Jorge Amado", True, ["brazilian_author", "portuguese_language"], "Gabriela, Cravo e Canela", "Brazilian Literature"),
-    ("A hora da estrela", "Clarice Lispector", True, ["brazilian_author", "portuguese_language"], "A Hora da Estrela", "Brazilian Literature"),
-    ("Grande sertão", "Guimarães Rosa", True, ["brazilian_author", "portuguese_language"], "Grande Sertão: Veredas", "Brazilian Literature"),
-    ("Vidas secas", "Graciliano Ramos", True, ["brazilian_author", "portuguese_language"], "Vidas Secas", "Brazilian Literature"),
-    ("Ensaio sobre a cegueira", "José Saramago", True, ["portuguese_language"], "Ensaio sobre a Cegueira", "Portuguese Literature"),
-    ("Os Lusíadas", "Luís de Camões", True, ["portuguese_language"], "Os Lusíadas", "Portuguese Literature"),
-    ("Livro do desassossego", "Fernando Pessoa", True, ["portuguese_language"], "Livro do Desassossego", "Portuguese Literature"),
-    ("Os Maias", "Eça de Queirós", True, ["portuguese_language"], "Os Maias", "Portuguese Literature"),
+    ("Dom Casmurro", "Machado de Assis", True, ["brazilian_author", "portuguese_language"], "Dom Casmurro", "Fiction"),
+    ("Memórias Póstumas de Brás Cubas", "Machado de Assis", True, ["brazilian_author", "portuguese_language"], "Memórias Póstumas de Brás Cubas", "Fiction"),
+    ("O Alquimista", "Paulo Coelho", True, ["famous", "brazilian_author", "portuguese_language"], "O Alquimista", "Fiction"),
+    ("Capitães da Areia", "Jorge Amado", True, ["brazilian_author", "portuguese_language"], "Capitães da Areia", "Fiction"),
+    ("Gabriela, cravo e canela", "Jorge Amado", True, ["brazilian_author", "portuguese_language"], "Gabriela, Cravo e Canela", "Fiction"),
+    ("A hora da estrela", "Clarice Lispector", True, ["brazilian_author", "portuguese_language"], "A Hora da Estrela", "Fiction"),
+    ("Grande sertão", "Guimarães Rosa", True, ["brazilian_author", "portuguese_language"], "Grande Sertão: Veredas", "Fiction"),
+    ("Vidas secas", "Graciliano Ramos", True, ["brazilian_author", "portuguese_language"], "Vidas Secas", "Fiction"),
+    ("Ensaio sobre a cegueira", "José Saramago", True, ["portuguese_language"], "Ensaio sobre a Cegueira", "Fiction"),
+    ("Os Lusíadas", "Luís de Camões", True, ["portuguese_language"], "Os Lusíadas", "Poetry"),
+    ("Livro do desassossego", "Fernando Pessoa", True, ["portuguese_language"], "Livro do Desassossego", "Fiction"),
+    ("Os Maias", "Eça de Queirós", True, ["portuguese_language"], "Os Maias", "Fiction"),
 ]
 
 
@@ -124,6 +125,7 @@ def main() -> None:
                 "cover_id": doc["cover_i"], "first_publish_year": doc.get("first_publish_year"),
                 "languages": langs, "primary_language": "por" if "portuguese_language" in segments else "eng",
                 "segments": segments,
+                "collections": ["brazilian"] if "brazilian_author" in segments else [],
                 "edition": {"isbn_13": isbn13, "language": "por" if "portuguese_language" in segments else "eng"},
                 "price_cents": fictional_price_cents(doc["key"]), "price_is_fictional": True,
                 "rating": ({"average": round(doc["ratings_average"], 2), "count": doc["ratings_count"]}

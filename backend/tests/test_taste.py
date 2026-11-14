@@ -201,7 +201,8 @@ def test_language_navigation_and_highlight_reach_the_page():
     assert next(e for e in events if e["type"] == "ui.locale")["locale"] == "pt-BR"
     navs = [e["params"] for e in events if e["type"] == "ui.navigate"]
     assert navs == [{"subject": "Poetry", "lang": "por"}, {"q": "machado", "sort": "year_old"}]
-    assert out["browse"]["matching_books"] == 1 and out["all"]["matching_books"] >= 1
+    # Poetry with Portuguese editions: The Odyssey and Os Lusíadas.
+    assert out["browse"]["matching_books"] == 2 and out["all"]["matching_books"] >= 1
     assert out["bad"] == {"error": "denied", "reason": "bad_subject"}
     hl = next(e for e in events if e["type"] == "ui.command")
     assert hl == {**hl, "command": "highlight_book", "book_id": "OL1003040W"}

@@ -1,0 +1,12 @@
+config {
+  type: "assertion",
+  schema: "ol_ops",
+  description: "No genre holds more than limits_max_genre_share of the catalog, and Fiction no more than limits_max_fiction_share."
+}
+
+SELECT category, share FROM (
+  SELECT category, COUNT(*) / SUM(COUNT(*)) OVER () AS share
+  FROM ${ref("catalog_books")} GROUP BY category
+)
+WHERE share > ${cfg.num("limits_max_genre_share")}
+   OR (category = 'Fiction' AND share > ${cfg.num("limits_max_fiction_share")})

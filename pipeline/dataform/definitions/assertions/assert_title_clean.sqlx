@@ -1,0 +1,10 @@
+config {
+  type: "assertion",
+  schema: "ol_ops",
+  description: "Titles carry no prices or bracketed notes, are not long all-caps strings, and are in a script the shop shows."
+}
+
+SELECT id, title FROM ${ref("catalog_books")}
+WHERE REGEXP_CONTAINS(title, r'\((EURO|EUR|USD|US\$|R\$)|\[\d+ (stories|novels)')
+   OR (title = UPPER(title) AND LENGTH(title) > 20)
+   ${cfg.excludeNonLatinTitles ? `OR ${cfg.nonLatin("title")}` : ""}

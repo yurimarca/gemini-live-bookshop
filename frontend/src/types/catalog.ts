@@ -10,6 +10,8 @@ export interface IndexEntry {
   year: number | null
   languages: string[]
   segments: string[]
+  /** Shelves besides the genre, such as 'brazilian'. Absent in indexes published before r2. */
+  collections?: string[]
   price_cents: number
   rating: number | null
   rating_count: number | null
@@ -42,6 +44,7 @@ export interface CatalogBook {
   languages: string[]
   primary_language: string | null
   segments: string[]
+  collections?: string[]
   edition: { isbn_13: string | null; publisher: string | null; pages: number | null; publish_year: number | null } | null
   price_cents: number
   price_is_fictional: true

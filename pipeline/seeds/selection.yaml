@@ -13,6 +13,7 @@ segments:
   portuguese_language_size: 300
 limits:
   max_per_author: 8
+  max_per_author_brazilian: 12   # per person in seeds/brazilian_authors.csv, across all of that person's author keys
   min_books: 1000
   max_books: 2000
   min_portuguese_share: 0.10
@@ -20,9 +21,44 @@ limits:
   max_reject_rate: 0.001
   min_year: -800
   max_year: 2026
+  min_brazilian_books: 80        # the `brazilian` collection (150 once editions and wikidata are in, r3)
+  min_gold_share: 0.90           # share of seeds/category_gold.csv titles present that get an expected genre
+  min_genre_books: 15            # for each of main_genres
+  max_genre_share: 0.20
+  max_fiction_share: 0.16        # Fiction is the general/literary shelf; above this it is acting as a fallback again
+  min_description_chars: 40      # a cleaned description shorter than this is dropped
+  pre_modern_year: 1450          # a year before this needs a pre-modern subject, or it is dropped as an edition artefact
+# Without editions every title is the work record's title; leave out titles in scripts the shop cannot show
+# (Cyrillic, Greek, CJK, Hangul, Arabic, Hebrew, Devanagari, Thai) until r3 brings edition titles.
+exclude_non_latin_titles: true
+# Genres that must stay well stocked (assert_genre_min_books). The full list comes from seeds/category_rules.csv.
+main_genres:
+  - Fiction
+  - Fantasy
+  - Science Fiction
+  - Mystery
+  - Romance
+  - Children
+  - Young Adult
+  - Horror
+  - Self-Help
+  - Biography
+  - Science
+  - Business
+  - Poetry
 # Works whose subjects contain any of these (lowercase substring) are excluded from a public demo.
+# Subjects are noisy ("sex instruction" sits on The Prince and the Pauper, "satanism" on The Crucible),
+# so single works go in seeds/overrides.csv instead of here.
 excluded_subjects:
   - erotic
   - erotica
   - pornograph
   - adult content
+  - sex manuals
+# Works whose title contains any of these (lowercase substring) are excluded: guides and bundles, not books.
+excluded_title_patterns:
+  - study guide
+  - summary of
+  - complete collection
+  - box set
+  - boxed set

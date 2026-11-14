@@ -8,8 +8,8 @@ dataformCoreVersion: 3.0.26
 # Defaults mirror ../seeds/selection.yaml (tests/test_selection.py keeps the two in step).
 vars:
   dump_date: "2026-10-31"
-  revision: r1
-  dataset_version: ol-2026-10-31-r1
+  revision: r2
+  dataset_version: ol-2026-10-31-r2
   use_editions: "false"
   popularity_weight_want: "1"
   popularity_weight_reading: "2"
@@ -20,6 +20,7 @@ vars:
   segments_brazilian_author_size: "400"
   segments_portuguese_language_size: "300"
   limits_max_per_author: "8"
+  limits_max_per_author_brazilian: "12"
   limits_min_books: "1000"
   limits_max_books: "2000"
   limits_min_portuguese_share: "0.1"
@@ -27,4 +28,14 @@ vars:
   limits_max_reject_rate: "0.001"
   limits_min_year: "-800"
   limits_max_year: "2026"
-  excluded_subjects: erotic|erotica|pornograph|adult content
+  limits_min_brazilian_books: "80"
+  limits_min_gold_share: "0.9"
+  limits_min_genre_books: "15"
+  limits_max_genre_share: "0.2"
+  limits_max_fiction_share: "0.16"
+  limits_min_description_chars: "40"
+  limits_pre_modern_year: "1450"
+  exclude_non_latin_titles: "True"
+  main_genres: Fiction|Fantasy|Science Fiction|Mystery|Romance|Children|Young Adult|Horror|Self-Help|Biography|Science|Business|Poetry
+  excluded_subjects: erotic|erotica|pornograph|adult content|sex manuals
+  excluded_title_patterns: study guide|summary of|complete collection|box set|boxed set

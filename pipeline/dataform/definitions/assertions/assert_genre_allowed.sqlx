@@ -1,0 +1,11 @@
+config {
+  type: "assertion",
+  schema: "ol_ops",
+  description: "Every genre comes from seeds/category_rules.csv or is one of the two fallbacks."
+}
+
+SELECT id, category FROM ${ref("catalog_books")}
+WHERE category NOT IN (
+  SELECT DISTINCT category FROM ${ref("seed_category_rules")} WHERE NOT STARTS_WITH(category, '_')
+  UNION ALL SELECT 'Fiction' UNION ALL SELECT 'Nonfiction'
+)

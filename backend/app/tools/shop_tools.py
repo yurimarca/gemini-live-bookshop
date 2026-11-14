@@ -17,10 +17,17 @@ from ._context import call_id_of, session_of
 MAX_RESULTS = 6
 
 
+LANGUAGES_UNAVAILABLE = ("Language filtering is not available in this catalog: it does not record which languages "
+                         "a book is published in. Search again without a language, and do not claim a book's language.")
+
 def _brief(e: IndexEntry) -> dict:
-    return {"id": e.id, "title": e.title, "title_pt": e.title_pt, "authors": e.author_names[:2],
-            "category": e.category, "year": e.year, "languages": e.languages,
-            "price_cents": e.price_cents}
+    brief = {"id": e.id, "title": e.title, "title_pt": e.title_pt, "authors": e.author_names[:2],
+             "category": e.category, "year": e.year, "price_cents": e.price_cents}
+    if e.languages:  # an empty list would read as "no language"; leave it out
+        brief["languages"] = e.languages
+    if e.collections:
+        brief["collections"] = e.collections
+    return brief
 
 
 def _cart_payload(view) -> dict:
@@ -33,19 +40,23 @@ def _cart_payload(view) -> dict:
 
 
 async def search_books(tool_context: ToolContext, query: str = "", subject: str = "", language: str = "",
-                       max_results: int = 5) -> dict:
+                       collection: str = "", max_results: int = 5) -> dict:
     """Search the bookshop catalog.
 
     Args:
         query: Words from a title, an author or a topic. Leave empty to list the most read books.
         subject: Optional subject or category filter, for example "poetry" or "science fiction".
         language: Optional language filter: "en" for English or "pt" for Portuguese.
+        collection: Optional shelf: "brazilian" for Brazilian literature, "classics" for classics.
         max_results: How many books to return, 1 to 6.
     """
     session = session_of(tool_context)
+    index = services.get().catalog.index
+    if language and not index.has_languages:
+        return {"count": 0, "books": [], "note": LANGUAGES_UNAVAILABLE}
     limit = max(1, min(int(max_results), MAX_RESULTS))
-    results = services.get().catalog.index.search(query, subject=subject or None, language=language or None,
-                                                  limit=limit)
+    results = index.search(query, subject=subject or None, language=language or None,
+                           collection=collection or None, limit=limit)
     session.shown_book_ids = [e.id for e in results]
     return {"count": len(results), "books": [_brief(e) for e in results],
             "note": "Use show_books with these ids to put them on screen." if results
@@ -63,8 +74,8 @@ async def get_book_details(tool_context: ToolContext, book_id: str) -> dict:
     if book is None:
         return {"error": "unknown_book"}
     return {"id": book.id, "title": book.title, "title_pt": book.title_pt, "authors": book.author_names,
-            "year": book.first_publish_year, "category": book.category, "subjects": book.subjects[:6],
-            "languages": book.languages, "description": (book.description or "")[:600] or None,
+            "year": book.first_publish_year, "category": book.category, "collections": book.collections,
+            "subjects": book.subjects[:6], "languages": book.languages or None, "description": (book.description or "")[:600] or None,
             "rating": book.rating.model_dump() if book.rating else None,
             "price_cents": book.price_cents}
 

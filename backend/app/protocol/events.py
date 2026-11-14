@@ -17,6 +17,7 @@ MAX_USER_TEXT = 500
 Locale = Literal["en", "pt-BR"]
 AgentName = Literal["voice", "taste_profiler", "researcher", "recommender", "cart_timer"]
 SortKey = Literal["popular", "year_new", "year_old"]
+CollectionKey = Literal["brazilian", "classics"]
 Behavior = Literal["BLOCKING", "NON_BLOCKING"]
 Scheduling = Literal["INTERRUPT", "WHEN_IDLE", "SILENT"]
 RunsOn = Literal["gateway", "agent_runtime", "cloud_tasks"]
@@ -187,6 +188,7 @@ class CatalogFilters(_Event):
     q: str | None = None
     subject: str | None = None
     lang: str | None = None
+    collection: CollectionKey | None = None
     sort: SortKey | None = None
 
 

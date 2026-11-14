@@ -4,6 +4,6 @@
 );
 
 // Seed tables, loaded from pipeline/seeds/*.csv. They live in ol_staging because ol_raw expires after 7 days.
-["seed_brazilian_authors", "seed_subject_category_map", "seed_overrides"].forEach((name) =>
+["seed_brazilian_authors", "seed_category_rules", "seed_category_gold", "seed_overrides"].forEach((name) =>
   declare({ schema: "ol_staging", name })
 );

@@ -12,6 +12,7 @@ from .. import services
 from ..catalog.search import fold, normalize_language
 from ..protocol.events import CatalogFilters, UiCommand, UiLocale, UiNavigate
 from ._context import session_of
+from .shop_tools import LANGUAGES_UNAVAILABLE
 
 SORTS = ("popular", "year_new", "year_old")
 
@@ -77,7 +78,7 @@ async def set_language(tool_context: ToolContext, locale: str) -> dict:
 
 
 async def browse_catalog(tool_context: ToolContext, query: str = "", subject: str = "", language: str = "",
-                         sort: str = "") -> dict:
+                         collection: str = "", sort: str = "") -> dict:
     """Open the catalog page with filters, as if the shopper had used the search box and filters.
     The shopper can press Back to return.
 
@@ -85,11 +86,15 @@ async def browse_catalog(tool_context: ToolContext, query: str = "", subject: st
         query: Optional words to search for in titles, authors and subjects.
         subject: Optional category, exactly as a search result's "category" field.
         language: Optional language filter: "en" for English or "pt" for Portuguese.
+        collection: Optional shelf: "brazilian" for Brazilian literature, "classics" for classics.
         sort: Optional order: "popular", "year_new" or "year_old".
     """
     session = session_of(tool_context)
+    if language and not services.get().catalog.index.has_languages:
+        return {"status": "not_shown", "note": LANGUAGES_UNAVAILABLE}
     filters = CatalogFilters(q=query.strip() or None, subject=services.get().catalog.subject(subject),
                              lang=normalize_language(language) if language else None,
+                             collection=collection or None,
                              sort=sort if sort in SORTS and sort != "popular" else None)
     session.bus.publish(UiNavigate(params=filters))
     return {"status": "shown", "matching_books": count_on_page(filters)}
@@ -103,6 +108,8 @@ def count_on_page(filters: CatalogFilters) -> int:
         if filters.lang and filters.lang not in e.languages:
             continue
         if filters.subject and e.category != filters.subject:
+            continue
+        if filters.collection and filters.collection not in e.collections:
             continue
         text = fold(" ".join([e.title, e.title_pt or "", " ".join(e.author_names), e.category, " ".join(e.subjects)]))
         if all(w in text for w in words):

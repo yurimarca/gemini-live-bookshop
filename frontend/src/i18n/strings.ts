@@ -19,6 +19,9 @@ const en = {
   catalog: 'Catalog',
   filterSubject: 'Subject',
   filterLanguage: 'Language',
+  filterCollection: 'Collection',
+  collection_brazilian: 'Brazilian literature',
+  collection_classics: 'Classics',
   all: 'All',
   sort: 'Sort',
   sortPopular: 'Most read',
@@ -27,6 +30,7 @@ const en = {
   noResults: 'No books match. Try fewer filters.',
   resultsCount: (n: number) => `${n} ${n === 1 ? 'book' : 'books'}`,
   clearFilters: 'Clear filters',
+  showMore: (n: number) => `Show ${n} more`,
   shownByAgent: 'Shown by the assistant',
   dismiss: 'Dismiss',
   loading: 'Loading…',
@@ -145,6 +149,9 @@ const pt: Strings = {
   catalog: 'Catálogo',
   filterSubject: 'Assunto',
   filterLanguage: 'Idioma',
+  filterCollection: 'Coleção',
+  collection_brazilian: 'Literatura brasileira',
+  collection_classics: 'Clássicos',
   all: 'Todos',
   sort: 'Ordenar',
   sortPopular: 'Mais lidos',
@@ -153,6 +160,7 @@ const pt: Strings = {
   noResults: 'Nenhum livro encontrado. Tente menos filtros.',
   resultsCount: (n) => `${n} ${n === 1 ? 'livro' : 'livros'}`,
   clearFilters: 'Limpar filtros',
+  showMore: (n) => `Mostrar mais ${n}`,
   shownByAgent: 'Mostrados pelo assistente',
   dismiss: 'Fechar',
   loading: 'Carregando…',
@@ -251,4 +259,35 @@ const pt: Strings = {
 }
 
 export const STRINGS: Record<Locale, Strings> = { en, 'pt-BR': pt }
+
+/** Portuguese labels for the canonical (English) category values in the data. Unknown values show as stored. */
+const CATEGORY_PT: Record<string, string> = {
+  Adventure: 'Aventura',
+  Biography: 'Biografia',
+  'Brazilian Literature': 'Literatura brasileira',
+  Business: 'Negócios',
+  Children: 'Infantil',
+  Classics: 'Clássicos',
+  Comics: 'Quadrinhos',
+  Drama: 'Teatro',
+  Fantasy: 'Fantasia',
+  Fiction: 'Ficção',
+  'Historical Fiction': 'Ficção histórica',
+  History: 'História',
+  Horror: 'Terror',
+  Mystery: 'Mistério',
+  Philosophy: 'Filosofia',
+  Poetry: 'Poesia',
+  'Portuguese Literature': 'Literatura portuguesa',
+  Religion: 'Religião',
+  Romance: 'Romance',
+  Science: 'Ciência',
+  'Science Fiction': 'Ficção científica',
+  'Self-Help': 'Autoajuda',
+  'Young Adult': 'Jovem adulto',
+}
+
+export function categoryLabel(category: string, locale: Locale): string {
+  return locale === 'pt-BR' ? CATEGORY_PT[category] ?? category : category
+}
 export type { Strings }

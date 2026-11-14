@@ -67,7 +67,8 @@ class ToolPolicy:
 
 POLICIES: dict[str, ToolPolicy] = {
     "search_books": ToolPolicy({"query": _text(120), "subject": _text(60), "language": _text(12),
-                                "max_results": _int_between(1, 6)}, visible=frozenset({"language", "max_results"})),
+                                "collection": _one_of("", "brazilian", "classics"), "max_results": _int_between(1, 6)},
+                               visible=frozenset({"language", "collection", "max_results"})),
     "get_book_details": ToolPolicy({"book_id": _book_id}, frozenset({"book_id"}), frozenset({"book_id"})),
     "add_to_cart": ToolPolicy({"book_id": _book_id, "quantity": _int_between(1, 5)}, frozenset({"book_id"}),
                               frozenset({"book_id", "quantity"})),
@@ -79,8 +80,9 @@ POLICIES: dict[str, ToolPolicy] = {
     "highlight_book": ToolPolicy({"book_id": _book_id}, frozenset({"book_id"}), frozenset({"book_id"})),
     "set_language": ToolPolicy({"locale": _one_of("en", "pt-BR")}, frozenset({"locale"}), frozenset({"locale"})),
     "browse_catalog": ToolPolicy({"query": _text(120), "subject": _subject, "language": _language,
+                                  "collection": _one_of("", "brazilian", "classics"),
                                   "sort": _one_of("", "popular", "year_new", "year_old")},
-                                 visible=frozenset({"subject", "language", "sort"})),
+                                 visible=frozenset({"subject", "language", "collection", "sort"})),
     "recommend_books": ToolPolicy({"request": _text(500)}, frozenset({"request"})),
     "research_for_taste": ToolPolicy({}),
     "note_taste": ToolPolicy({"likes": _list_of(_text(40), 8), "dislikes": _list_of(_text(40), 8),

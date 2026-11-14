@@ -1,7 +1,7 @@
 config {
   type: "table",
   schema: "ol_staging",
-  description: "Works with popularity, resolved authors, category and segment flags. Only works with a title and fully resolved authors."
+  description: "Works with popularity, resolved authors, clean title and description, and segment flags. Only works with a title and fully resolved authors. Genre and collections are set later, in catalog_books, for the selected books only."
 }
 
 WITH authors AS (
@@ -14,47 +14,63 @@ WITH authors AS (
   WHERE o < 3
   GROUP BY w.work_key
 ),
+-- One person can have several author keys; `person` groups them for the per-author cap.
 brazilian AS (
-  SELECT author_key AS author_id FROM ${ref("seed_brazilian_authors")}
-  ${when(cfg.useEditions, `UNION DISTINCT SELECT author_id FROM ${ref("stg_wikidata_authors")} WHERE is_brazilian`)}
+  SELECT author_key AS author_id, name AS person, 0 AS source_rank FROM ${ref("seed_brazilian_authors")}
+  ${when(cfg.useEditions, `UNION ALL SELECT author_id, author_id AS person, 1 AS source_rank FROM ${ref("stg_wikidata_authors")} WHERE is_brazilian`)}
 ),
-category AS (
-  -- The lowest-priority-number rule whose substring appears in any subject wins.
-  SELECT w.work_key, ARRAY_AGG(m.category ORDER BY m.priority LIMIT 1)[OFFSET(0)] AS category
-  FROM ${ref("stg_works")} AS w, UNNEST(w.subjects) AS s
-  JOIN ${ref("seed_subject_category_map")} AS m ON STRPOS(LOWER(s), m.subject_contains) > 0
-  GROUP BY w.work_key
+brazilian_people AS (
+  SELECT a.work_key, ARRAY_AGG(b.person ORDER BY o, b.source_rank LIMIT 1)[OFFSET(0)] AS brazilian_person
+  FROM authors AS a, UNNEST(a.authors) AS x WITH OFFSET o
+  JOIN brazilian AS b ON b.author_id = x.id
+  GROUP BY a.work_key
+),
+works AS (
+  SELECT
+    w.*,
+    ${cfg.cleanTitle("w.title")} AS clean_title,
+    ${cfg.cleanDescription("w.description", cfg.num("limits_min_description_chars"))} AS clean_description
+  FROM ${ref("stg_works")} AS w
+  JOIN ${ref("int_popularity")} USING (work_key)
+  WHERE w.title IS NOT NULL AND w.work_id IS NOT NULL
 )
 SELECT
-  w.work_key, w.work_id, w.title, w.subtitle, w.last_modified,
+  w.work_key, w.work_id, w.clean_title AS title, w.subtitle, w.last_modified,
   ${cfg.useEditions ? "e.title_pt" : "CAST(NULL AS STRING)"} AS title_pt,
   a.authors,
-  COALESCE(w.description${cfg.useEditions ? ", e.edition_description" : ""}) AS description,
-  CASE WHEN w.description IS NOT NULL THEN 'work'
+  COALESCE(w.clean_description${cfg.useEditions ? `, ${cfg.cleanDescription("e.edition_description", cfg.num("limits_min_description_chars"))}` : ""}) AS description,
+  CASE WHEN w.clean_description IS NOT NULL THEN 'work'
        ${cfg.useEditions ? "WHEN e.edition_description IS NOT NULL THEN 'edition'" : ""} END AS description_source,
   ARRAY(SELECT s FROM UNNEST(w.subjects) AS s WITH OFFSET o
         WHERE LENGTH(s) <= 40 AND NOT REGEXP_CONTAINS(s, r'[:=\d]') ORDER BY o LIMIT 12) AS subjects,
-  IFNULL(c.category, 'Fiction') AS category,
   COALESCE(w.cover_id${cfg.useEditions ? ", e.edition_cover_id" : ""}) AS cover_id,
-  COALESCE(w.first_publish_year${cfg.useEditions ? ", e.first_year" : ""}) AS first_publish_year,
+  -- A year before limits_pre_modern_year on a work with no pre-modern subject is an edition date or a typo
+  -- (Mindset as 1007); drop it rather than sort the catalog by it.
+  (SELECT IF(y < ${cfg.num("limits_pre_modern_year")} AND NOT EXISTS (
+            SELECT 1 FROM UNNEST(w.subjects) AS s
+            WHERE REGEXP_CONTAINS(LOWER(s), r'early works to 1800|\bancient\b|antiquity|medieval|middle ages|\bclassical\b|\bgreek\b|\blatin\b|epic poetry|mythology|sacred|\bbible\b|scripture|confucian|\btao'))
+          , NULL, y)
+   FROM (SELECT COALESCE(w.first_publish_year${cfg.useEditions ? ", e.first_year" : ""}) AS y)) AS first_publish_year,
   ${cfg.useEditions ? "IFNULL(e.languages, [])" : "CAST([] AS ARRAY<STRING>)"} AS languages,
   ${cfg.useEditions
     ? "STRUCT(e.edition_id AS id, e.isbn_13, e.isbn_10, e.publisher, e.pages, e.publish_year, e.edition_language AS language)"
     : "STRUCT(CAST(NULL AS STRING) AS id, CAST(NULL AS STRING) AS isbn_13, CAST(NULL AS STRING) AS isbn_10, CAST(NULL AS STRING) AS publisher, CAST(NULL AS INT64) AS pages, CAST(NULL AS INT64) AS publish_year, CAST(NULL AS STRING) AS language)"} AS edition,
   p.score, p.popularity_rank, p.want_to_read, p.currently_reading, p.already_read,
   p.rating_count, p.rating_average, p.rating_bayes,
-  EXISTS (SELECT 1 FROM UNNEST(a.authors) AS x JOIN brazilian AS b ON b.author_id = x.id) AS is_brazilian_author,
+  bp.brazilian_person,
+  bp.brazilian_person IS NOT NULL AS is_brazilian_author,
   ${cfg.useEditions ? "'por' IN UNNEST(IFNULL(e.languages, []))" : "FALSE"} AS has_portuguese_edition,
-  ${cfg.fold("w.title")} AS title_folded
-FROM ${ref("stg_works")} AS w
+  ${cfg.fold("w.clean_title")} AS title_folded
+FROM works AS w
 JOIN ${ref("int_popularity")} AS p USING (work_key)
 JOIN authors AS a USING (work_key)
-LEFT JOIN category AS c USING (work_key)
+LEFT JOIN brazilian_people AS bp USING (work_key)
 ${when(cfg.useEditions, `LEFT JOIN ${ref("int_work_editions")} AS e USING (work_key)`)}
-WHERE w.title IS NOT NULL
-  AND w.work_id IS NOT NULL
-  AND a.unresolved = 0
+WHERE a.unresolved = 0
+  AND w.clean_title != ''
   AND NOT EXISTS (
     SELECT 1 FROM UNNEST(w.subjects) AS s, UNNEST(${cfg.excludedSubjects}) AS bad WHERE STRPOS(LOWER(s), bad) > 0
   )
+  AND NOT EXISTS (SELECT 1 FROM UNNEST(${cfg.excludedTitlePatterns}) AS bad WHERE STRPOS(LOWER(w.title), bad) > 0)
+  ${cfg.excludeNonLatinTitles ? `AND NOT ${cfg.nonLatin("w.title")}` : ""}
   AND w.work_key NOT IN (SELECT work_key FROM ${ref("seed_overrides")} WHERE action = 'exclude')
