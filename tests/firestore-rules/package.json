@@ -1,0 +1,12 @@
+{
+  "name": "bookshop-firestore-rules-test",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "firebase emulators:exec --only firestore --project demo-bookshop \"$(command -v node) --test rules.test.js\""
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "6.0.0",
+    "firebase": "13.3.0"
+  }
+}

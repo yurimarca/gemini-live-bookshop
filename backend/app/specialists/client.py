@@ -9,6 +9,7 @@ call never fails the voice turn.
 from __future__ import annotations
 
 import asyncio
+import contextvars
 import json
 import logging
 from typing import Protocol
@@ -19,6 +20,15 @@ from .core.schemas import (ProfileRequest, ProfileResult, RecommendRequest, Reco
                            ResearchResult, Taste)
 
 log = logging.getLogger(__name__)
+
+# Where the last specialist answer in this task came from: "agent_runtime", or "gateway" for the local
+# path (including the fallback after a failed remote call). A ContextVar is per task, so concurrent
+# sessions never see each other's value. Read it right after awaiting a specialist call.
+_served_by: contextvars.ContextVar[str] = contextvars.ContextVar("specialist_served_by", default="gateway")
+
+
+def served_by() -> str:
+    return _served_by.get()
 
 
 class SpecialistClient(Protocol):
@@ -98,6 +108,7 @@ class LocalSpecialists:
         return text
 
     async def _try(self, kind: str, payload: str) -> str | None:
+        _served_by.set("gateway")
         if not self._use_llm:
             return None
         try:
@@ -122,9 +133,9 @@ class LocalSpecialists:
 class AgentRuntimeSpecialists:
     """Calls the ``bookshop-specialists`` deployment over HTTPS. Falls back to the local path.
 
-    NOT YET VERIFIED against a real deployment: the ``:streamQuery`` request and response
-    shapes below follow the Agent Runtime REST reference for ADK apps and must be
-    confirmed by spike 4 before ``SPECIALISTS_BACKEND=agent_runtime`` is used.
+    The request is the reasoning-engine contract (``class_method`` + ``input``); the response is a
+    stream of ADK events, one JSON object per line (optionally ``data:``-prefixed). The text of the
+    last event that has any is the answer. Thought parts are skipped.
     """
 
     runs_on = "agent_runtime"
@@ -162,25 +173,37 @@ class AgentRuntimeSpecialists:
                 if not line:
                     continue
                 parts = (json.loads(line).get("content") or {}).get("parts") or []
-                chunk = "".join(p.get("text", "") for p in parts)
+                chunk = "".join(p.get("text") or "" for p in parts if not p.get("thought"))
                 if chunk:
                     text = chunk  # the last event with text is the final answer
             return text or None
-        except Exception:
-            log.warning("Agent Runtime %s call failed; using the local path", kind, exc_info=True)
+        except Exception:  # the log checks grep for "specialist failed"
+            log.warning("Agent Runtime %s specialist failed; using the local path", kind, exc_info=True)
             return None
 
     async def recommend(self, req: RecommendRequest) -> RecommendResult:
         text = await self._ask("recommend", req.model_dump(mode="json"))
-        return (text and _parse_recommend(text, req)) or await self._fallback.recommend(req)
+        parsed = text and _parse_recommend(text, req)
+        if parsed:
+            _served_by.set("agent_runtime")
+            return parsed
+        return await self._fallback.recommend(req)
 
     async def profile(self, req: ProfileRequest) -> ProfileResult:
         text = await self._ask("profile", req.model_dump(mode="json"))
-        return (text and _parse_profile(text, req)) or await self._fallback.profile(req)
+        parsed = text and _parse_profile(text, req)
+        if parsed:
+            _served_by.set("agent_runtime")
+            return parsed
+        return await self._fallback.profile(req)
 
     async def research(self, req: ResearchRequest) -> ResearchResult:
         text = await self._ask("research", req.model_dump(mode="json"))
-        return (text and _parse_research(text, req)) or await self._fallback.research(req)
+        parsed = text and _parse_research(text, req)
+        if parsed:
+            _served_by.set("agent_runtime")
+            return parsed
+        return await self._fallback.research(req)
 
 
 def build_specialists(settings: Settings) -> SpecialistClient:

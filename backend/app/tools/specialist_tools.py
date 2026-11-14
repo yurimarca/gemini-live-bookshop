@@ -24,6 +24,7 @@ from ..catalog.models import IndexEntry
 from ..live import timeline
 from ..live.session_bus import SessionContext
 from ..protocol.events import A2ui
+from ..specialists.client import served_by
 from ..specialists.core import heuristics
 from ..specialists.core.schemas import (Angle, Candidate, Pick, ProfileRequest, RecommendRequest, ResearchRequest,
                                         Taste)
@@ -168,7 +169,7 @@ async def recommend_books(tool_context: ToolContext, request: str) -> dict:
                                  runs_on=svc.specialists.runs_on,
                                  args_summary=f"{len(entries)} candidates, {len(taste.likes)} likes") as outcome:
         result = await svc.specialists.recommend(req)
-        outcome["summary"] = f"{len(result.picks)} picks ({result.source})"
+        outcome["summary"] = f"{len(result.picks)} picks ({result.source}, {served_by()})"
 
     books = _books(ctx, entries, result.picks)
     if not books:
@@ -217,7 +218,7 @@ async def note_taste(tool_context: ToolContext, likes: list[str] | None = None, 
         # Tags and weights are merged by the gateway; the profiler writes the summary.
         result = await svc.specialists.profile(ProfileRequest(current=profile.to_taste(), locale=ctx.locale))
         outcome["summary"] = (f"{len(profile.likes)} likes, {len(profile.dislikes)} dislikes on file, "
-                              f"{profile.note_count} notes ({result.source})")
+                              f"{profile.note_count} notes ({result.source}, {served_by()})")
 
     if ctx.profile is not profile:
         return {"status": "saved"}  # forgotten, or replaced by a newer note, while the profiler ran
@@ -246,7 +247,7 @@ async def _research(ctx: SessionContext, row_id: str) -> list[dict]:
         cart = await svc.cart.get(ctx.uid)
         entries, origin = gather_for_angles(plan.angles, taste, exclude={i.id for i in cart.items})
         timeline.progress(ctx, row_id, "gathering_candidates",
-                          note=f"{len(plan.angles)} angles, {len(entries)} candidates ({plan.source})")
+                          note=f"{len(plan.angles)} angles, {len(entries)} candidates ({plan.source}, {served_by()})")
         if not entries:
             return []
         req = RecommendRequest(request=" / ".join(a.label for a in plan.angles)[:500], locale=ctx.locale,
@@ -255,7 +256,7 @@ async def _research(ctx: SessionContext, row_id: str) -> list[dict]:
                                      runs_on=svc.specialists.runs_on,
                                      args_summary=f"{len(entries)} candidates, {len(plan.angles)} angles") as outcome:
             result = await svc.specialists.recommend(req)
-            outcome["summary"] = f"{len(result.picks)} picks ({result.source})"
+            outcome["summary"] = f"{len(result.picks)} picks ({result.source}, {served_by()})"
         books = _books(ctx, entries, result.picks)
         for book in books:
             book["tag"] = origin[book["id"]]

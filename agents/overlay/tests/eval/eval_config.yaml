@@ -1,0 +1,15 @@
+# Recommender eval: run with
+#   agents-cli eval run --dataset tests/eval/datasets/recommender.json --config tests/eval/eval_config.yaml
+metrics_to_run:
+  - only_candidates
+  - recommender_rubrics
+
+thresholds:
+  only_candidates: 1       # deterministic: every pick id is in the request's candidates (0 or 1)
+  recommender_rubrics: 4   # the judge scores 1-5
+
+custom_metrics:
+  - name: only_candidates
+    custom_function_file: only_candidates.py
+  - name: recommender_rubrics
+    custom_function_file: recommender_rubrics.py

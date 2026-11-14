@@ -55,6 +55,6 @@ make fixture         # rebuild ../fixtures/catalog-fixture.json from the Open Li
 - **Deterministic index.** Sorted entries and keys, gzip mtime 0, no timestamp inside: the same catalog always produces the same bytes.
 - **Dead letters.** Unparseable raw rows go to `ol_ops.rejects`; rows that fail validation at publish go to `runs/{run_id}/rejects.ndjson`. Both have thresholds that fail the run.
 
-## Not yet proven
+## What has run
 
-The SQL compiles but has never run against BigQuery, and the workflow has never been deployed. The layouts of the redirects and wikidata dumps were not sampled. Run `olpipe transform --dry-run` first, and keep a maximum-bytes-billed guard on the first real run.
+Releases r1 and r2 (`ol-2026-10-31-r2`, 1,407 books) ran end to end against BigQuery and Firestore. Fetch, chunk, seeds, export and publish ran as the Cloud Run job. The Dataform transform ran from a workstation: inside the job, Dataform CLI 3.0.26 fails right after compiling, so the Cloud Workflows definition stops at the transform. Editions and Wikidata (r3) have not run. Run `olpipe transform --dry-run` first, and keep a maximum-bytes-billed guard on every real run.

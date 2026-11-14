@@ -24,7 +24,8 @@
   },
   "overrides": {
     "@a2ui/web_core": "0.15.0",
-    "zod": "3.25.76"
+    "zod": "3.25.76",
+    "dompurify": "3.4.17"
   },
   "devDependencies": {
     "@types/react": "^18.3.18",
