@@ -67,6 +67,22 @@ def test_examples(rules, subjects, expected):
     assert categories.classify(subjects, rules) == expected
 
 
+def test_author_default_only_without_a_genre_score(rules):
+    assert categories.classify([], rules, default="Poetry") == "Poetry"
+    assert categories.classify(["Nonfiction"], rules, default="Self-Help") == "Self-Help"
+    assert categories.classify(["Fantasy fiction"], rules, default="Children") == "Fantasy"
+
+
+def test_author_defaults_are_real_and_one_per_person(rules):
+    known = set(categories.genres(rules)) - {categories.FICTION_FALLBACK, categories.NONFICTION_FALLBACK}
+    by_person: dict[str, set[str]] = {}
+    for row in csv.DictReader((SEEDS / "brazilian_authors.csv").open(encoding="utf-8")):
+        by_person.setdefault(row["name"], set()).add(row["default_genre"].strip())
+    for person, values in by_person.items():
+        assert len(values) == 1, person              # SQL picks ANY_VALUE per person
+        assert values <= known | {""}, person
+
+
 def test_collections():
     assert categories.collections(["Brazilian fiction"], is_brazilian_author=False) == ["brazilian"]
     assert categories.collections(["Fiction classics"], is_brazilian_author=True) == ["brazilian", "classics"]

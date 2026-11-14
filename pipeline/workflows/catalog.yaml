@@ -98,7 +98,7 @@ main:
         call: load_table
         args: {project: "${project}", region: "${region}", dataset: ol_staging, table: seed_brazilian_authors,
                uris: ["${\"gs://\" + lake + \"/seeds/\" + revision + \"/brazilian_authors.csv\"}"],
-               schema: "author_key:STRING,name:STRING,note:STRING", delimiter: ",", quote: "\"", skip: 1}
+               schema: "author_key:STRING,name:STRING,note:STRING,default_genre:STRING", delimiter: ",", quote: "\"", skip: 1}
     - load_seed_category_rules:
         call: load_table
         args: {project: "${project}", region: "${region}", dataset: ol_staging, table: seed_category_rules,

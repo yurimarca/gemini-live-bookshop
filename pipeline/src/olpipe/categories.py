@@ -8,8 +8,10 @@
    matching rules. Rules with ``applies=nonfiction`` count only when the book is not fiction.
    Works carry dozens of subjects, so a genre wins by being tagged often, not by being tagged once.
 4. The genre with the highest total wins; a tie goes to the genre whose best rule comes first.
-5. With no genre score, a book falls back to ``Nonfiction`` if a ``_nonfiction`` rule hits, else to
-   ``Fiction`` (most of the catalog is fiction, and works with only criticism subjects are novels).
+5. With no genre score, a book takes its Brazilian author's ``default_genre`` from
+   ``seeds/brazilian_authors.csv`` when there is one (many of those works have no subjects at all).
+   Otherwise it falls back to ``Nonfiction`` if a ``_nonfiction`` rule hits, else to ``Fiction``
+   (most of the catalog is fiction, and works with only criticism subjects are novels).
 
 Patterns are RE2 syntax. Python's ``re`` with ``re.ASCII`` matches them the same way for this
 table (RE2's ``\\b`` is ASCII-only). Do not use lookarounds or backreferences: RE2 has neither.
@@ -79,7 +81,7 @@ def is_fiction(subjects: list[str], rules: list[Rule]) -> bool:
     return hit("_fiction") and not hit("_nonfiction")
 
 
-def classify(subjects: list[str], rules: list[Rule]) -> str:
+def classify(subjects: list[str], rules: list[Rule], default: str | None = None) -> str:
     kept = _kept(subjects, rules)
     fiction = is_fiction(subjects, rules)
     scores: dict[str, int] = {}
@@ -94,6 +96,8 @@ def classify(subjects: list[str], rules: list[Rule]) -> str:
         for category, weight in best.items():
             scores[category] = scores.get(category, 0) + weight
     if not scores:
+        if default:
+            return default
         return NONFICTION_FALLBACK if _nonfiction_signal(kept, rules) else FICTION_FALLBACK
     return min(scores, key=lambda c: (-scores[c], first[c]))
 

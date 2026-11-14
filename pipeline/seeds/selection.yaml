@@ -25,7 +25,7 @@ limits:
   min_gold_share: 0.90           # share of seeds/category_gold.csv titles present that get an expected genre
   min_genre_books: 15            # for each of main_genres
   max_genre_share: 0.20
-  max_fiction_share: 0.16        # Fiction is the general/literary shelf; above this it is acting as a fallback again
+  max_fiction_share: 0.16        # outside the brazilian collection; above this Fiction is acting as a fallback again
   min_description_chars: 40      # a cleaned description shorter than this is dropped
   pre_modern_year: 1450          # a year before this needs a pre-modern subject, or it is dropped as an edition artefact
 # Without editions every title is the work record's title; leave out titles in scripts the shop cannot show

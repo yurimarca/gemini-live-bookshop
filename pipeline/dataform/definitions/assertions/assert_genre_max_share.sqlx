@@ -1,12 +1,18 @@
 config {
   type: "assertion",
   schema: "ol_ops",
-  description: "No genre holds more than limits_max_genre_share of the catalog, and Fiction no more than limits_max_fiction_share."
+  description: "No genre holds more than limits_max_genre_share of the catalog, and Fiction no more than limits_max_fiction_share of the books outside the brazilian collection (Brazilian literature is mostly novels, so the Fiction cap measures the fallback only where it was tuned)."
 }
 
-SELECT category, share FROM (
+SELECT category, share, 'catalog' AS scope FROM (
   SELECT category, COUNT(*) / SUM(COUNT(*)) OVER () AS share
   FROM ${ref("catalog_books")} GROUP BY category
 )
 WHERE share > ${cfg.num("limits_max_genre_share")}
-   OR (category = 'Fiction' AND share > ${cfg.num("limits_max_fiction_share")})
+
+UNION ALL
+
+SELECT 'Fiction', COUNTIF(category = 'Fiction') / COUNT(*), 'outside brazilian'
+FROM ${ref("catalog_books")}
+WHERE 'brazilian' NOT IN UNNEST(collections)
+HAVING COUNTIF(category = 'Fiction') / COUNT(*) > ${cfg.num("limits_max_fiction_share")}

@@ -80,6 +80,11 @@ genre AS (
   )
   GROUP BY work_key
 ),
+-- A Brazilian author's usual genre, for their works with no genre score (many have no subjects at all).
+author_default AS (
+  SELECT name AS brazilian_person, ANY_VALUE(NULLIF(TRIM(default_genre), '')) AS default_genre
+  FROM ${ref("seed_brazilian_authors")} GROUP BY name
+),
 collection_hits AS (
   SELECT
     work_key,
@@ -98,8 +103,9 @@ SELECT
   s.description,
   s.description_source,
   s.subjects,
-  -- No genre score: Nonfiction when a subject says so, otherwise Fiction (most of the catalog).
-  COALESCE(g.category, IF(IFNULL(sg.nonfiction_hit, FALSE), 'Nonfiction', 'Fiction')) AS category,
+  -- No genre score: the Brazilian author's default genre, else Nonfiction when a subject says so,
+  -- otherwise Fiction (most of the catalog).
+  COALESCE(g.category, ad.default_genre, IF(IFNULL(sg.nonfiction_hit, FALSE), 'Nonfiction', 'Fiction')) AS category,
   s.cover_id,
   s.first_publish_year,
   s.languages,
@@ -131,3 +137,4 @@ FROM selected AS s
 LEFT JOIN genre AS g USING (work_key)
 LEFT JOIN signals AS sg USING (work_key)
 LEFT JOIN collection_hits AS c USING (work_key)
+LEFT JOIN author_default AS ad USING (brazilian_person)
