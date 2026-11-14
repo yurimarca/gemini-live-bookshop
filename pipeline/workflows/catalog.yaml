@@ -207,7 +207,9 @@ load_table:
             - add:
                 assign:
                   - pair: ${text.split(column, ":")}
-                  - schema_fields: '${list.concat(schema_fields, {"name": pair[0], "type": pair[1]})}'
+                  # Expressions cannot hold map literals, so the field is built as a YAML map first.
+                  - field: {name: "${pair[0]}", type: "${pair[1]}"}
+                  - schema_fields: ${list.concat(schema_fields, field)}
     - load:
         call: googleapis.bigquery.v2.jobs.insert
         args:
