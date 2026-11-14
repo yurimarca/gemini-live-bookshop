@@ -46,6 +46,7 @@ async def verify_id_token(token: str, settings: Settings) -> str:
     try:
         claims = await asyncio.to_thread(auth.verify_id_token, token, _app())
     except Exception as exc:  # firebase_admin raises several unrelated types
+        log.warning("id token rejected: %s", type(exc).__name__)  # the class only, never the token
         raise AuthError("invalid token") from exc
     return claims["uid"]
 
