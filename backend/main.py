@@ -95,8 +95,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(internal_tasks.router)
     app.include_router(ws_live.router)
 
-    @app.get("/healthz")
-    async def healthz() -> dict:
+    @app.get("/api/health")  # /healthz is reserved by Cloud Run on run.app URLs
+    async def health() -> dict:
         return {"status": "ok", "dataset_version": app.state.services.catalog.dataset_version}
 
     return app

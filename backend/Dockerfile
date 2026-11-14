@@ -11,6 +11,8 @@ RUN uv sync --frozen --no-dev
 
 COPY main.py ./
 COPY app/ ./app/
+# COPY keeps host file modes; a 0600 source file would be unreadable to the non-root user.
+RUN chmod -R a+rX /app
 
 RUN useradd --create-home --uid 10001 gateway
 USER gateway

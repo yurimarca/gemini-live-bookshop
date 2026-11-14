@@ -70,6 +70,6 @@ def test_unsafe_settings_are_refused_on_cloud_run(monkeypatch):
     assert ok.on_cloud_run
 
 
-def test_healthz(client):
-    assert client.get("/healthz").json() == {"status": "ok", "dataset_version": "ol-fixture-r1"}
+def test_health(client):
+    assert client.get("/api/health").json() == {"status": "ok", "dataset_version": "ol-fixture-r1"}
     assert TestClient(create_app(make_settings())).get("/docs").status_code == 404
